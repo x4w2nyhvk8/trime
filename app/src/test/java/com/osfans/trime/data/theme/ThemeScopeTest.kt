@@ -10,6 +10,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import java.io.File
 
 /**
  * ThemeScope lifecycle semantics: colors stay unreadable until the first
@@ -18,7 +19,7 @@ import io.kotest.matchers.shouldNotBe
  */
 class ThemeScopeTest :
     BehaviorSpec({
-        val theme = ThemeTestSupport.decodeBuiltinTheme("trime.yaml")
+        val theme = ThemeTestSupport.decodeBuiltinTheme("trime")
 
         fun scope() = ThemeScope(theme) { value ->
             val digits =
@@ -64,6 +65,36 @@ class ThemeScopeTest :
             s.updateScheme(mapOf("candidate_text_color" to "not-a-color"))
             Then("activation succeeds and the key throws when read") {
                 shouldThrow<IllegalArgumentException> { s.colors.candidateTextColor }
+            }
+        }
+        Given("the scope's package directory") {
+            // Only its identity matters here; nothing reads it in this test.
+            val packageDir = File("theme-scope-fixture")
+
+            Then("a theme read without a package carries none") {
+                ThemeScope(theme.copy(packageDir = null)).packageDir shouldBe null
+            }
+
+            Then("a package theme carries the directory it was read from") {
+                ThemeScope(theme, packageDir).packageDir shouldBe packageDir
+            }
+
+            Then("it defaults to what the theme itself carries") {
+                ThemeScope(theme.copy(packageDir = packageDir)).packageDir shouldBe packageDir
+            }
+        }
+        Given("a fresh scope") {
+            Then("the mode it resolves resources in starts as day") {
+                scope().activeMode shouldBe ThemeMode.DAY
+            }
+        }
+        Given("a scope activated with a night table") {
+            val s = scope()
+            s.updateScheme(schemeA, ThemeMode.NIGHT)
+
+            Then("the night mode is recorded for the resource lookup") {
+                s.activeMode shouldBe ThemeMode.NIGHT
+                s.activeColorScheme shouldBe schemeA
             }
         }
     })

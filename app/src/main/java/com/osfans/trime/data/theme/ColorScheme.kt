@@ -7,12 +7,7 @@
 package com.osfans.trime.data.theme
 
 /**
- * The colors one scheme declares, keyed by color key, exactly as it appears
- * under `preset_color_schemes` in the theme file.
+ * One flat color table: color key -> color value or image name. It is the
+ * content of a theme package's `day.yaml` / `night.yaml`.
  */
 typealias ColorScheme = Map<String, String>
-
-/**
- * Every color scheme a theme declares, keyed by scheme id.
- */
-typealias PresetColorSchemes = Map<String, ColorScheme>

@@ -8,6 +8,7 @@ package com.osfans.trime.ime.keyboard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.children
 import com.osfans.trime.data.prefs.AppPrefs
@@ -35,6 +36,9 @@ class KeyboardView(
     internal val keyTextSize = theme.style.keyTextSize
     internal val keyLongTextSize = theme.style.keyLongTextSize.takeIf { it > 0 } ?: keyTextSize
     internal val symbolTextSize = theme.style.symbolTextSize.takeIf { it > 0 } ?: keyTextSize
+
+    /** Key corner radius as a fraction of the key height; 0 keeps the dp radius. */
+    internal val keyCornerRatio = theme.style.keyCornerRatio
     internal val popupOnKeyPress by AppPrefs.defaultInstance().keyboard.popupOnKeyPress
     internal val hookShiftArrow: Boolean by AppPrefs.defaultInstance().keyboard.hookShiftArrow
     internal val hookShiftLock: Boolean by AppPrefs.defaultInstance().keyboard.hookShiftLock
@@ -53,6 +57,18 @@ class KeyboardView(
             val keyView = createKeyView(index, key)
             addView(keyView)
         }
+
+        // Embedded collections are placed after the keys, so a key's index stays
+        // its child index (see invalidateKeyByIndex, doc/Keyboard.md §2.6).
+        keyboard.collections.forEach { collection ->
+            addView(createCollectionView(collection))
+        }
+    }
+
+    private fun createCollectionView(collection: Keyboard.CollectionPlacement): View = KeyboardCollectionView(context, theme, collection, keyboardActionListener).apply {
+        layoutParams = LayoutParams(collection.width, collection.height)
+        translationX = collection.x.toFloat()
+        translationY = collection.y.toFloat()
     }
 
     private fun createKeyView(index: Int, key: Key): KeyView = KeyView(context, theme, key, keyboard, this, keyboardActionListener).apply {
@@ -90,7 +106,9 @@ class KeyboardView(
     }
 
     fun invalidateAllKeys() {
-        children.forEach { it.invalidate() }
+        children.forEach { child ->
+            if (child is KeyboardCollectionView) child.refreshColors() else child.invalidate()
+        }
     }
 
     fun invalidateKeyByIndex(index: Int) {

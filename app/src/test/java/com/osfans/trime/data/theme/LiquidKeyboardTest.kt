@@ -6,11 +6,8 @@
 package com.osfans.trime.data.theme
 
 import com.osfans.trime.data.theme.model.LiquidKeyboard
-import com.osfans.trime.util.int
 import com.osfans.trime.util.mapping
 import com.osfans.trime.util.pairs
-import com.osfans.trime.util.sequence
-import com.osfans.trime.util.string
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
@@ -28,6 +25,27 @@ class LiquidKeyboardTest :
               single_width: 60
               key_height: 40
               margin_x: 5
+              cell_back_color: key_back_color
+              cell_border: 1
+              cell_border_color: border_color
+              cell_corner_radius: 6.0
+              cell_text_color: key_text_color
+              cell_divider: 1
+              cell_divider_color: border_color
+              tab_spacing: 4
+              tab_divider: 1
+              tab_divider_color: border_color
+              tab_corner_radius: 6.0
+              tab_text_color: candidate_text_color
+              tab_active_text_color: hilited_candidate_text_color
+              cell_text_size: 16.0
+              cell_padding: [3, 6]
+              margin_y: 2.0
+              cell_highlight_color: hilited_key_back_color
+              tab_text_size: 14.0
+              tab_height: 36
+              tab_padding: [0, 5]
+              tab_min_width: 44
               fixed_key_bar:
                 position: top
                 keys: [Shift, Delete]
@@ -45,6 +63,31 @@ class LiquidKeyboardTest :
                   - {k: v}
             """,
             ).liquidKeyboard
+
+            Then("the cell styling is decoded") {
+                keyboard.cellBackColor shouldBe "key_back_color"
+                keyboard.cellBorder shouldBe 1
+                keyboard.cellBorderColor shouldBe "border_color"
+                keyboard.cellCornerRadius shouldBe 6f
+                keyboard.cellTextColor shouldBe "key_text_color"
+                keyboard.cellDivider shouldBe 1
+                keyboard.cellDividerColor shouldBe "border_color"
+                keyboard.tabSpacing shouldBe 4
+                keyboard.tabDivider shouldBe 1
+                keyboard.tabDividerColor shouldBe "border_color"
+                keyboard.tabCornerRadius shouldBe 6f
+                keyboard.tabTextColor shouldBe "candidate_text_color"
+                keyboard.tabActiveTextColor shouldBe "hilited_candidate_text_color"
+                keyboard.cellTextSize shouldBe 16f
+                keyboard.cellPadding.vertical shouldBe 3
+                keyboard.cellPadding.horizontal shouldBe 6
+                keyboard.marginY shouldBe 2f
+                keyboard.cellHighlightColor shouldBe "hilited_key_back_color"
+                keyboard.tabTextSize shouldBe 14f
+                keyboard.tabHeight shouldBe 36
+                keyboard.tabPadding.horizontal shouldBe 5
+                keyboard.tabMinWidth shouldBe 44
+            }
 
             Then("the fixed keys are decoded") {
                 keyboard.singleWidth shouldBe 60
@@ -170,19 +213,30 @@ class LiquidKeyboardTest :
             }
         }
 
-        Given("the built in trime theme") {
-            Then("its keyboards are exactly the ids its source lists, in order") {
-                val (theme, node) = ThemeTestSupport.themeAndNode("src/main/assets/shared/trime.yaml")
-                val liquid = node.pairs["liquid_keyboard"]
-                theme.liquidKeyboard.keyboards.map { it.id } shouldBe
-                    liquid?.pairs?.get("keyboards")?.sequence?.items?.mapNotNull { it.string }
-                theme.liquidKeyboard.singleWidth shouldBe (liquid?.pairs?.get("single_width")?.int ?: 0)
-                theme.liquidKeyboard.keyHeight shouldBe (liquid?.pairs?.get("key_height")?.int ?: 0)
-            }
-
-            Then("the tongwenfeng theme decodes its keyboards as well") {
-                ThemeTestSupport.decodeBuiltinTheme("tongwenfeng.trime.yaml")
-                    .liquidKeyboard.keyboards.isNotEmpty() shouldBe true
+        Given("the built-in trime theme") {
+            Then("it ships the grouped symbol library") {
+                // The symbols page holds the common punctuation only; the rich,
+                // grouped sets live here (doc/Theme.md §9).
+                val liquid = ThemeTestSupport.decodeBuiltinTheme("trime").liquidKeyboard
+                liquid.keyboards.map { it.id } shouldBe
+                    listOf(
+                        "history",
+                        "punct",
+                        "math",
+                        "currency",
+                        "arrow",
+                        "ordinal",
+                        "greek",
+                        "russian",
+                        "unit",
+                        "emoji",
+                        "kaomoji",
+                        "tabs",
+                    )
+                liquid.keyboards.filter { it.type == LiquidKeyboard.DataType.SINGLE }.size shouldBe 9
+                liquid.fixedKeyBar.position shouldBe LiquidKeyboard.KeyBar.Position.BOTTOM
+                liquid.fixedKeyBar.keys shouldBe
+                    listOf("keyboardLettersButton", "clipboardButton", "backspaceButton")
             }
         }
     })

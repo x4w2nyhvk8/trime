@@ -11,7 +11,6 @@ author: osfans #作者資訊
 
 style:
   auto_caps:
-  background_folder: /
   background_dim_amount: not dim
   candidate_font:
   candidate_use_cursor:

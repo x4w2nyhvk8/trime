@@ -18,7 +18,6 @@ import com.osfans.trime.core.RimeKeyEvent
 import com.osfans.trime.daemon.RimeSession
 import com.osfans.trime.daemon.launchOnReady
 import com.osfans.trime.data.prefs.AppPrefs
-import com.osfans.trime.data.theme.ColorManager
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeManager
 import com.osfans.trime.data.theme.model.LiquidKeyboard
@@ -28,7 +27,6 @@ import com.osfans.trime.ime.dialog.EnabledSchemaPickerDialog
 import com.osfans.trime.ime.switches.SwitchOptionWindow
 import com.osfans.trime.ime.symbol.LiquidWindow
 import com.osfans.trime.ime.window.BoardWindowManager
-import com.osfans.trime.ui.main.settings.ColorPickerDialog
 import com.osfans.trime.ui.main.settings.SoundEffectPickerDialog
 import com.osfans.trime.ui.main.settings.ThemePickerDialog
 import com.osfans.trime.util.AppUtils
@@ -69,14 +67,6 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
     private fun showThemePicker() {
         showDialog { api ->
             ThemePickerDialog.build(service.lifecycleScope, context) {
-                api.commitComposition()
-            }
-        }
-    }
-
-    private fun showColorPicker() {
-        showDialog { api ->
-            ColorPickerDialog.build(service.lifecycleScope, context) {
                 api.commitComposition()
             }
         }
@@ -141,7 +131,6 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
                         KeyEvent.KEYCODE_LANGUAGE_SWITCH -> handleLanguageSwitch(action)
                         KeyEvent.KEYCODE_FUNCTION -> handleFunctionCommand(action)
                         KeyEvent.KEYCODE_SETTINGS -> handleSettings(action)
-                        KeyEvent.KEYCODE_PROG_RED -> showColorPicker()
                         KeyEvent.KEYCODE_MENU -> showEnabledSchemaPicker()
                         KeyEvent.KEYCODE_VOICE_ASSIST -> switchToVoiceInputMethod()
                         else -> handleDefaultKeyAction(action)
@@ -180,20 +169,36 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
 
                 when (action.command) {
                     "liquid_keyboard" -> handleLiquidKeyboard(arg)
-                    "menu_keyboard" -> windowManager.attachWindow(SwitchOptionWindow(di))
+
+                    // The panel's action token (doc/Theme.md §8.1); the preset that
+                    // carries it is a theme's to name (the default theme has
+                    // `optionPanelButton`).
+                    "openOptionPanel" -> windowManager.attachWindow(SwitchOptionWindow(di))
+
                     "clipboard_window" -> handleClipboardWindow(arg)
-                    "set_color_scheme" -> handleColorScheme(arg)
+
                     "set_theme" -> handleTheme(arg)
+
                     "broadcast" -> service.sendBroadcast(Intent(arg))
+
                     "clipboard" -> handleClipboard()
+
                     "commit" -> service.commitText(arg)
+
                     "date" -> service.commitText(customFormatDateTime(arg))
+
                     "run" -> handleRunCommand(arg)
+
                     "apply" -> handleApplyCommand(arg)
+
                     "share_text" -> service.shareText()
+
                     "select_candidate" -> handleSelectCandidate(arg)
+
                     "switch_hide_key_symbol" -> switchHideKeySymbol()
+
                     "switch_hide_key_hint" -> switchHideKeyHint()
+
                     else -> handleIntentAction(action.command, arg)
                 }
             }
@@ -222,12 +227,6 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
             private fun handleClipboardWindow(arg: String) {
                 val tabIndex = arg.toIntOrNull()?.coerceIn(0, 1) ?: 0
                 windowManager.attachWindow(ClipboardWindow(di, tabIndex))
-            }
-
-            private fun handleColorScheme(arg: String) {
-                if (arg in ThemeManager.activeTheme.presetColorSchemes) {
-                    ColorManager.setColorScheme(arg)
-                }
             }
 
             private fun handleTheme(arg: String) {
@@ -285,10 +284,15 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
             }
 
             private fun handleIntentAction(command: String, arg: String) {
-                buildIntentFromAction(command, arg)?.let { intent ->
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
-                    service.startActivity(intent)
-                }
+                val intent =
+                    runCatching { buildIntentFromAction(command, arg) }
+                        .onFailure { Timber.w(it, "Cannot build an intent for command '%s'", command) }
+                        .getOrNull() ?: return
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
+                // A theme can name any command; an unknown one must not take the
+                // IME down with an ActivityNotFoundException.
+                runCatching { service.startActivity(intent) }
+                    .onFailure { Timber.w(it, "No activity handles command '%s'", command) }
             }
 
             private fun handleSelectCandidate(arg: String) {
@@ -313,7 +317,6 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
             private fun handleSettings(action: KeyAction) {
                 when (action.option) {
                     "theme" -> showThemePicker()
-                    "color" -> showColorPicker()
                     "schema" -> AppUtils.launchMainToSchemaList(context)
                     "sound" -> showSoundEffectPicker()
                     else -> AppUtils.launchMainActivity(service)
@@ -443,6 +446,16 @@ class CommonKeyboardActionListener(override val di: DI) : DIAware {
 
                     i += value.length
                 }
+            }
+
+            /**
+             * A cell of an embedded collection (doc/Keyboard.md §2.6): a plain
+             * category is committed verbatim, the way the liquid keyboard commits
+             * its symbols, while a `SYMBOL` category is typed through the schema.
+             */
+            override fun onCollectionItem(text: String) {
+                if (text.isEmpty()) return
+                service.commitText(text)
             }
         }
     }

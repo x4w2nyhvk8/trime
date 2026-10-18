@@ -340,6 +340,13 @@ class InputView(
             is RimeMessage.OptionMessage -> {
                 broadcaster.onRimeOptionUpdated(it.data)
 
+                if (it.data.option == "ascii_mode") {
+                    val ascii = it.data.value
+                    ContextCompat.getMainExecutor(service).execute {
+                        keyboardWindow.followAsciiMode(ascii)
+                    }
+                }
+
                 if (it.data.option == "_liquid_keyboard") {
                     ContextCompat.getMainExecutor(service).execute {
                         windowManager.attachWindow(LiquidWindow)

@@ -6,160 +6,131 @@
 package com.osfans.trime.data.theme
 
 import com.osfans.trime.data.theme.model.KeyActionToken
-import com.osfans.trime.data.theme.model.TextKeyboard
+import com.osfans.trime.data.theme.model.KeyStyle
+import com.osfans.trime.data.theme.model.LiquidKeyboard
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.maps.shouldContainKey
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 
 /**
- * Golden tests for the shipped themes: parse + decode, key fields compared against the
- * source files value by value.
- *
- * - tongwenfeng.trime.yaml: no librime DSL; decodes as-is, covering anchors/aliases
- *   (style values via `*hgap`/`*jpgd4`/...) and flow mappings (`preset_keys`/`keys`).
- * - trime.yaml: two `__include` entries (librime DSL), expanded by [ThemeDslExpander] before
- *   decoding: `letter` inherits /preset_keyboards/default, `scj6` is a copy of cangjie5.
+ * Pins the shipped theme package: it is the one theme the app starts with, so a
+ * change to it — or to the loader that reads it — surfaces here.
  */
 class ThemeGoldenTest :
     BehaviorSpec({
-        Given("the built-in tongwenfeng.trime.yaml") {
-            val theme = ThemeTestSupport.decodeBuiltinTheme("tongwenfeng.trime.yaml")
+        Given("the shipped theme package") {
+            val theme = ThemeTestSupport.decodeBuiltinTheme("trime")
 
-            When("the whole file is decoded") {
-                Then("theme header and style scalars are preserved") {
-                    theme.name shouldBe "标准"
-                    val style = theme.style
-                    style.autoCaps shouldBe false
-                    style.candidateTextSize shouldBe 18f
-                    style.keyTextSize shouldBe 24f
-                    style.keyWidth shouldBe 10f
-                    style.keyboardHeight shouldBe 250
-                    style.keyboardHeightLand shouldBe 200
-                }
+            Then("it loads and names itself") {
+                // `author` is YAML metadata the Theme bean does not carry.
+                theme.name shouldBe "同文"
+            }
 
-                Then("style values referenced through anchors/aliases resolve to the anchored values") {
-                    // File defines height: {4: &jpgd4 48}, 6: &hgap 4, 7: &sgap 12, 1: &round1 6;
-                    // style references them via *jpgd4 / *hgap / *sgap / *round1.
-                    val style = theme.style
-                    style.keyHeight shouldBe 48
-                    style.horizontalGap shouldBe 4
-                    style.verticalGap shouldBe 12
-                    style.roundCorner shouldBe 6f
-                }
+            Then("it ships the five keyboards") {
+                theme.presetKeyboards.keys shouldBe setOf("default", "number", "symbols", "english", "editor")
+            }
 
-                Then("enter labels are decoded") {
-                    val enterLabel = theme.style.enterLabels
-                    enterLabel.go shouldBe "前往"
-                    enterLabel.done shouldBe "完成"
-                    enterLabel.default shouldBe "Enter"
-                }
+            Then("the grouped symbol library is declared") {
+                // The symbols page holds the commonly used punctuation; the rich,
+                // grouped sets live in the liquid keyboard (doc/Theme.md §9).
+                val liquid = theme.liquidKeyboard
+                liquid.keyboards.map { it.id } shouldBe
+                    listOf(
+                        "history",
+                        "punct",
+                        "math",
+                        "currency",
+                        "arrow",
+                        "ordinal",
+                        "greek",
+                        "russian",
+                        "unit",
+                        "emoji",
+                        "kaomoji",
+                        "tabs",
+                    )
+                liquid.keyboards.filter { it.type == LiquidKeyboard.DataType.SINGLE }.size shouldBe 9
+                liquid.fixedKeyBar.position shouldBe LiquidKeyboard.KeyBar.Position.BOTTOM
+            }
 
-                Then("all 50 preset keyboards are decoded") {
-                    theme.presetKeyboards.size shouldBe 50
-                    theme.presetKeyboards shouldContainKey "default"
-                    theme.presetKeyboards shouldContainKey "letter"
-                    theme.presetKeyboards shouldContainKey "number"
-                    theme.presetKeyboards shouldContainKey "bqrw1"
-                }
-
-                Then("every preset keyboard decodes at least one key") {
-                    theme.presetKeyboards.filterValues { it.keys.isEmpty() }.keys shouldBe emptySet()
-                }
-
-                Then("the default keyboard decodes keys incl. inline flow mappings and per-key colors") {
-                    val keyboard = theme.presetKeyboards.getValue("default")
-                    keyboard.name shouldBe "26键默认布局"
-                    keyboard.author shouldBe "暖暖"
-                    keyboard.width shouldBe 10f
-                    keyboard.asciiMode shouldBe 0
-                    keyboard.keys.size shouldBe 37
-                    val firstKey = keyboard.keys.first()
-                    firstKey.click shouldBe KeyActionToken.Plain("q")
-                    firstKey.longClick shouldBe KeyActionToken.Plain("1")
-                    firstKey.keyBackColor shouldBe "bh1"
-                    firstKey.keyTextColor shouldBe "th1"
-                }
-
-                Then("all 46 color schemes are decoded, with the default scheme intact") {
-                    theme.presetColorSchemes.size shouldBe 46
-                    val defaultScheme = theme.presetColorSchemes.entries.first { it.key == "default" }
-                    defaultScheme.value["name"] shouldBe "标准配色！"
-                    defaultScheme.value["dark_scheme"] shouldBe "steam"
-                }
-
-                Then("fallback colors override table is decoded") {
-                    theme.fallbackColors shouldBe mapOf("candidate_text_color" to "text_color")
-                }
-
-                Then("preset keys with inline maps are decoded") {
-                    theme.presetKeys shouldContainKey "BRIGHTNESS_DOWN"
-                    val brightnessDown = theme.presetKeys.getValue("BRIGHTNESS_DOWN")
-                    brightnessDown.label shouldBe "亮度-"
-                    brightnessDown.send shouldBe "BRIGHTNESS_DOWN"
+            Then("every key has a width and every row fills the keyboard") {
+                // A zero-width key is an invisible key: the first generated theme
+                // shipped one for every letter and the keyboard came up blank.
+                // A negative width is the explicit "take the rest of the row".
+                theme.presetKeyboards.forEach { (id, keyboard) ->
+                    withClue("keyboard '$id'") {
+                        keyboard.keys.forEach { key ->
+                            (key.width == -1f || key.width > 0f) shouldBe true
+                        }
+                        // Rows now come from `row_break` (doc/Keyboard.md §3.1); a row
+                        // with a fill key must leave it something to take.
+                        var row = 0f
+                        var fills = 0
+                        fun endRow() {
+                            // The very first key may carry the row break itself.
+                            if (row > 0f || fills > 0) {
+                                if (fills > 0) {
+                                    (row < 100f) shouldBe true
+                                } else {
+                                    row shouldBe 100f
+                                }
+                            }
+                            row = 0f
+                            fills = 0
+                        }
+                        keyboard.keys.forEach { key ->
+                            if (key.rowBreak) endRow()
+                            if (key.width < 0f) fills++ else row += key.width
+                        }
+                        endRow()
+                    }
                 }
             }
-        }
 
-        Given("the built-in trime.yaml (with its two __include entries expanded)") {
-            val theme = ThemeTestSupport.decodeBuiltinTheme("trime.yaml")
+            Then("it ships its preset keys, including the option panel button") {
+                theme.presetKeys.size shouldBe 50
+                val optionPanelButton = theme.presetKeys["optionPanelButton"].shouldNotBeNull()
+                optionPanelButton.command shouldBe "openOptionPanel"
+                optionPanelButton.label.staticText shouldBe "选项"
+            }
 
-            When("the whole file is decoded") {
-                Then("theme header and style scalars are preserved") {
-                    theme.name shouldBe "預設"
-                    val style = theme.style
-                    style.candidateTextSize shouldBe 22f
-                    style.keyHeight shouldBe 44
-                    style.horizontalGap shouldBe 1
+            Then("it resolves its key identities into actions") {
+                // Every entry spells `key: <name>` (doc/Keyboard.md §2.1); the loader
+                // turns those into clicks, so a letter key types its letter.
+                val letter = theme.presetKeyboards.getValue("default").keys.first { it.key.endsWith("Button") }
+                letter.click shouldBe KeyActionToken.Plain(letter.key.removeSuffix("Button"))
+            }
+
+            Then("it ships a day and a night color table of the full vocabulary") {
+                theme.dayColors.size shouldBe 58
+                theme.nightColors.shouldNotBeNull().size shouldBe 58
+            }
+
+            Then("its style nodes belong to the three families") {
+                val panel = theme.optionPanel
+                val clipboard = theme.clipboard
+                val names =
+                    listOf(
+                        panel.panelStyle,
+                        panel.actionItemStyle,
+                        panel.switchItemStyle,
+                        panel.titleItemStyle,
+                        clipboard.panelStyle,
+                        clipboard.itemStyle,
+                        clipboard.pinnedItemStyle,
+                        clipboard.titleItemStyle,
+                    )
+                names.forEach { name ->
+                    name.isNotEmpty() shouldBe true
+                    theme.styles[name].shouldNotBeNull()
+                    // A panel or item slot resolves through the family map its page decodes.
+                    (theme.panelStyles.containsKey(name) || theme.itemStyles.containsKey(name)) shouldBe true
                 }
-
-                Then("color schemes and preset keys are decoded") {
-                    theme.presetColorSchemes.size shouldBe 37
-                    theme.presetKeys.size shouldBe 106
-                    val brightnessDown = theme.presetKeys.getValue("BRIGHTNESS_DOWN")
-                    brightnessDown.label shouldBe "亮度-"
-                    brightnessDown.send shouldBe "BRIGHTNESS_DOWN"
-                }
-
-                Then("all 18 plain keyboards are decoded with their keys") {
-                    theme.presetKeyboards.size shouldBe 18
-                    theme.presetKeyboards shouldContainKey "default"
-                    theme.presetKeyboards shouldContainKey "qwerty0"
-                    theme.presetKeyboards shouldContainKey "cangjie5"
-                    theme.presetKeyboards shouldContainKey "array30"
-
-                    val default = theme.presetKeyboards.getValue("default")
-                    default.name shouldBe "預設40鍵"
-                    default.width shouldBe 10f
-                    default.height shouldBe 44f
-                    default.lock shouldBe true
-                    default.asciiMode shouldBe 0
-                    default.keys.size shouldBe 47
-                    default.keys.first().click shouldBe
-                        KeyActionToken.Plain("1")
-                    default.keys.first().longClick shouldBe
-                        KeyActionToken.Plain("!")
-
-                    val qwerty0 = theme.presetKeyboards.getValue("qwerty0")
-                    qwerty0.labelTransform shouldBe TextKeyboard.LabelTransform.UPPERCASE
-                }
-
-                Then("the __include 'letter' keyboard inherits the default keyboard and overrides its own keys") {
-                    val letter = theme.presetKeyboards.getValue("letter")
-                    val default = theme.presetKeyboards.getValue("default")
-                    letter.asciiMode shouldBe 1
-                    letter.resetAsciiMode shouldBe true
-                    letter.lock shouldBe false
-                    letter.name shouldBe default.name
-                    letter.width shouldBe default.width
-                    letter.height shouldBe default.height
-                    letter.keys.size shouldBe default.keys.size
-                    letter.keys.first().click shouldBe default.keys.first().click
-                }
-
-                Then("the pure __include 'scj6' keyboard equals cangjie5") {
-                    theme.presetKeyboards.getValue("scj6") shouldBe
-                        theme.presetKeyboards.getValue("cangjie5")
+                theme.styles.getValue("spaceKeyTextStyle").content shouldBe KeyStyle.Content.TEXT
+                // No name is shared by two families (doc/Theme.md §8.5).
+                StyleFamilyResolver.references(theme).forEach { (name, families) ->
+                    if (families.size > 1) error("style '$name' is referenced by $families")
                 }
             }
         }

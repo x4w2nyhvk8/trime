@@ -9,8 +9,13 @@ import android.view.KeyEvent
 import androidx.annotation.ColorInt
 import com.osfans.trime.daemon.RimeDaemon
 import com.osfans.trime.data.theme.ColorManager
+import com.osfans.trime.data.theme.KeyBackground
+import com.osfans.trime.data.theme.KeyLabelResolver
+import com.osfans.trime.data.theme.KeyStyleResolver
+import com.osfans.trime.data.theme.ResolvedKeyStyle
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.model.KeyActionToken
+import com.osfans.trime.data.theme.model.KeyLabel
 import com.osfans.trime.data.theme.model.TextKeyboard
 import com.osfans.trime.data.theme.model.orAbsent
 import splitties.bitflags.hasFlag
@@ -71,15 +76,33 @@ class Key(
     var extraWidthLeft = 0
     var extraWidthRight = 0
 
-    private val label = keyDef?.label ?: ""
+    /**
+     * The appearance this key resolved from its placement and the theme's
+     * `styles:` table (placement > style > default, see [KeyStyleResolver]).
+     * The views read only this instead of judging the priority themselves.
+     */
+    val keyStyle: ResolvedKeyStyle = KeyStyleResolver.resolve(keyDef, theme.styles)
+
+    /**
+     * The main foreground label spec. A style that grants a `system_icon` turns
+     * it into the `ic@…` spelling the existing Iconics channel reads (see
+     * [isIconFont]); an `asset_icon` is drawn as a bitmap by [KeyView] instead,
+     * so it contributes no label; otherwise it is what [KeyStyleResolver]
+     * resolved (doc/Keyboard.md §2.2).
+     */
+    private val labelSpec: KeyLabel = when {
+        keyStyle.systemIcon.isNotEmpty() -> KeyLabel.Text(ICON_PREFIX + keyStyle.systemIcon)
+        else -> keyStyle.label
+    }
     private val labelSymbol = keyDef?.labelSymbol ?: ""
+    val altLabel: String = keyDef?.altLabel ?: ""
     val hint: String = keyDef?.hint ?: ""
     val popup = keyDef?.popup ?: emptyList()
 
-    val keyTextSize: Float = keyDef?.keyTextSize ?: 0f
+    val keyTextSize: Float = keyStyle.textSize
     val symbolTextSize: Float = keyDef?.symbolTextSize ?: 0f
-    val roundCorner: Float = keyDef?.roundCorner?.takeIf { it >= 0 } ?: parent.roundCorner
-    val keyBorder: Int = keyDef?.keyBorder?.takeIf { it >= 0 } ?: parent.keyBorder
+    val roundCorner: Float = keyStyle.cornerRadius.takeIf { it >= 0f } ?: parent.roundCorner
+    val keyBorder: Int = keyStyle.borderWidth.takeIf { it >= 0 } ?: parent.keyBorder
     var keyTextOffsetX = 0f
         get() = field + keyOffsetX
     var keyTextOffsetY = 0f
@@ -289,21 +312,87 @@ class Key(
 
     fun getCode(behavior: KeyBehavior): Int = getAction(behavior)!!.code
 
-    fun getLabel(): String = when {
-        label.isNotEmpty() &&
+    /**
+     * The text this key shows in its main slot, or "" when it shows none.
+     *
+     * The entry's own label — its placement label, or the style's `text` — wins
+     * over the action's label while the keyboard is in Chinese mode and the
+     * action is the plain click; a dynamic source (`{source: …}`) is read here,
+     * at draw time, so a schema switch shows up on the next draw instead of
+     * being frozen when the keyboard was built (doc/Keyboard.md §2.1, §2.2).
+     *
+     * @param enterLabel the app-provided enter-key label, from the view layer
+     *   (see `EnterKeyDisplayDelegate`); it is what `{source: enterLabel}` reads.
+     */
+    fun getLabel(enterLabel: String = ""): String {
+        // A bitmap icon is the whole foreground; the action's label would draw
+        // on top of it.
+        if (keyStyle.assetIcon.isNotEmpty()) return ""
+        val showPlacement =
             keyAction == click &&
-            !keyActions.containsKey(KeyBehavior.ASCII) &&
-            !rime.run { statusCached }.let { it.isAsciiMode || it.isAsciiPunct } -> label
-
-        else -> keyAction!!.getLabel(parent) // 中文狀態顯示標籤
+                !keyActions.containsKey(KeyBehavior.ASCII) &&
+                !rime.run { statusCached }.let { it.isAsciiMode || it.isAsciiPunct }
+        return uppercaseLatin(
+            localizePunctuation(
+                KeyLabelResolver.resolve(
+                    placementText = KeyLabelResolver.text(labelSpec, keyLabelContext(enterLabel)),
+                    actionLabel = keyAction!!.getLabel(parent, enterLabel),
+                    showPlacement = showPlacement,
+                ),
+            ),
+        )
     }
 
-    fun getPreviewText(behavior: KeyBehavior): String = when (behavior) {
-        KeyBehavior.CLICK -> keyAction!!.getPreview(parent)
-        else -> getAction(behavior)!!.getPreview(parent)
+    /**
+     * Beyond ascii mode a letter keycap shows its upper-case form, the way the
+     * Chinese IMEs draw a letter row (doc/Keyboard.md §2.2).
+     */
+    private fun uppercaseLatin(text: String): String = if (text.length == 1 && text[0] in 'a'..'z' &&
+        !rime.run { statusCached }.isAsciiMode
+    ) {
+        text.uppercase()
+    } else {
+        text
+    }
+
+    /**
+     * Chinese punctuation mode draws the full-width form of a punctuation key
+     * (doc/Keyboard.md §2.2): the action still sends the ASCII character and
+     * Rime converts it on commit, so only the label changes.
+     */
+    private companion object {
+        /** ASCII punctuation → the Chinese form shown when `ascii_punct` is off. */
+        val PUNCTUATION_LABELS =
+            mapOf(
+                "," to "，",
+                "." to "。",
+                "?" to "？",
+                "!" to "！",
+                ":" to "：",
+                ";" to "；",
+                "(" to "（",
+                ")" to "）",
+            )
+    }
+
+    private fun localizePunctuation(text: String): String {
+        if (text.length != 1 || text[0].code > 0x7F) return text
+        val status = rime.run { statusCached }
+        if (status.isAsciiPunct || status.isAsciiMode) return text
+        return PUNCTUATION_LABELS[text] ?: text
+    }
+
+    fun getPreviewText(
+        behavior: KeyBehavior,
+        enterLabel: String = "",
+    ): String = when (behavior) {
+        KeyBehavior.CLICK -> keyAction!!.getPreview(parent, enterLabel)
+        else -> getAction(behavior)!!.getPreview(parent, enterLabel)
     }
 
     val symbolLabel: String
+        // The symbol slot's label is not a `label:` of its own; a dynamic source
+        // there would need the enter label, which the symbol path does not have.
         get() = labelSymbol.ifEmpty { longClick?.getLabel(parent) ?: "" }
 
     private val appearanceType: Int
@@ -315,25 +404,43 @@ class Key(
             }
         }
 
-    fun getBackgroundDrawable(): Drawable? = when (appearanceType) {
-        2 -> if (isPressed) hlOnKeyBackground else onKeyBackground
-
-        1 -> {
-            if (isPressed) {
-                hlOffKeyBackground
-            } else {
-                keyDef?.keyBackColor.takeIf { !it.isNullOrEmpty() }?.let { keyBackground }
-                    ?: offKeyBackground
-            }
+    fun getBackgroundDrawable(): Drawable? {
+        // A nine-patch style is the key's background for every state; the
+        // scheme's state colors do not apply to it (see KeyStyleResolver for
+        // when a placement's own key_back_color takes the slot back). This slice
+        // has no per-state variants of a style's payload: a style supplies one
+        // background, not a pressed/on pair.
+        val styleBackground = keyStyle.background
+        if (styleBackground is KeyBackground.NinePatch) {
+            return ColorManager.getDrawable(styleBackground.value)
         }
+        return when (appearanceType) {
+            2 -> if (isPressed) hlOnKeyBackground else onKeyBackground
 
-        else -> if (isPressed) hlKeyBackground else keyBackground
+            1 -> {
+                if (isPressed) {
+                    hlOffKeyBackground
+                } else {
+                    keyDef?.keyBackColor.takeIf { !it.isNullOrEmpty() }?.let { keyBackground }
+                        ?: offKeyBackground
+                }
+            }
+
+            else -> if (isPressed) hlKeyBackground else keyBackground
+        }
     }
 
-    fun getBorderColor(): Int = when (appearanceType) {
-        2 -> if (isPressed) hlOnKeyBorderColor else onKeyBorderColor
-        1 -> if (isPressed) hlOffKeyBorderColor else getColor(keyDef?.keyBorderColor ?: "", offKeyBorderColor)
-        else -> if (isPressed) hlKeyBorderColor else keyBorderColor
+    fun getBorderColor(): Int {
+        // A placement's or a style's declared border color wins over the color
+        // scheme's state colors (placement > style > default). This slice has no
+        // per-state variants of a style's border: the declared color applies to
+        // every state.
+        keyStyle.borderColor.takeIf { it.isNotEmpty() }?.let { return getColor(it, 0) }
+        return when (appearanceType) {
+            2 -> if (isPressed) hlOnKeyBorderColor else onKeyBorderColor
+            1 -> if (isPressed) hlOffKeyBorderColor else getColor(keyDef?.keyBorderColor ?: "", offKeyBorderColor)
+            else -> if (isPressed) hlKeyBorderColor else keyBorderColor
+        }
     }
 
     fun getTextColor(): Int = when (appearanceType) {

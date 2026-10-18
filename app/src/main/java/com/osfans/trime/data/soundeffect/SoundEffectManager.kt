@@ -9,6 +9,7 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.osfans.trime.core.data.DataManager
 import com.osfans.trime.data.prefs.AppPrefs
+import com.osfans.trime.data.theme.ColorManager
 import com.osfans.trime.ime.keyboard.InputFeedbackManager
 import com.osfans.trime.util.FileUtils
 import kotlinx.serialization.decodeFromString
@@ -35,23 +36,39 @@ object SoundEffectManager {
         ),
     )
 
+    /** A theme may ship its own sounds under `<package>/soundeffect/`; those shadow the global ones by name. */
+    private val packageDir: File?
+        get() = ColorManager.currentScope()?.packageDir?.let { File(it, "soundeffect") }
+
+    /**
+     * Where each descriptor was read from, so a theme's own sound files resolve
+     * inside its package while the global drop keeps working (doc/Theme.md §3).
+     */
+    private val descriptorDirs = mutableMapOf<String, File>()
+
+    private fun readDescriptors(dir: File?): List<Pair<SoundEffect, File>> {
+        if (dir == null || !dir.isDirectory) return emptyList()
+        val files = dir.listFiles { f -> f.name.endsWith("sound.yaml") } ?: return emptyList()
+        return files.mapNotNull decode@{ f ->
+            try {
+                val result = yaml.decodeFromString<SoundEffect>(f.bufferedReader().readText())
+                val effect = if (result.name.isEmpty()) result.copy(name = f.name.substringBefore(".")) else result
+                effect to dir
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to decode sound effect descriptor '${f.absolutePath}'")
+                null
+            }
+        }
+    }
+
     private fun listSounds(): MutableList<SoundEffect> {
-        val files = userDir.listFiles { f -> f.name.endsWith("sound.yaml") }
-        return files
-            ?.mapNotNull decode@{ f ->
-                val effect = try {
-                    val result = yaml.decodeFromString<SoundEffect>(f.bufferedReader().readText())
-                    if (result.name.isEmpty()) {
-                        result.copy(name = f.name.substringBefore("."))
-                    } else {
-                        result
-                    }
-                } catch (e: Exception) {
-                    Timber.w(e, "Failed to decode sound effect descriptor '${f.absolutePath}'")
-                    null
-                }
-                return@decode effect
-            }?.toMutableList() ?: mutableListOf()
+        val fromPackage = readDescriptors(packageDir)
+        val shadowed = fromPackage.mapTo(mutableSetOf()) { it.first.name }
+        val fromGlobal = readDescriptors(userDir).filterNot { it.first.name in shadowed }
+        val all = fromPackage + fromGlobal
+        descriptorDirs.clear()
+        all.forEach { (effect, dir) -> descriptorDirs[effect.name] = dir }
+        return all.map { it.first }.toMutableList()
     }
 
     private fun getEffect(name: String) = userEffects.find { it.name == name }
@@ -81,8 +98,8 @@ object SoundEffectManager {
     val activeAudioPaths: List<String>
         get() {
             return activeSoundEffect?.let { e ->
-                val subPath = e.folder
-                e.sound.map { userDir.resolve(subPath).resolve(it).path }
+                val base = descriptorDirs[e.name] ?: userDir
+                e.sound.map { base.resolve(e.folder).resolve(it).path }
             } ?: listOf()
         }
 

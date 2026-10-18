@@ -61,8 +61,10 @@ class ThemeDiagnosticListAdapter(
             }
 
         fun bind(finding: ThemeDiagnostics.Finding) {
-            val warning = finding.severity == ThemeDiagnostics.Severity.WARNING
-            message.setTextColor(if (warning) warningColor else messageColor)
+            // Both a warning and a hard error say the theme needs fixing, so
+            // both stand out from an informational finding.
+            val needsAttention = finding.severity != ThemeDiagnostics.Severity.INFO
+            message.setTextColor(if (needsAttention) warningColor else messageColor)
             message.text = finding.message
             path.isVisible = finding.path != null
             path.text = finding.path.orEmpty()

@@ -88,7 +88,9 @@ class LiquidWindow(di: DI) :
         }
     }
 
-    override fun onCreateBarView() = liquidLayout.tabsUi.root
+    // The category strip lives inside the layout (below the grid), so the window
+    // has no bar of its own.
+    override fun onCreateBarView(): View? = null
 
     override fun onAttached() {}
 

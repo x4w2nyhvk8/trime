@@ -49,9 +49,22 @@ class ColorKeyTest :
                 reachable.size shouldBe ColorKey.entries.size
             }
             Then("keys without a chain entry are the terminals requested by code") {
+                // The two panel tokens are requested by the panel windows and
+                // have no chain on purpose: a theme that does not define them
+                // keeps today's transparent panel (doc/Theme.md §8.5).
                 val terminals = ColorKey.entries.filter { ColorKey.fallbackOf(it) == null }
                 terminals.map { it.key } shouldContainExactlyInAnyOrder
-                    listOf("back_color", "text_color", "candidate_border_color")
+                    listOf(
+                        "back_color",
+                        "text_color",
+                        "candidate_border_color",
+                        "option_panel_back_color",
+                        "clipboard_back_color",
+                        "enter_key_back_color",
+                        "enter_key_text_color",
+                        "hilited_enter_key_back_color",
+                        "hilited_enter_key_text_color",
+                    )
             }
         }
     })

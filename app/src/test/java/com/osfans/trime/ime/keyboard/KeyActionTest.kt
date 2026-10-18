@@ -5,15 +5,14 @@
 package com.osfans.trime.ime.keyboard
 
 import android.view.KeyEvent
-import com.osfans.trime.data.theme.ThemeTestSupport
 import com.osfans.trime.data.theme.model.KeyActionToken
 import com.osfans.trime.data.theme.model.PresetKey
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
 /**
- * Pins the key-action grammar: how a plain token is resolved against the
- * theme's preset keys, key-code expressions and text-key sequences.
+ * Pins the key-action grammar: how a plain token is resolved against preset
+ * keys, key-code expressions and text-key sequences.
  */
 class KeyActionTest :
     BehaviorSpec({
@@ -21,7 +20,20 @@ class KeyActionTest :
         // mocked; the Rime key table is the path under test.
         beforeTest { KeyCode.androidKeyNameToCode = { 0 } }
 
-        val presetKeys = ThemeTestSupport.decodeBuiltinTheme("trime.yaml").presetKeys
+        // The grammar is pinned against a small preset table rather than the
+        // shipped theme: preset names are theme content, while these cases are
+        // about how a token resolves through one (doc/Keyboard.md §2.1, §2.2).
+        val presetKeys =
+            mapOf(
+                "BackSpace" to PresetKey(send = "BackSpace", repeatable = true),
+                "select_all" to PresetKey(send = "Control+a"),
+                "CommitScriptText" to PresetKey(send = "Shift+Return"),
+                "Shift_L" to PresetKey(send = "Shift_L", shiftLock = "ascii_long"),
+                "Return" to PresetKey(send = "Return"),
+                // A theme is free to name its own preset after a canonical send value.
+                "Return1" to PresetKey(send = "Return"),
+                "Clear" to PresetKey(text = "{Control+a}{BackSpace}"),
+            )
 
         fun plain(token: String) = KeyAction(KeyActionToken.Plain(token), presetKeys)
 
@@ -60,10 +72,11 @@ class KeyActionTest :
                     action.modifierKeyOnMask shouldBe KeyEvent.META_SHIFT_ON
                 }
             }
-            `when`("the preset has no send but a command") {
-                then("the action degrades to a function key") {
+            `when`("the preset sends a plain Return") {
+                then("the key code is the enter key") {
                     val action = plain("Return")
                     action.code shouldBe KeyEvent.KEYCODE_ENTER
+                    action.modifier shouldBe 0
                 }
             }
             `when`("the preset only simulates a key sequence") {

@@ -7,9 +7,12 @@ package com.osfans.trime.ime.switches
 
 import android.app.Dialog
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.osfans.trime.R
 import com.osfans.trime.core.RimeApi
 import com.osfans.trime.core.RimeConfig
@@ -17,12 +20,16 @@ import com.osfans.trime.core.RimeMessage
 import com.osfans.trime.core.SchemaItem
 import com.osfans.trime.daemon.RimeSession
 import com.osfans.trime.daemon.launchOnReady
+import com.osfans.trime.data.theme.PanelPage
+import com.osfans.trime.data.theme.PanelSize
+import com.osfans.trime.data.theme.PanelStyleResolver
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.ime.bar.ui.ToolButton
 import com.osfans.trime.ime.broadcast.InputBroadcastReceiver
 import com.osfans.trime.ime.core.TrimeInputMethodService
 import com.osfans.trime.ime.dialog.EnabledSchemaPickerDialog
+import com.osfans.trime.ime.symbol.SpacesItemDecoration
 import com.osfans.trime.ime.window.BoardWindow
 import com.osfans.trime.ui.main.settings.ThemePickerDialog
 import com.osfans.trime.util.AppUtils
@@ -161,11 +168,49 @@ class SwitchOptionWindow(di: DI) :
         }
     }
 
+    /** The panel's own style; a theme change rebuilds the window, so it is read once. */
+    private val panelStyle by lazy { PanelStyleResolver.panelStyle(theme, PanelPage.OPTION_PANEL) }
+
     val view by lazy {
         context.recyclerView {
             layoutManager = gridLayoutManager(4)
             adapter = this@SwitchOptionWindow.adapter
+            applyPanelStyle()
         }
+    }
+
+    /** The panel's background, corner, padding and item spacing (doc/Theme.md §8.2). */
+    private fun RecyclerView.applyPanelStyle() {
+        background = scope.decorDrawable(panelStyle.background, cornerRadius = panelStyle.cornerRadius)
+        val horizontal = dp(panelStyle.padding.horizontal)
+        val vertical = dp(panelStyle.padding.vertical)
+        setPadding(horizontal, vertical, horizontal, vertical)
+        if (panelStyle.sideMargin > 0 || panelStyle.itemSpacing > 0) {
+            addItemDecoration(SpacesItemDecoration(dp(panelStyle.sideMargin), dp(panelStyle.itemSpacing)))
+        }
+    }
+
+    /**
+     * The host adds this view with its own layout params, so a declared panel
+     * `height`/`width`/`max_height` is applied here, once, by rewriting them
+     * (doc/Theme.md §8.2). Nothing declared leaves them alone.
+     */
+    private fun applyPanelSize() {
+        val declaredHeight = panelStyle.height
+        val declaredWidth = panelStyle.width
+        val maxHeight = panelStyle.maxHeight
+        if (declaredHeight == null && declaredWidth == null && maxHeight <= 0) return
+        view.updateLayoutParams<ViewGroup.LayoutParams> {
+            declaredHeight?.let { height = sizePx(it) }
+            declaredWidth?.let { width = sizePx(it) }
+            if (maxHeight > 0) height = context.dp(maxHeight)
+        }
+    }
+
+    /** A panel dimension as a layout-params value: a dp number, `WRAP_CONTENT` or `MATCH_PARENT`. */
+    private fun sizePx(size: PanelSize): Int = when (size) {
+        PanelSize.Auto, PanelSize.Fill -> size.layoutValue
+        is PanelSize.Fixed -> context.dp(size.dp)
     }
 
     private fun updateSchemaOptionEntries() {
@@ -195,6 +240,7 @@ class SwitchOptionWindow(di: DI) :
 
     override fun refreshColors() {
         if (!viewCreated) return
+        view.applyPanelStyle()
         (view.adapter as? SwitchOptionAdapter)?.refreshColors()
         settingsButton.refreshColors()
     }
@@ -207,7 +253,7 @@ class SwitchOptionWindow(di: DI) :
 
     private val barExternalView by lazy {
         context.constraintLayout {
-            val size = dp(theme.style.run { candidateViewHeight + commentHeight })
+            val size = dp(panelStyle.actionButtonSize)
             add(
                 settingsButton,
                 lParams(size, size) {
@@ -220,6 +266,7 @@ class SwitchOptionWindow(di: DI) :
     override fun onCreateBarView() = barExternalView
 
     override fun onAttached() {
+        applyPanelSize()
         rime.launchOnReady { api ->
             val data = api.currentSchema().switches
             service.lifecycleScope.launch {

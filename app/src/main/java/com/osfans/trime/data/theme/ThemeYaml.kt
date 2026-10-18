@@ -18,8 +18,8 @@ import com.charleskorn.kaml.Yaml as KamlYaml
  * - a theme bean is decoded from `snake_case` keys, and an unknown key is a
  *   diagnostic instead of an error, so `strictMode` is off and a naming
  *   strategy converts property names;
- * - theme sources are hand-written and derive metrics and colors from anchors
- *   and aliases (`tongwenfeng.trime.yaml`), so those are permitted.
+ * - theme files are hand-written and derive metrics and colors from anchors
+ *   and aliases, so those are permitted.
  *
  * Documents stay bounded: [CODE_POINT_LIMIT] matches what the theme reader used
  * to configure, and [MAX_ALIAS_COUNT] is a finite alias budget, so a hostile
@@ -32,7 +32,7 @@ import com.charleskorn.kaml.Yaml as KamlYaml
 object ThemeYaml {
     /**
      * Alias budget: it was 200, which real themes exceeded, and kaml's own
-     * default of 100 is below what `tongwenfeng.trime.yaml` resolves. An alias
+     * default of 100 is below what a heavy hand-written theme resolves. An alias
      * counts together with the accumulated weight of the nodes it resolves, so
      * a document whose aliases expand into further aliases still fails early,
      * while hand-written themes stay far below it.
