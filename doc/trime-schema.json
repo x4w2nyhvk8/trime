@@ -35,23 +35,18 @@
     "ToolBar.Button.Foreground": {
       "type": "object",
       "properties": {
-        "style": {
-          "type": "string",
-          "default": ""
-        },
-        "option_styles": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
         "fg_normal": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "default": null
         },
         "fg_highlight": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "default": null
         },
         "font_size": {
@@ -68,6 +63,17 @@
         "padding": {
           "type": "integer",
           "default": 5
+        },
+        "icon": {
+          "type": "string",
+          "default": ""
+        },
+        "option_icons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
         }
       }
     },
@@ -85,6 +91,462 @@
           "default": ""
         }
       }
+    },
+    "StyleNode": {
+      "type": "object",
+      "description": "A styles: node. Exactly one layer (doc/Theme.md §4): content selects the foreground form; otherwise the background form. The same table also holds panel and item styles (doc/Theme.md §8).",
+      "properties": {
+        "content": {
+          "type": "string",
+          "enum": [
+            "text",
+            "system_icon",
+            "asset_icon",
+            "nine_patch"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "text_size": {
+          "type": "number"
+        },
+        "font_face": {
+          "type": "string"
+        },
+        "system_icon": {
+          "type": "string"
+        },
+        "asset_icon": {
+          "type": "string"
+        },
+        "nine_patch": {
+          "type": "string"
+        },
+        "corner_radius": {
+          "type": "number"
+        },
+        "border_width": {
+          "type": "number"
+        },
+        "border_color": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "background_on": {
+          "type": "string"
+        },
+        "background_highlight": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string"
+        },
+        "label_size": {
+          "type": "number"
+        },
+        "max_lines": {
+          "type": "integer"
+        },
+        "ellipsize": {
+          "type": "string",
+          "enum": [
+            "start",
+            "middle",
+            "end",
+            "marquee"
+          ]
+        },
+        "icon_size": {
+          "type": "number"
+        },
+        "pin_size": {
+          "type": "number"
+        },
+        "pin_color": {
+          "type": "string"
+        },
+        "pin_inset": {
+          "type": "number"
+        },
+        "padding": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          ]
+        },
+        "max_height": {
+          "type": "integer"
+        },
+        "side_margin": {
+          "type": "number"
+        },
+        "item_spacing": {
+          "type": "number"
+        },
+        "action_button_size": {
+          "type": "integer"
+        },
+        "divider": {
+          "type": "integer",
+          "default": 0,
+          "description": "Hairline between a panel's list items in dp; 0 draws none."
+        },
+        "divider_color": {
+          "type": "string",
+          "default": "",
+          "description": "Divider token; empty falls back to key_border_color."
+        },
+        "min_height": {
+          "type": "integer",
+          "default": 0,
+          "description": "Item minimum height in dp; 0 = content."
+        },
+        "height": {
+          "type": "integer",
+          "default": 0,
+          "description": "Item height in dp (panels: 0 = content, -1 = fill)."
+        },
+        "width": {
+          "type": "integer",
+          "default": 0,
+          "description": "Panel width: 0 = content, -1 = fill."
+        },
+        "icon_color": {
+          "type": "string",
+          "default": "",
+          "description": "Item icon colour token."
+        }
+      },
+      "additionalProperties": true
+    },
+    "TextKey": {
+      "type": "object",
+      "properties": {
+        "click": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "long_click": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "label": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "static",
+                    "schemaName",
+                    "schemaId",
+                    "enterLabel",
+                    "custom"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "description": "Key label (doc/Keyboard.md §2.2): a string, or {source: ...}."
+        },
+        "width": {
+          "type": "number",
+          "default": 0,
+          "description": "Percentage of the row; -1 fills what the row leaves over; 0 uses the keyboard default width."
+        },
+        "swipe_left": {
+          "type": "string"
+        },
+        "swipe_right": {
+          "type": "string"
+        },
+        "swipe_up": {
+          "type": "string"
+        },
+        "swipe_down": {
+          "type": "string"
+        },
+        "composing": {
+          "type": "string"
+        },
+        "send_bindings": {
+          "type": "boolean"
+        },
+        "key": {
+          "type": "string",
+          "default": "",
+          "description": "Identity of the key (doc/Keyboard.md §2.1): a preset_keys name or a built-in character key name; an explicit click overrides it."
+        },
+        "style": {
+          "type": "string",
+          "default": "",
+          "description": "Name in styles: (doc/Theme.md §4)."
+        },
+        "row_break": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inside a flow container: start a new row before this entry."
+        },
+        "height": {
+          "type": "number",
+          "default": 0,
+          "description": "Row height hint in dp; a line's intrinsic height (doc/Keyboard.md §2.6)."
+        }
+      }
+    },
+    "LayoutRow": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LayoutNode"
+          }
+        },
+        "width": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent row's width in percent; -1 fills what the row leaves over; 0 uses the keyboard default width."
+        },
+        "height": {
+          "type": "number",
+          "default": 0,
+          "description": "Height inside a vertical parent, in dp; -1 fills what the stack leaves over; 0 uses the intrinsic height."
+        },
+        "height_percent": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent stack's height in percent; wins over height when positive."
+        },
+        "row_break": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inside a flow container: start a new line before this entry."
+        }
+      },
+      "required": [
+        "row"
+      ],
+      "additionalProperties": false,
+      "description": "One physical line: children are placed left to right and never wrap (doc/Keyboard.md §2.6)."
+    },
+    "LayoutFlow": {
+      "type": "object",
+      "properties": {
+        "flow": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LayoutNode"
+          }
+        },
+        "width": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent row's width in percent; -1 fills what the row leaves over; 0 uses the keyboard default width."
+        },
+        "height": {
+          "type": "number",
+          "default": 0,
+          "description": "Height inside a vertical parent, in dp; -1 fills what the stack leaves over; 0 uses the intrinsic height."
+        },
+        "height_percent": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent stack's height in percent; wins over height when positive."
+        },
+        "row_break": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inside a flow container: start a new line before this entry."
+        }
+      },
+      "required": [
+        "flow"
+      ],
+      "additionalProperties": false,
+      "description": "Placed by width, wrapping when a child does not fit (doc/Keyboard.md §2.6)."
+    },
+    "LayoutColumn": {
+      "type": "object",
+      "properties": {
+        "column": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LayoutNode"
+          }
+        },
+        "width": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent row's width in percent; -1 fills what the row leaves over; 0 uses the keyboard default width."
+        },
+        "height": {
+          "type": "number",
+          "default": 0,
+          "description": "Height inside a vertical parent, in dp; -1 fills what the stack leaves over; 0 uses the intrinsic height."
+        },
+        "height_percent": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent stack's height in percent; wins over height when positive."
+        },
+        "row_break": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inside a flow container: start a new line before this entry."
+        }
+      },
+      "required": [
+        "column"
+      ],
+      "additionalProperties": false,
+      "description": "Children stacked top to bottom, one line each (doc/Keyboard.md §2.6)."
+    },
+    "LayoutCollection": {
+      "type": "object",
+      "properties": {
+        "collection": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "default": "",
+                  "description": "A liquid_keyboard category id; its keys are the cells (doc/Keyboard.md §2.6)."
+                },
+                "scroll": {
+                  "enum": [
+                    "vertical",
+                    "horizontal"
+                  ],
+                  "default": "vertical",
+                  "description": "Scroll axis of the collection."
+                },
+                "cell_height": {
+                  "type": "number",
+                  "default": 0,
+                  "description": "Cell height in dp; 0 uses the keyboard's default row height."
+                },
+                "cell_width": {
+                  "type": "number",
+                  "default": 0,
+                  "description": "Cell width in dp; 0 uses a square cell."
+                },
+                "columns": {
+                  "type": "integer",
+                  "default": 0,
+                  "description": "Cells per line while scrolling vertically; 0 fits them to the width."
+                },
+                "width": {
+                  "type": "number",
+                  "default": 0,
+                  "description": "Share of the parent row's width in percent; -1 fills what the row leaves over; 0 uses the keyboard default width."
+                },
+                "height": {
+                  "type": "number",
+                  "default": 0,
+                  "description": "Height inside a vertical parent, in dp; -1 fills what the stack leaves over; 0 uses the intrinsic height."
+                },
+                "height_percent": {
+                  "type": "number",
+                  "default": 0,
+                  "description": "Share of the parent stack's height in percent; wins over height when positive."
+                },
+                "row_break": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Inside a flow container: start a new line before this entry."
+                }
+              },
+              "additionalProperties": false,
+              "description": "A scrollable symbol grid embedded in the keyboard (doc/Keyboard.md §2.6)."
+            }
+          ],
+          "description": "The collection: a category id, or the category id with its cell metrics."
+        },
+        "width": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent row's width in percent; -1 fills what the row leaves over; 0 uses the keyboard default width."
+        },
+        "height": {
+          "type": "number",
+          "default": 0,
+          "description": "Height inside a vertical parent, in dp; -1 fills what the stack leaves over; 0 uses the intrinsic height."
+        },
+        "height_percent": {
+          "type": "number",
+          "default": 0,
+          "description": "Share of the parent stack's height in percent; wins over height when positive."
+        },
+        "row_break": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inside a flow container: start a new line before this entry."
+        }
+      },
+      "required": [
+        "collection"
+      ],
+      "additionalProperties": false,
+      "description": "A scrollable set of symbols read from liquid_keyboard (doc/Keyboard.md §2.6)."
+    },
+    "LayoutNode": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/TextKey"
+        },
+        {
+          "$ref": "#/definitions/LayoutRow"
+        },
+        {
+          "$ref": "#/definitions/LayoutFlow"
+        },
+        {
+          "$ref": "#/definitions/LayoutColumn"
+        },
+        {
+          "$ref": "#/definitions/LayoutCollection"
+        }
+      ],
+      "description": "One node of a keyboard layout tree: a key (leaf) or a container (doc/Keyboard.md §2.6)."
     }
   },
   "type": "object",
@@ -106,7 +568,11 @@
       "type": "object",
       "properties": {
         "auto_caps": {
-          "enum": [true, false, "ascii"],
+          "enum": [
+            true,
+            false,
+            "ascii"
+          ],
           "default": false,
           "description": "自动句首大写"
         },
@@ -471,6 +937,20 @@
             "type": "string"
           },
           "default": []
+        },
+        "height": {
+          "type": "integer",
+          "default": 0,
+          "description": "Input-bar height in dp; 0 keeps candidate_view_height + comment_height (doc/Theme.md §8)."
+        },
+        "button_size": {
+          "type": "integer",
+          "default": 0,
+          "description": "Default toolbar button size in dp; 0 follows height."
+        },
+        "back_icon": {
+          "type": "string",
+          "default": "ic@arrow-left"
         }
       }
     },
@@ -485,13 +965,22 @@
           "type": "string",
           "default": "candidate_text_color"
         },
-        "border_color": { "type": "string", "default": "back_color" },
+        "border_color": {
+          "type": "string",
+          "default": "back_color"
+        },
         "candidate_separator_color": {
           "type": "string",
           "default": "border_color"
         },
-        "hilited_text_color": { "type": "string", "default": "text_color" },
-        "hilited_back_color": { "type": "string", "default": "back_color" },
+        "hilited_text_color": {
+          "type": "string",
+          "default": "text_color"
+        },
+        "hilited_back_color": {
+          "type": "string",
+          "default": "back_color"
+        },
         "hilited_candidate_text_color": {
           "type": "string",
           "default": "hilited_text_color"
@@ -557,8 +1046,14 @@
           "type": "string",
           "default": "hilited_key_symbol_color"
         },
-        "key_back_color": { "type": "string", "default": "back_color" },
-        "key_border_color": { "type": "string", "default": "border_color" },
+        "key_back_color": {
+          "type": "string",
+          "default": "back_color"
+        },
+        "key_border_color": {
+          "type": "string",
+          "default": "border_color"
+        },
         "key_text_color": {
           "type": "string",
           "default": "candidate_text_color"
@@ -567,11 +1062,26 @@
           "type": "string",
           "default": "comment_text_color"
         },
-        "label_color": { "type": "string", "default": "candidate_text_color" },
-        "off_key_back_color": { "type": "string", "default": "key_back_color" },
-        "off_key_border_color": { "type": "string", "default": "key_border_color" },
-        "off_key_text_color": { "type": "string", "default": "key_text_color" },
-        "off_key_symbol_color": { "type": "string", "default": "key_symbol_color" },
+        "label_color": {
+          "type": "string",
+          "default": "candidate_text_color"
+        },
+        "off_key_back_color": {
+          "type": "string",
+          "default": "key_back_color"
+        },
+        "off_key_border_color": {
+          "type": "string",
+          "default": "key_border_color"
+        },
+        "off_key_text_color": {
+          "type": "string",
+          "default": "key_text_color"
+        },
+        "off_key_symbol_color": {
+          "type": "string",
+          "default": "key_symbol_color"
+        },
         "on_key_back_color": {
           "type": "string",
           "default": "hilited_key_back_color"
@@ -588,9 +1098,18 @@
           "type": "string",
           "default": "hilited_key_symbol_color"
         },
-        "preview_back_color": { "type": "string", "default": "key_back_color" },
-        "preview_text_color": { "type": "string", "default": "key_text_color" },
-        "shadow_color": { "type": "string", "default": "border_color" },
+        "preview_back_color": {
+          "type": "string",
+          "default": "key_back_color"
+        },
+        "preview_text_color": {
+          "type": "string",
+          "default": "key_text_color"
+        },
+        "shadow_color": {
+          "type": "string",
+          "default": "border_color"
+        },
         "root_background": {
           "type": "string",
           "default": "back_color",
@@ -623,302 +1142,24 @@
         }
       }
     },
-    "preset_color_schemes": {
-      "type": "object",
-      "patternProperties": {
-        "\\w+": {
-          "name": {
-            "type": "string",
-            "description": "方案名稱"
-          },
-          "author": {
-            "type": "string",
-            "description": "作者資訊"
-          },
-          "back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xe4e7e9",
-            "description": "候選區背景"
-          },
-          "border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xc1c7ca",
-            "description": "邊框"
-          },
-          "candidate_separator_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xc1c7ca",
-            "description": "候選分割背景"
-          },
-          "candidate_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x5a676e",
-            "description": "候選文字"
-          },
-          "comment_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x7b868c",
-            "description": "提示"
-          },
-          "hilited_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xccd3d7da",
-            "description": "標明編碼背景"
-          },
-          "hilited_candidate_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xd3d7da",
-            "description": "標明候選背景"
-          },
-          "hilited_candidate_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明候選文字"
-          },
-          "hilited_comment_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明提示"
-          },
-          "hilited_key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xd3d7da",
-            "description": "標明按鍵背景"
-          },
-          "hilited_key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵邊框"
-          },
-          "hilited_key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵符號"
-          },
-          "hilited_key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵文字"
-          },
-          "hilited_off_key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xd3d7da",
-            "description": "標明按鍵關閉狀態背景"
-          },
-          "hilited_off_key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵關閉狀態邊框"
-          },
-          "hilited_off_key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵關閉狀態文字"
-          },
-          "hilited_off_key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵關閉狀態符號"
-          },
-          "hilited_on_key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xd3d7da",
-            "description": "標明按鍵打開狀態背景"
-          },
-          "hilited_on_key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵打開狀態邊框"
-          },
-          "hilited_on_key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵打開狀態文字"
-          },
-          "hilited_on_key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標明按鍵打開狀態符號"
-          },
-          "hilited_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x23948e",
-            "description": "標明編碼"
-          },
-          "key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xeceff1",
-            "description": "按鍵背景"
-          },
-          "key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xeceff1",
-            "description": "按鍵邊框"
-          },
-          "key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x5f6b73",
-            "description": "按鍵符號"
-          },
-          "key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x37474f",
-            "description": "按鍵文字"
-          },
-          "keyboard_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xffffff",
-            "description": "鍵盤背景"
-          },
-          "label_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "標籤"
-          },
-          "off_key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xd3d7da",
-            "description": "按鍵關閉狀態背景"
-          },
-          "off_key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵關閉狀態邊框"
-          },
-          "off_key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵關閉狀態文字"
-          },
-          "off_key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵關閉狀態符號"
-          },
-          "on_key_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x23948e",
-            "description": "按鍵打開狀態背景"
-          },
-          "on_key_border_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵打開狀態邊框"
-          },
-          "on_key_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x37474f",
-            "description": "按鍵打開狀態文字"
-          },
-          "on_key_symbol_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵打開狀態符號"
-          },
-          "preview_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x55bfbfbf",
-            "description": "按鍵提示背景"
-          },
-          "preview_text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x23948e",
-            "description": "按鍵提示文字"
-          },
-          "shadow_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "description": "按鍵文字陰影"
-          },
-          "text_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0x5a676e",
-            "description": "編碼"
-          },
-          "text_back_color": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 16777215,
-            "default": "0xcce4e7e9",
-            "description": "編碼區背景"
-          }
-        }
-      }
-    },
     "liquid_keyboard": {
       "type": "object",
       "properties": {
         "author": {
           "type": "string"
         },
-        "row": { "type": "integer", "description": "每屏最多显示多少行按键" },
+        "row": {
+          "type": "integer",
+          "description": "每屏最多显示多少行按键"
+        },
         "row_land": {
           "type": "integer",
           "description": "横屏每屏最多显示多少行按键"
         },
-        "key_height": { "type": "integer", "description": "按键高度" },
+        "key_height": {
+          "type": "integer",
+          "description": "按键高度"
+        },
         "key_height_land": {
           "type": "integer",
           "description": "横屏模式按键高度"
@@ -927,13 +1168,24 @@
           "type": "integer",
           "description": "single类型的按键宽度"
         },
-        "vertical_gap": { "type": "integer", "description": "纵向按键间隙" },
-        "margin_x": { "type": "number", "description": "左右按键间隙的1/2" },
+        "vertical_gap": {
+          "type": "integer",
+          "description": "纵向按键间隙"
+        },
+        "margin_x": {
+          "type": "number",
+          "description": "左右按键间隙的1/2"
+        },
         "fixed_key_bar": {
           "type": "object",
           "properties": {
             "position": {
-              "enum": ["top", "bottom", "left", "right"],
+              "enum": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+              ],
               "description": "固定按键条摆放位置（相对滚动区域的上/下/左/右方位）"
             },
             "keys": {
@@ -942,17 +1194,256 @@
             }
           }
         },
-        "keyboards": { "type": "array", "items": { "type": "string" } }
-      }
+        "keyboards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cell_back_color": {
+          "type": "string",
+          "default": "",
+          "description": "Cell background token/image; empty falls back to key_back_color."
+        },
+        "cell_border": {
+          "type": "integer",
+          "default": -1,
+          "description": "Cell stroke width; -1 falls back to style.key_border."
+        },
+        "cell_border_color": {
+          "type": "string",
+          "default": "",
+          "description": "Cell stroke colour token; empty falls back to key_border_color."
+        },
+        "cell_corner_radius": {
+          "type": "number",
+          "default": -1,
+          "description": "Cell corner radius; -1 falls back to style.round_corner."
+        },
+        "cell_text_color": {
+          "type": "string",
+          "default": "",
+          "description": "Cell text token; empty falls back to key_text_color."
+        },
+        "cell_divider": {
+          "type": "integer",
+          "default": 0,
+          "description": "Hairline between cells in dp; 0 draws none."
+        },
+        "cell_divider_color": {
+          "type": "string",
+          "default": "",
+          "description": "Divider token; empty falls back to cell_border_color."
+        },
+        "tab_spacing": {
+          "type": "integer",
+          "default": 0,
+          "description": "Gap between category tabs in dp."
+        },
+        "tab_divider": {
+          "type": "integer",
+          "default": 0,
+          "description": "Vertical hairline between tabs in dp; 0 draws none."
+        },
+        "tab_divider_color": {
+          "type": "string",
+          "default": "",
+          "description": "Divider token; empty falls back to the cell border colour."
+        },
+        "tab_corner_radius": {
+          "type": "number",
+          "default": -1,
+          "description": "Tab corner radius; -1 falls back to candidate_corner_radius."
+        },
+        "tab_back_color": {
+          "type": "string",
+          "default": "",
+          "description": "Inactive tab background token."
+        },
+        "tab_active_back_color": {
+          "type": "string",
+          "default": "",
+          "description": "Active tab background token."
+        },
+        "tab_text_color": {
+          "type": "string",
+          "default": "",
+          "description": "Inactive tab text token."
+        },
+        "tab_active_text_color": {
+          "type": "string",
+          "default": "",
+          "description": "Active tab text token."
+        },
+        "cell_text_size": {
+          "type": "number",
+          "default": 0,
+          "description": "Cell text size in sp; 0 uses style.key_text_size."
+        },
+        "cell_padding": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          ],
+          "description": "Cell text padding: a number or [vertical, horizontal]."
+        },
+        "margin_y": {
+          "type": "number",
+          "default": -1,
+          "description": "Vertical cell spacing in dp; -1 uses margin_x."
+        },
+        "cell_highlight_color": {
+          "type": "string",
+          "default": "",
+          "description": "Pressed cell background token; empty uses hilited_key_back_color."
+        },
+        "tab_text_size": {
+          "type": "number",
+          "default": 0,
+          "description": "Tab text size in sp; 0 uses style.candidate_text_size."
+        },
+        "tab_height": {
+          "type": "integer",
+          "default": 0,
+          "description": "Category strip height in dp; 0 uses candidate_view_height + comment_height."
+        },
+        "tab_padding": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          ],
+          "description": "Tab text horizontal padding."
+        },
+        "tab_min_width": {
+          "type": "integer",
+          "default": 0,
+          "description": "Tab minimum width in dp; 0 keeps 40dp."
+        },
+        "tab_column_width": {
+          "type": "integer",
+          "default": 0,
+          "description": "Left category column width in dp; 0 keeps 72dp."
+        }
+      },
+      "additionalProperties": true
     },
     "preset_keys": {
       "type": "object",
-      "patternProperties": {
-        "\\w+": {
-          "type": "object",
-          "properties": {
-            "label": { "oneOf": [{ "type": "string" }, { "type": "integer" }] },
-            "send": { "oneOf": [{ "type": "string" }, { "type": "integer" }] }
+      "description": "Key ids follow doc/Keyboard.md: <role>Button in lowerCamelCase for everything inside the IME, and the 15 whitelisted Android intent names in UPPER_SNAKE_CASE.",
+      "propertyNames": {
+        "anyOf": [
+          {
+            "pattern": "^[a-z][a-zA-Z0-9]*Button$"
+          },
+          {
+            "enum": [
+              "BRIGHTNESS_DOWN",
+              "BRIGHTNESS_UP",
+              "VOLUME_DOWN",
+              "VOLUME_UP",
+              "VOLUME_MUTE",
+              "CALCULATOR",
+              "CALENDAR",
+              "CONTACTS",
+              "ENVELOPE",
+              "EXPLORER",
+              "MUSIC",
+              "POWER",
+              "SEARCH",
+              "SLEEP",
+              "VOICE_ASSIST"
+            ]
+          }
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "preview": {
+            "type": "string"
+          },
+          "send": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "command": {
+            "type": "string"
+          },
+          "option": {
+            "type": "string"
+          },
+          "select": {
+            "type": "string"
+          },
+          "toggle": {
+            "type": "string"
+          },
+          "commit": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "shift_lock": {
+            "type": "string"
+          },
+          "functional": {
+            "type": "boolean"
+          },
+          "repeatable": {
+            "type": "boolean"
+          },
+          "sticky": {
+            "type": "boolean"
+          },
+          "slide_cursor": {
+            "type": "boolean"
+          },
+          "slide_delete": {
+            "type": "boolean"
+          },
+          "states": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
           }
         }
       }
@@ -963,40 +1454,138 @@
         "\\w+": {
           "type": "object",
           "properties": {
-            "name": { "type": "string" },
-            "author": { "type": "string" },
-            "ascii_mode": { "type": "integer" },
-            "width": { "type": "number" },
-            "height": { "type": "number" },
-            "lock": { "type": "boolean" },
+            "name": {
+              "type": "string"
+            },
+            "author": {
+              "type": "string"
+            },
+            "ascii_mode": {
+              "type": "integer"
+            },
+            "width": {
+              "type": "number"
+            },
+            "height": {
+              "type": "number"
+            },
+            "lock": {
+              "type": "boolean"
+            },
             "keys": {
               "type": "array",
+              "description": "The layout as a container tree (doc/Keyboard.md §2.6): row / flow / column / collection, nested freely.",
               "items": {
-                "type": "object",
-                "properties": {
-                  "click": {
-                    "oneOf": [
-                      { "type": "string" },
-                      { "type": "integer" },
-                      { "type": "boolean" }
-                    ]
-                  },
-                  "long_click": {
-                    "oneOf": [{ "type": "string" }, { "type": "integer" }]
-                  },
-                  "label": { "type": "string" },
-                  "width": { "type": "number" },
-                  "swipe_left": { "type": "string" },
-                  "swipe_right": { "type": "string" },
-                  "swipe_up": { "type": "string" },
-                  "swipe_down": { "type": "string" },
-                  "composing": { "type": "string" },
-                  "send_bindings": { "type": "boolean" }
-                }
+                "$ref": "#/definitions/LayoutNode"
               }
             }
           }
         }
+      }
+    },
+    "styles": {
+      "type": "object",
+      "patternProperties": {
+        "^\\w+$": {
+          "$ref": "#/definitions/StyleNode"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Key, panel and item styles (doc/Theme.md §4, §8). One name belongs to one family."
+    },
+    "option_panel": {
+      "type": "object",
+      "properties": {
+        "panel_style": {
+          "type": "string",
+          "default": "",
+          "description": "Panel style name in styles:"
+        },
+        "action_item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Static (theme/schema/update/keyboard) item style name"
+        },
+        "switch_item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Rime switch item style name"
+        },
+        "title_item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Group/title item style name"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Option panel styles (doc/Theme.md §8)."
+    },
+    "clipboard": {
+      "type": "object",
+      "properties": {
+        "panel_style": {
+          "type": "string",
+          "default": "",
+          "description": "Panel style name in styles:"
+        },
+        "item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Clipboard item style name"
+        },
+        "pinned_item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Pinned clipboard item style name"
+        },
+        "title_item_style": {
+          "type": "string",
+          "default": "",
+          "description": "Clipboard title item style name"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Clipboard styles (doc/Theme.md §8)."
+    },
+    "collections": {
+      "type": "object",
+      "description": "Named cell sets an embedded collection container can scroll (doc/Keyboard.md §2.6.3).",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "columns": {
+                "type": "integer",
+                "default": 0
+              },
+              "cell_height": {
+                "type": "number",
+                "default": 0
+              },
+              "cell_width": {
+                "type": "number",
+                "default": 0
+              }
+            },
+            "required": [
+              "items"
+            ],
+            "additionalProperties": false
+          }
+        ]
       }
     }
   }

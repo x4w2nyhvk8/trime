@@ -9,12 +9,11 @@ import android.content.Context
 import android.view.KeyEvent
 import com.osfans.trime.data.prefs.AppPrefs
 import com.osfans.trime.data.theme.Theme
+import com.osfans.trime.data.theme.model.KeyboardCollection
 import com.osfans.trime.data.theme.model.TextKeyboard
-import com.osfans.trime.data.theme.model.orAbsent
 import com.osfans.trime.ime.keyboard.KeyboardPrefs.isLandscapeMode
 import splitties.bitflags.hasFlag
 import splitties.dimensions.dp
-import kotlin.math.abs
 import kotlin.math.pow
 
 /** 從YAML中加載鍵盤配置，包含多個[按鍵][Key]。  */
@@ -86,8 +85,10 @@ class Keyboard(
 
     val landscapeKeyboard: String? = selfConfig?.landscapeKeyboard
     private val preferredSplitPercent by AppPrefs.defaultInstance().keyboard.splitSpacePercent
+
+    // `landscape_split_percent: 0` is an explicit "no split", not "unset" (§5).
     private val landscapePercent =
-        resolvePositive(selfConfig?.landscapeSplitPercent, preferredSplitPercent)
+        selfConfig?.landscapeSplitPercent?.takeIf { it >= 0 } ?: preferredSplitPercent
 
     // Variables for pre-computing nearest keys.
     private val labelTransform = selfConfig?.labelTransform ?: TextKeyboard.LabelTransform.NONE
@@ -114,145 +115,52 @@ class Keyboard(
 
     private val expandKeypressArea: Boolean by AppPrefs.defaultInstance().keyboard.expandKeypressArea
 
+    /** One embedded collection placed in this keyboard (doc/Keyboard.md §2.6). */
+    data class CollectionPlacement(
+        val spec: KeyboardCollection,
+        val x: Int,
+        val y: Int,
+        val width: Int,
+        val height: Int,
+        /** The cells read from the theme's `collections:` entry, empty when it is missing. */
+        val items: List<String>,
+    )
+
+    /** The collections embedded in this keyboard's layout, in layout order. */
+    var collections: List<CollectionPlacement> = emptyList()
+        private set
+
     init {
 
         if (selfConfig != null) {
 
-            val keys = selfConfig.keys
-            val keyboardKeyWidth = selfConfig.width
-
-            val maxColumns = if (selfConfig.columns == -1) Int.MAX_VALUE else selfConfig.columns
-
             val isSplit = context.isLandscapeMode() && landscapePercent > 0
-            val splitRatio = if (isSplit) landscapePercent / 100f else 0f
 
-            val oneWeightWidthPx =
-                allowedWidth.toFloat() / (MAX_TOTAL_WEIGHT * (1 + splitRatio))
+            // The tree the theme declared (doc/Keyboard.md §2.6) is laid out by a
+            // pure function; this class only turns the result into Key objects.
+            val result =
+                KeyboardLayoutEngine.layout(
+                    selfConfig.keys.layoutRoots(),
+                    KeyboardLayoutEngine.Config(
+                        width = allowedWidth,
+                        height = keyboardHeight,
+                        defaultKeyWidth = selfConfig.width,
+                        defaultRowHeight = keyHeight,
+                        maxColumns = if (selfConfig.columns == -1) Int.MAX_VALUE else selfConfig.columns,
+                        splitRatio = if (isSplit) landscapePercent / 100f else 0f,
+                        density = context.resources.displayMetrics.density,
+                    ),
+                )
 
-            // total width weight for each row.
-            val rowWidthTotalWeight = mutableListOf<Float>()
-
-            // raw height of each row before scaling
-            val rowRawHeight = mutableListOf<Int>()
-
-            var x = 0
-            var column = 0
-            var rowHeight = keyHeight
-            var totalKeyWidth = 0f
-
-            // determine row count, row heights, total row weights; does not create Key objects
-            for (key in keys) {
-
-                // determine the width weight of this key
-                val keyWidthWeight =
-                    if (key.width == 0f && key.click.orAbsent != null) keyboardKeyWidth else key.width
-
-                val widthPx = (keyWidthWeight * allowedWidth / MAX_TOTAL_WEIGHT).toInt()
-
-                // wrap to next row if column or width limit is reached
-                if (column >= maxColumns || x + widthPx > allowedWidth) {
-                    rowWidthTotalWeight.add(totalKeyWidth)
-                    rowRawHeight.add(rowHeight)
-                    x = 0
-                    column = 0
-                    totalKeyWidth = 0f
-                }
-
-                // first key of a row defines the row height
-                if (column == 0) {
-                    rowHeight = if (key.height > 0) key.height.toInt() else keyHeight
-                }
-
-                totalKeyWidth += keyWidthWeight
-
-                // only clickable keys count toward column count
-                if (key.click.orAbsent != null) {
-                    column++
-                }
-
-                x += widthPx
-            }
-
-            rowWidthTotalWeight.add(totalKeyWidth)
-            rowRawHeight.add(rowHeight)
-
-            val rows = rowRawHeight.size
-            val rawHeightSum = rowRawHeight.sum()
-
-            // scaled row heights after fitting into keyboardHeight
-            val rowHeightScaled = MutableList(rows) { 0 }
-
-            var remainHeight = keyboardHeight
-            val scale = keyboardHeight.toFloat() / rawHeightSum
-
-            // scale row heights to keyboardHeight; last row absorbs rounding errors
-            for (i in 0 until rows - 1) {
-                val h = (rowRawHeight[i] * scale).toInt()
-                rowHeightScaled[i] = h
-                remainHeight -= h
-            }
-
-            rowHeightScaled[rows - 1] = remainHeight
-
-            var xPos = 0
-            var yPos = 0
-
-            var row = 0
-            column = 0
-
-            var rowWeightAccumulo = 0f
-            var currentRowHeight = rowHeightScaled[0]
-
-            // indicates whether the split gap has been inserted in the current row
-            var splitInserted = false
-
-            minWidth = 0
-
+            // Rectangles that carry no key: the split gap and decorative entries.
             val spacers = mutableListOf<Triple<Int, Int, Int>>()
+            if (expandKeypressArea) {
+                spacers += result.placeholders.map { Triple(it.x, it.width, it.row) }
+            }
 
             // create Key objects, assign position, size, offsets
-            for (textKey in keys) {
-
-                val keyWidthWeight =
-                    if (textKey.width == 0f && textKey.click.orAbsent != null) keyboardKeyWidth else textKey.width
-
-                var widthPx = (keyWidthWeight * oneWeightWidthPx).toInt()
-
-                // wrap to next row if limits are exceeded
-                if (column >= maxColumns || xPos + widthPx > allowedWidth) {
-                    xPos = 0
-                    yPos += currentRowHeight
-                    row++
-                    column = 0
-                    rowWeightAccumulo = 0f
-                    splitInserted = false
-                    currentRowHeight = rowHeightScaled[row]
-                }
-
-                rowWeightAccumulo += keyWidthWeight
-
-                val totalWeight = rowWidthTotalWeight[row]
-
-                // if split keyboard layout is enabled, insert split gap at row middle when cumulative width > 50%
-                if (isSplit && !splitInserted && rowWeightAccumulo > totalWeight * 0.5f) {
-                    splitInserted = true
-                    val gap = (totalWeight * splitRatio * oneWeightWidthPx).toInt()
-
-                    // large keys absorb the gap; small keys shift right
-                    if (keyWidthWeight > 20f) {
-                        widthPx += gap
-                    } else {
-                        if (expandKeypressArea) spacers.add(Triple(xPos, gap, row))
-                        xPos += gap
-                    }
-                }
-
-                if (textKey.click.orAbsent == null) {
-                    if (expandKeypressArea) spacers.add(Triple(xPos, widthPx, row))
-                    xPos += widthPx
-                    continue
-                }
-
+            for (placed in result.keys) {
+                val textKey = placed.key
                 val key = Key(this, theme, textKey)
 
                 key.keyTextOffsetX = resolveOffset(textKey.keyTextOffsetX, selfConfig.keyTextOffsetX, theme.style.keyTextOffsetX)
@@ -264,25 +172,14 @@ class Keyboard(
                 key.keyPressOffsetX = resolveOffset(textKey.keyPressOffsetX, selfConfig.keyPressOffsetX, theme.style.keyPressOffsetX)
                 key.keyPressOffsetY = resolveOffset(textKey.keyPressOffsetY, selfConfig.keyPressOffsetY, theme.style.keyPressOffsetY)
 
-                key.x = xPos
-                key.y = yPos
-
-                // correct minor rounding errors on the right edge
-                val rightGap = abs(allowedWidth - xPos - widthPx)
-                key.width = if (rightGap <= allowedWidth / 100) allowedWidth - xPos else widthPx
-
-                key.height = currentRowHeight
-                key.row = row
-                key.column = column
-
-                column++
-                xPos += key.width
+                key.x = placed.x
+                key.y = placed.y
+                key.width = placed.width
+                key.height = placed.height
+                key.row = placed.row
+                key.column = placed.column
 
                 mKeys.add(key)
-
-                if (xPos > minWidth) {
-                    minWidth = xPos
-                }
             }
 
             // Expand keypress area to edge by distributing spacer widths to neighbors
@@ -306,14 +203,27 @@ class Keyboard(
 
             mKeys.lastOrNull()?.edgeFlags = mKeys.lastOrNull()?.edgeFlags?.or(EDGE_RIGHT) ?: 0
 
-            height = yPos + currentRowHeight
+            height = result.height
+            minWidth = result.width
 
             mKeys.forEachIndexed { index, key ->
                 key.index = index
                 if (key.column == 0) key.edgeFlags = key.edgeFlags or EDGE_LEFT
                 if (key.row == 0) key.edgeFlags = key.edgeFlags or EDGE_TOP
-                if (key.row == row) key.edgeFlags = key.edgeFlags or EDGE_BOTTOM
+                if (key.row == result.lastRow) key.edgeFlags = key.edgeFlags or EDGE_BOTTOM
             }
+
+            collections =
+                result.collections.map { placed ->
+                    CollectionPlacement(
+                        spec = placed.spec,
+                        x = placed.x,
+                        y = placed.y,
+                        width = placed.width,
+                        height = placed.height,
+                        items = theme.collections[placed.spec.source]?.items.orEmpty(),
+                    )
+                }
         }
     }
 
@@ -492,7 +402,6 @@ class Keyboard(
         private const val GRID_WIDTH = 10
         private const val GRID_HEIGHT = 5
         private const val GRID_SIZE = GRID_WIDTH * GRID_HEIGHT
-        private const val MAX_TOTAL_WEIGHT = 100
 
         /** Number of key widths from current touch point to search for nearest keys.  */
         const val SEARCH_DISTANCE = 1.4f

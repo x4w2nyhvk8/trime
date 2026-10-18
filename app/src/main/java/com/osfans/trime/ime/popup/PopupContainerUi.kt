@@ -72,7 +72,8 @@ abstract class PopupContainerUi(
         }
     }
 
-    fun changeFocus(x: Float, y: Float): Boolean = onChangeFocus(x - offsetX, y - offsetY)
+    /** [x]/[y] are the finger's displacement from the press origin, not a position. */
+    fun changeFocus(x: Float, y: Float): Boolean = onChangeFocus(x, y)
 
     /**
      * Handle focus change of this [PopupKeyboardUi].

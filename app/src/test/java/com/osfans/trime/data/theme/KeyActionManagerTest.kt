@@ -18,18 +18,16 @@ class KeyActionManagerTest :
 
         fun diagnostics(vararg presets: Pair<String, PresetKey>) = ThemeDiagnostics.presetDiagnostics(mapOf(*presets))
 
-        given("the built-in themes") {
+        given("the built-in theme") {
             `when`("every preset is inspected at activation") {
                 then("only platform key names are reported") {
-                    // The Android key-name lookup is stubbed out below, so the
+                    // The Android key-name lookup is stubbed out above, so the
                     // all-uppercase platform keys (BRIGHTNESS_DOWN, ...) resolve
                     // only on a device. Any other hit would be a real typo.
-                    listOf("trime.yaml", "tongwenfeng.trime.yaml").forEach { file ->
-                        val theme = ThemeTestSupport.decodeBuiltinTheme(file)
-                        ThemeDiagnostics.presetDiagnostics(theme.presetKeys).forEach { hit ->
-                            hit.substringAfter("send '").substringBefore("'") shouldBe
-                                hit.substringAfter("send '").substringBefore("'").uppercase()
-                        }
+                    val theme = ThemeTestSupport.decodeBuiltinTheme("trime")
+                    ThemeDiagnostics.presetDiagnostics(theme.presetKeys).forEach { hit ->
+                        hit.substringAfter("send '").substringBefore("'") shouldBe
+                            hit.substringAfter("send '").substringBefore("'").uppercase()
                     }
                 }
             }

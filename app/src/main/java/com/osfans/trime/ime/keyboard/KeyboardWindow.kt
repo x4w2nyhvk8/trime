@@ -162,7 +162,10 @@ class KeyboardWindow(di: DI) :
         return config
     }
 
-    private fun attachKeyboard(target: String) {
+    private fun attachKeyboard(
+        target: String,
+        syncAsciiMode: Boolean = true,
+    ) {
         currentKeyboardId = target
         lastKeyboardId = target
 
@@ -183,7 +186,10 @@ class KeyboardWindow(di: DI) :
             val currentMode = rime.run { statusCached }.isAsciiMode
             val targetMode = if (it.resetAsciiMode) it.asciiMode else it.lastAsciiMode
 
-            if (currentMode != targetMode) {
+            // A switch that follows ascii mode must not echo the mode back:
+            // that echo would re-enter [followAsciiMode] and flip the keyboard
+            // back and forth (doc/Keyboard.md §3.1).
+            if (syncAsciiMode && currentMode != targetMode) {
                 service.postRimeJob {
                     commitComposition()
                     setRuntimeOption("ascii_mode", targetMode)
@@ -263,14 +269,48 @@ class KeyboardWindow(di: DI) :
         return final
     }
 
-    fun switchKeyboard(to: String) {
+    /** The keyboard that declared the current ascii keyboard, so the way back is known. */
+    private var asciiParentId: String = ""
+
+    /**
+     * Follows Rime's ascii mode (doc/Keyboard.md §3.1): a keyboard that declares
+     * `ascii_keyboard` hands the letters to it when ascii mode turns on, and the
+     * switch back returns to the keyboard that declared it. A keyboard without
+     * the field (number, symbols, editor) is left alone.
+     */
+    fun followAsciiMode(ascii: Boolean) {
+        // An option message that has already been superseded (the user toggled
+        // twice quickly) must not switch the keyboard.
+        if (rime.run { statusCached }.isAsciiMode != ascii) return
+        val current = currentKeyboardId
+        val target =
+            if (ascii) {
+                asciiParentId = current
+                theme.presetKeyboards[current]?.asciiKeyboard.orEmpty()
+            } else {
+                asciiParentId.takeIf { it.isNotEmpty() && it != current }
+                    ?: theme.presetKeyboards.entries
+                        .firstOrNull { it.value.asciiKeyboard == current }
+                        ?.key
+                        .orEmpty()
+            }
+        if (target.isNotEmpty() && target != current && theme.presetKeyboards.containsKey(target)) {
+            if (!ascii) asciiParentId = ""
+            switchKeyboard(target, syncAsciiMode = false)
+        }
+    }
+
+    fun switchKeyboard(
+        to: String,
+        syncAsciiMode: Boolean = true,
+    ) {
         val target = evalKeyboard(to)
         ContextCompat.getMainExecutor(service).execute {
             if (cachedKeyboards.containsKey(target)) {
                 if (target == currentKeyboardId) return@execute
             }
             detachCurrentView()
-            attachKeyboard(target)
+            attachKeyboard(target, syncAsciiMode)
         }
         Timber.d("Switched to keyboard: $target")
     }

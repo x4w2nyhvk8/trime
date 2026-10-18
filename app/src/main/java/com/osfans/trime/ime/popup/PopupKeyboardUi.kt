@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
+import android.view.HapticFeedbackConstants
 import android.view.ViewOutlineProvider
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
@@ -32,8 +33,8 @@ import splitties.views.dsl.core.view
 import splitties.views.gravityCenter
 import splitties.views.gravityEnd
 import splitties.views.gravityStart
+import kotlin.math.abs
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.roundToInt
 
 /**
@@ -132,7 +133,8 @@ class PopupKeyboardUi(
     init {
         val keyCount: Float = keys.size.toFloat()
         rowCount = ceil(keyCount / 5).toInt()
-        columnCount = (keyCount / rowCount).roundToInt()
+        // ceil, not round: 13 cells over 3 rows would otherwise lose one.
+        columnCount = ceil(keyCount / rowCount).toInt()
 
         focusRow = 0
         focusColumn = calcInitialFocusedColumn(columnCount, keyWidth, outerBounds, triggerBounds)
@@ -265,24 +267,40 @@ class PopupKeyboardUi(
     }
 
     override fun onChangeFocus(x: Float, y: Float): Boolean {
-        // move to next row when gesture moves above 30% from bottom of current row
-        var newRow = rowCount - (y / keyHeight - 0.2).roundToInt()
-        // move to next column when gesture moves out of current column
-        var newColumn = floor(x / keyWidth).toInt()
-        // retain focus when gesture moves between ±2 rows/columns of range
-        if (newRow < -2 || newRow > rowCount + 1 || newColumn < -2 || newColumn > columnCount + 1) {
-            onDismissSelf(this)
-            return true
+        // Selection by displacement (元书's feel, doc/Keyboard.md §2.4): the finger
+        // stays near the key; each keyWidth/keyHeight travelled moves a cell. The
+        // grid sits above the key, so moving up walks towards the top row.
+        if (abs(x) < moveThreshold && abs(y) < moveThreshold) return false
+        val newColumn = focusColumn + (x / keyWidth).roundToInt()
+        val newRow = focusRow - (y / keyHeight).roundToInt()
+        if (newRow < -1 || newRow > rowCount || newColumn < -1 || newColumn > columnCount) {
+            // More than one cell out: drop the highlight, release then cancels
+            // (the popup stays, so the finger can come back).
+            clearFocus()
+            return false
         }
-        newRow = limitIndex(newRow, rowCount)
-        newColumn = limitIndex(newColumn, columnCount)
-        val newFocus = keyOrders[newRow][newColumn]
+        val newFocus = keyOrders[limitIndex(newRow, rowCount)][limitIndex(newColumn, columnCount)]
         if (newFocus < keyUis.size) {
-            markInactive(focusedIndex)
-            markFocus(newFocus)
-            focusedIndex = newFocus
+            setFocus(newFocus)
         }
         return false
+    }
+
+    /** Finger travel (px) below which a move is treated as jitter. */
+    private val moveThreshold = ctx.dp(10f)
+
+    private fun setFocus(index: Int) {
+        if (index == focusedIndex) return
+        clearFocus()
+        markFocus(index)
+        focusedIndex = index
+        // A tick per cell, so a selection is felt without looking.
+        keyUis.getOrNull(index)?.root?.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+    }
+
+    private fun clearFocus() {
+        if (focusedIndex >= 0) markInactive(focusedIndex)
+        focusedIndex = -1
     }
 
     override fun onTrigger(): String? = keys.getOrNull(focusedIndex)

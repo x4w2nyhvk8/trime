@@ -38,4 +38,16 @@ interface KeyboardActionListener {
      * @param input the sequence of characters to be displayed.
      */
     fun onText(input: String)
+
+    /**
+     * Commits one cell picked from an embedded collection (doc/Keyboard.md §2.6).
+     *
+     * @param text what the cell stands for: the cell's text, or its `altText` for
+     *   a `SYMBOL` category (the liquid keyboard's own rule).
+     * @param symbol whether the category is `SYMBOL`, in which case the cell is
+     *   typed through the schema instead of being committed verbatim.
+     */
+    fun onCollectionItem(text: String) {
+        onText(text)
+    }
 }

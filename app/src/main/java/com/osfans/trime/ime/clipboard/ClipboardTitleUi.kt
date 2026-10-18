@@ -7,6 +7,10 @@ package com.osfans.trime.ime.clipboard
 
 import android.content.Context
 import com.osfans.trime.R
+import com.osfans.trime.data.theme.ClipboardItemKind
+import com.osfans.trime.data.theme.ItemStyleResolver
+import com.osfans.trime.data.theme.PanelPage
+import com.osfans.trime.data.theme.PanelStyleResolver
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.ime.bar.ui.ToolButton
@@ -28,7 +32,11 @@ class ClipboardTitleUi(override val ctx: Context, private val scope: ThemeScope)
 
     val deleteAllButton = ToolButton(ctx, R.drawable.ic_baseline_delete_sweep_24, scope)
 
-    private val size = theme.style.run { candidateViewHeight + commentHeight }
+    /** The title row's height; its default is today's candidate bar plus its comment line. */
+    private val size = ItemStyleResolver.clipboardItemStyle(theme, ClipboardItemKind.TITLE).height
+
+    /** The delete-all button's size: the panel's `action_button_size`, today's bar height by default. */
+    private val buttonSize = PanelStyleResolver.panelStyle(theme, PanelPage.CLIPBOARD).actionButtonSize
 
     override val root = constraintLayout {
         add(
@@ -40,7 +48,7 @@ class ClipboardTitleUi(override val ctx: Context, private val scope: ThemeScope)
         )
         add(
             deleteAllButton,
-            lParams(dp(size), dp(size)) {
+            lParams(dp(buttonSize), dp(buttonSize)) {
                 centerVertically()
                 endOfParent()
             },

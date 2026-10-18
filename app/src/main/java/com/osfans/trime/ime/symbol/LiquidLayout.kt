@@ -6,9 +6,11 @@ package com.osfans.trime.ime.symbol
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.FrameLayout
+import android.graphics.Color
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setPadding
+import androidx.recyclerview.widget.GridLayoutManager
+import com.osfans.trime.data.theme.ColorManager
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.data.theme.model.LiquidKeyboard
@@ -33,7 +35,6 @@ import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.constraintlayout.topToBottomOf
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.matchParent
 import splitties.views.dsl.core.view
 import splitties.views.dsl.core.wrapContent
 import splitties.views.dsl.recyclerview.recyclerView
@@ -61,7 +62,10 @@ class LiquidLayout(
                         val presetKey = theme.presetKeys[presetKeyName]
                         val ui = LiquidItemUi(context, scope)
                         fixedKeyItems += ui
-                        ui.mainText.text = presetKey?.label ?: ""
+                        // Only a static label is shown here: a dynamic
+                        // `{source: …}` label has no enter label to read in the
+                        // fixed key bar (doc/Keyboard.md §2.2).
+                        ui.mainText.text = presetKey?.label?.staticText.orEmpty()
                         ui.root.apply {
                             isRepeatable = presetKey?.repeatable ?: false
                             onClick = {
@@ -125,20 +129,67 @@ class LiquidLayout(
             }
         }
 
+    /** The category column's width (doc/Theme.md §9); the tab area keeps its own width. */
+    private val tabColumnWidth = context.dp(theme.liquidKeyboard.tabColumnWidth.takeIf { it > 0 } ?: 72)
+
     val recyclerView =
         recyclerView {
-            val space = dp(theme.liquidKeyboard.marginX.toInt())
-            addItemDecoration(SpacesItemDecoration(space))
+            val liquid = theme.liquidKeyboard
+            layoutManager = GridLayoutManager(context, LiquidAdapter.GRID_COLUMNS)
+            val space = dp(liquid.marginX.toInt())
+            val spaceY = dp((liquid.marginY.takeIf { it >= 0f } ?: liquid.marginX).toInt())
+            addItemDecoration(SpacesItemDecoration(space, spaceY))
+            // A theme may draw hairlines between the cells (doc/Theme.md §9.1).
+            if (liquid.cellDivider > 0) {
+                val color =
+                    runCatching {
+                        ColorManager.getColor(
+                            liquid.cellDividerColor.ifEmpty {
+                                liquid.cellBorderColor.ifEmpty { "key_border_color" }
+                            },
+                        )
+                    }.getOrDefault(Color.GRAY)
+                addItemDecoration(CellDividerDecoration(dp(liquid.cellDivider), color, space / 2, LiquidAdapter.GRID_COLUMNS))
+            }
             setPadding(space)
+            addOnLayoutChangeListener { v, _, _, _, bottom, _, _, _, oldBottom ->
+                if (bottom == oldBottom) return@addOnLayoutChangeListener
+                val cell = (bottom - paddingTop - paddingBottom - 2 * spaceY * LiquidAdapter.GRID_ROWS) / LiquidAdapter.GRID_ROWS
+                (this@recyclerView.adapter as? LiquidAdapter)?.let { adapter ->
+                    if (adapter.cellHeight != cell) {
+                        adapter.cellHeight = cell
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            }
         }
-
-    val root = view(::FrameLayout) {
-        add(recyclerView, lParams(matchParent, matchParent))
-    }
 
     val tabsUi = LiquidTabsUi(context, scope)
 
+    val root =
+        view(::ConstraintLayout) {
+            add(
+                tabsUi.root,
+                lParams(tabColumnWidth, matchConstraints) {
+                    startOfParent()
+                    topOfParent()
+                    bottomOfParent()
+                },
+            )
+            add(
+                recyclerView,
+                lParams(matchConstraints, matchConstraints) {
+                    startToEndOf(tabsUi.root)
+                    endOfParent()
+                    topOfParent()
+                    bottomOfParent()
+                },
+            )
+        }
+
     init {
+        // 搜狗式符号面板：左侧一列分类（可上下滑），右侧 4 列 × 5 行网格，
+        // 底部固定键栏（返回在最左），doc/Theme.md §9.
         when (theme.liquidKeyboard.fixedKeyBar.position) {
             LiquidKeyboard.KeyBar.Position.TOP -> {
                 add(
@@ -153,6 +204,7 @@ class LiquidLayout(
                     fixedKeyBar,
                     lParams(wrapContent, wrapContent) {
                         centerHorizontally()
+                        centerVertically()
                         topOfParent()
                         bottomToTopOf(root)
                     },
@@ -172,6 +224,7 @@ class LiquidLayout(
                     fixedKeyBar,
                     lParams(wrapContent, wrapContent) {
                         centerHorizontally()
+                        centerVertically()
                         topToBottomOf(root)
                         bottomOfParent()
                     },
@@ -182,9 +235,10 @@ class LiquidLayout(
                 add(
                     root,
                     lParams {
-                        centerVertically()
+                        topOfParent()
                         startToEndOf(fixedKeyBar)
                         endOfParent()
+                        bottomOfParent()
                     },
                 )
                 add(
@@ -201,9 +255,10 @@ class LiquidLayout(
                 add(
                     root,
                     lParams {
-                        centerVertically()
+                        topOfParent()
                         startOfParent()
                         endToStartOf(fixedKeyBar)
+                        bottomOfParent()
                     },
                 )
                 add(

@@ -1,0 +1,378 @@
+config_version: '3.0'
+name: 同文
+author: trime
+description: 同文默认主题：经典、克制的现代输入法外观；日/夜各一套配色。
+version: 1
+style:
+  auto_caps: false
+  reset_ascii_mode_on_focus_change: false
+  key_width: 10.0
+  key_height: 56
+  horizontal_gap: 5
+  vertical_gap: 8
+  round_corner: 8.0
+  key_border: 1
+  shadow_radius: 0.0
+  keyboard_height: 256
+  keyboard_height_land: 208
+  keyboard_padding: 4
+  keyboard_padding_bottom: 8
+  keyboard_padding_land: 4
+  keyboard_padding_land_bottom: 6
+  key_text_size: 22
+  key_font_weight: medium
+  key_corner_ratio: 0.14
+  key_long_text_size: 14
+  symbol_text_size: 11
+  label_text_size: 20
+  candidate_view_height: 28
+  candidate_text_size: 18
+  candidate_padding: 6
+  candidate_corner_radius: 8
+  candidate_spacing: 0.0
+  candidate_text_vertical_bias: 1.0
+  comment_position: right
+  comment_text_size: 11
+  comment_height: 12
+  comment_vertical_bias: 0.0
+  popup_width: 40
+  popup_height: 48
+  popup_key_height: 44
+  popup_text_size: 22
+  popup_bottom_margin: 8
+  enter_label_mode: 0
+  enter_labels:
+    go: 前往
+    done: 完成
+    next: 下个
+    pre: 上个
+    search: 搜索
+    send: 发送
+    default: 回车
+styles:
+  spaceKeyTextStyle: {content: text, font_face: default}
+  spaceKeySchemaStyle: {content: text, font_face: default, text_size: 14}
+  optionPanelStyle:
+    background: option_panel_back_color
+    corner_radius: 12
+    padding: 8
+    max_height: 320
+    side_margin: 12
+    item_spacing: 6
+    action_button_size: 32
+  optionPanelActionItemStyle:
+    height: 48
+    corner_radius: 8
+    background: key_back_color
+    background_highlight: hilited_key_back_color
+    text_color: key_text_color
+    label_size: 13
+    icon_size: 20
+    padding: [4, 6]
+  optionPanelSwitchItemStyle:
+    height: 48
+    corner_radius: 8
+    background: key_back_color
+    background_on: hilited_back_color
+    background_highlight: hilited_key_back_color
+    text_color: key_text_color
+    label_size: 13
+    icon_size: 20
+    padding: [4, 6]
+  optionPanelTitleItemStyle: {height: 32, text_color: comment_text_color, label_size: 12, padding: [0,
+      12]}
+  clipboardPanelStyle:
+    background: clipboard_back_color
+    corner_radius: 12
+    padding: 8
+    side_margin: 6
+    item_spacing: 6
+    action_button_size: 32
+    divider: 1
+    divider_color: border_color
+  clipboardItemStyle:
+    height: 60
+    corner_radius: 8
+    background_highlight: hilited_key_back_color
+    text_color: key_text_color
+    label_size: 15
+    max_lines: 2
+    ellipsize: end
+    padding: [4, 4]
+  clipboardPinnedItemStyle:
+    height: 60
+    corner_radius: 8
+    background_highlight: hilited_key_back_color
+    text_color: key_text_color
+    label_size: 15
+    max_lines: 2
+    ellipsize: end
+    pin_size: 12
+    pin_color: key_symbol_color
+    pin_inset: 2
+    padding: [4, 8]
+  clipboardTitleItemStyle: {height: 40, text_color: key_text_color, label_size: 16, padding: [0, 8]}
+option_panel: {panel_style: optionPanelStyle, action_item_style: optionPanelActionItemStyle, switch_item_style: optionPanelSwitchItemStyle,
+  title_item_style: optionPanelTitleItemStyle}
+clipboard: {panel_style: clipboardPanelStyle, item_style: clipboardItemStyle, pinned_item_style: clipboardPinnedItemStyle,
+  title_item_style: clipboardTitleItemStyle}
+tool_bar:
+  height: 42
+  button_size: 32
+  button_spacing: 8
+  primary_button: {background: {type: circle, corner_radius: 10, normal: '0x00000000', highlight: hilited_candidate_button_color,
+      vertical_inset: 4, horizontal_inset: 4}, foreground: {icon: ic@dots_horizontal, normal: candidate_text_color,
+      padding: 6}, action: optionPanelButton, long_press_action: SETTINGS}
+  buttons:
+  - {foreground: {icon: ic@keyboard_close, normal: candidate_text_color}, action: hideButton}
+  - {foreground: {icon: ic@clipboard, normal: candidate_text_color}, action: clipboardButton}
+  - {foreground: {icon: ic@cursor_text, normal: candidate_text_color}, action: editorButton}
+  - {action: languageSwitchButton}
+fallback_colors:
+  candidate_text_color: text_color
+  comment_text_color: candidate_text_color
+  border_color: back_color
+  candidate_separator_color: border_color
+  hilited_text_color: text_color
+  hilited_back_color: back_color
+  hilited_candidate_text_color: hilited_text_color
+  hilited_candidate_back_color: hilited_back_color
+  hilited_comment_text_color: comment_text_color
+  key_border_color: key_back_color
+  key_symbol_color: key_text_color
+preset_keys:
+  spaceButton: {send: space, functional: false, repeatable: false}
+  returnButton: {label: {source: enterLabel}, send: Return}
+  backspaceButton: {label: ⌫, send: BackSpace, functional: true, repeatable: true}
+  shiftButton: {label: ⇧, send: Shift_L, functional: true, shift_lock: ascii_long}
+  hideButton: {label: 收起, send: BACK, functional: true}
+  cursorLeftButton: {label: ←, send: Left, functional: true}
+  cursorRightButton: {label: →, send: Right, functional: true}
+  cursorUpButton: {label: ↑, send: Up, functional: true}
+  cursorDownButton: {label: ↓, send: Down, functional: true}
+  homeButton: {label: 行首, send: Home, functional: true}
+  endButton: {label: 行尾, send: End, functional: true}
+  pageUpButton: {label: 上翻, send: Page_Up, functional: true}
+  pageDownButton: {label: 下翻, send: Page_Down, functional: true}
+  deleteButton: {label: 删除, send: Delete, functional: true}
+  selectAllButton: {label: 全选, send: Control+a, functional: true}
+  wordLeftButton: {label: 词首, send: Control+Left, functional: true}
+  wordRightButton: {label: 词尾, send: Control+Right, functional: true}
+  tabButton: {label: Tab, send: Tab, functional: true}
+  copyButton: {label: 复制, send: Control+c, functional: true}
+  cutButton: {label: 剪切, send: Control+x, functional: true}
+  pasteButton: {label: 粘贴, send: Control+v, functional: true}
+  undoButton: {label: 撤销, send: Control+z, functional: true}
+  redoButton: {label: 重做, send: Control+Shift+z, functional: true}
+  keyboardLettersButton: {label: ABC, send: Eisu_toggle, select: default, functional: true}
+  keyboardNumberButton: {label: '123', send: Eisu_toggle, select: number, functional: true}
+  keyboardSymbolsButton: {label: 符号, send: Eisu_toggle, select: symbols, functional: true}
+  editorButton: {label: 编辑, send: Eisu_toggle, select: editor, functional: true}
+  keyboardDefaultButton: {label: 返回, send: Eisu_toggle, select: default, functional: true}
+  languageSwitchButton:
+    label: 中英
+    toggle: ascii_mode
+    send: SWITCH_CHARSET
+    states: [中, 英]
+    functional: true
+  oneHandSwitchButton:
+    label: 单手
+    toggle: _one_hand_mode_1
+    send: SWITCH_CHARSET
+    states: [左手, 普通]
+    functional: true
+  liquidKeyboardSwitchButton:
+    label: 更多
+    send: FUNCTION
+    command: liquid_keyboard
+    option: 更多
+    functional: true
+  liquidKeyboardExitButton:
+    label: 返回
+    send: FUNCTION
+    command: liquid_keyboard
+    option: '-1'
+    functional: true
+  symbolsMoreButton:
+    label: 更多
+    send: FUNCTION
+    command: liquid_keyboard
+    option: 标点
+    functional: true
+  clipboardButton:
+    label: 剪贴
+    send: FUNCTION
+    command: clipboard_window
+    option: '0'
+    functional: true
+  optionPanelButton: {label: 选项, send: FUNCTION, command: openOptionPanel, functional: true}
+  BRIGHTNESS_DOWN: {label: 亮度-, send: BRIGHTNESS_DOWN}
+  BRIGHTNESS_UP: {label: 亮度+, send: BRIGHTNESS_UP}
+  VOLUME_DOWN: {label: 音量-, send: VOLUME_DOWN}
+  VOLUME_UP: {label: 音量+, send: VOLUME_UP}
+  VOLUME_MUTE: {label: 静音, send: VOLUME_MUTE}
+  CALCULATOR: {label: 计算器, send: CALCULATOR}
+  CALENDAR: {label: 日历, send: CALENDAR}
+  CONTACTS: {label: 电话簿, send: CONTACTS}
+  ENVELOPE: {label: 信箱, send: ENVELOPE}
+  EXPLORER: {label: 浏览器, send: EXPLORER}
+  MUSIC: {label: 音乐, send: MUSIC}
+  POWER: {label: 电源, send: POWER}
+  SEARCH: {label: 搜索, send: SEARCH}
+  SLEEP: {label: 休眠, send: SLEEP}
+  VOICE_ASSIST: {label: 语音, send: VOICE_ASSIST}
+preset_keyboards:
+  default:
+    name: 字母
+    ascii_mode: 0
+    ascii_keyboard: english
+    height: 56
+    lock: true
+    keys:
+    - {row: [{key: qButton, width: 10, popup: ['1', Q], alt_label: '1', swipe_down: '1'}, {key: wButton,
+          width: 10, popup: ['2', W], alt_label: '2', swipe_down: '2'}, {key: eButton, width: 10, popup: [
+            '3', E, ê, ë, ē, é, ě, è, ė, ę, ȩ, ḝ, ə], alt_label: '3', swipe_down: '3'}, {key: rButton,
+          width: 10, popup: ['4', R], alt_label: '4', swipe_down: '4'}, {key: tButton, width: 10, popup: [
+            '5', T], alt_label: '5', swipe_down: '5'}, {key: yButton, width: 10, popup: ['6', Y, ÿ, ұ,
+            ү, ӯ, ў], alt_label: '6', swipe_down: '6'}, {key: uButton, width: 10, popup: ['7', U, û, ü,
+            ū, ú, ǔ, ù], alt_label: '7', swipe_down: '7'}, {key: iButton, width: 10, popup: ['8', I, î,
+            ï, ī, í, ǐ, ì, į, ı], alt_label: '8', swipe_down: '8'}, {key: oButton, width: 10, popup: [
+            '9', O, ô, ö, ō, ó, ǒ, ò, œ, ø, õ], alt_label: '9', swipe_down: '9'}, {key: pButton, width: 10,
+          popup: ['0', P], alt_label: '0', swipe_down: '0'}]}
+    - {row: [{width: 5}, {key: aButton, width: 10, popup: ['@', A, â, ä, ā, á, ǎ, à, æ, ã, å, ą], alt_label: '@',
+          swipe_down: '@'}, {key: sButton, width: 10, popup: ['*', S, ß, ś, š, ş], alt_label: '*', swipe_down: '*'},
+        {key: dButton, width: 10, popup: [+, D, ð], alt_label: +, swipe_down: +}, {key: fButton, width: 10,
+          popup: ['-', F], alt_label: '-', swipe_down: '-'}, {key: gButton, width: 10, popup: ['=', G,
+            ğ], alt_label: '=', swipe_down: '='}, {key: hButton, width: 10, popup: [/, H], alt_label: /,
+          swipe_down: /}, {key: jButton, width: 10, popup: ['#', J], alt_label: '#', swipe_down: '#'},
+        {key: kButton, width: 10, popup: [(, K, '[', '{'], alt_label: (, swipe_down: (}, {key: lButton,
+          width: 10, popup: [), L, ']', '}', ł], alt_label: ), swipe_down: )}, {width: 5}]}
+    - {row: [{key: shiftButton, width: 15}, {key: zButton, width: 10, popup: [，, '''', Z, '`', ž, ź, ż],
+          alt_label: ，, swipe_down: ，}, {key: xButton, width: 10, popup: [。, ':', X, ×], alt_label: 。,
+          swipe_down: 。}, {key: cButton, width: 10, popup: [？, '"', C, ç, ć, č], alt_label: ？, swipe_down: ？},
+        {key: vButton, width: 10, popup: [！, '?', V, ¿, ü, ǖ, ǘ, ǚ, ǜ], alt_label: ！, swipe_down: ！},
+        {key: bButton, width: 10, popup: [：, '!', B, ¡], alt_label: ：, swipe_down: ：}, {key: nButton,
+          width: 10, popup: [；, '~', N, ñ, ń], alt_label: ；, swipe_down: ；}, {key: mButton, width: 10,
+          popup: [、, \, M], alt_label: 、, swipe_down: 、}, {key: backspaceButton, width: 15, long_click: {
+            text: '{Control+BackSpace}'}}]}
+    - {row: [{key: keyboardNumberButton, width: 12.5}, {key: keyboardSymbolsButton, width: 12.5}, {key: commaButton,
+          width: 10}, {key: spaceButton, width: -1, label: {source: schemaName}, long_click: {text: '{LANGUAGE_SWITCH}'}},
+        {key: periodButton, width: 10}, {key: returnButton, width: 20, key_back_color: enter_key_back_color,
+          key_text_color: enter_key_text_color, hilited_key_back_color: hilited_enter_key_back_color,
+          hilited_key_text_color: hilited_enter_key_text_color}]}
+  number:
+    name: 数字
+    ascii_mode: 1
+    height: 56
+    lock: false
+    keys:
+    - {row: [{key: digit1Button, width: 20}, {key: digit2Button, width: 20}, {key: digit3Button, width: 20},
+        {key: asteriskButton, width: 20}, {key: backspaceButton, width: 20, long_click: {text: '{Control+BackSpace}'}}]}
+    - {row: [{key: digit4Button, width: 20}, {key: digit5Button, width: 20}, {key: digit6Button, width: 20},
+        {key: numberSignButton, width: 20}, {key: periodButton, width: 20}]}
+    - {row: [{key: digit7Button, width: 20}, {key: digit8Button, width: 20}, {key: digit9Button, width: 20},
+        {key: plusButton, width: 20}, {key: atButton, width: 20}]}
+    - {row: [{key: keyboardSymbolsButton, width: 20}, {key: keyboardLettersButton, width: 20}, {key: digit0Button,
+          width: 20}, {key: spaceButton, width: 20}, {key: returnButton, width: 20, key_back_color: enter_key_back_color,
+          key_text_color: enter_key_text_color, hilited_key_back_color: hilited_enter_key_back_color,
+          hilited_key_text_color: hilited_enter_key_text_color}]}
+  symbols:
+    name: 符号
+    ascii_mode: 1
+    height: 56
+    lock: false
+    keys:
+    - {row: [{key: exclaimButton, width: 10}, {key: atButton, width: 10}, {key: numberSignButton, width: 10},
+        {key: dollarButton, width: 10}, {key: percentButton, width: 10}, {key: caretButton, width: 10},
+        {key: ampersandButton, width: 10}, {key: asteriskButton, width: 10}, {key: parenLeftButton, width: 10},
+        {key: parenRightButton, width: 10}]}
+    - {row: [{key: hyphenButton, width: 10}, {key: underscoreButton, width: 10}, {key: equalButton, width: 10},
+        {key: plusButton, width: 10}, {key: bracketLeftButton, width: 10}, {key: bracketRightButton, width: 10},
+        {key: braceLeftButton, width: 10}, {key: braceRightButton, width: 10}, {key: slashButton, width: 10},
+        {key: backslashButton, width: 10}]}
+    - {row: [{key: tildeButton, width: 10}, {key: pipeButton, width: 10}, {key: semicolonButton, width: 10},
+        {key: colonButton, width: 10}, {key: apostropheButton, width: 10}, {key: quoteButton, width: 10},
+        {key: lessButton, width: 10}, {key: greaterButton, width: 10}, {key: questionButton, width: 10},
+        {key: periodButton, width: 10}]}
+    - {row: [{key: keyboardLettersButton, width: 12.5}, {key: symbolsMoreButton, width: 12.5}, {key: commaButton,
+          width: 10}, {key: spaceButton, width: -1, label: {text: 空格}, long_click: {text: '{LANGUAGE_SWITCH}'}},
+        {key: backspaceButton, width: 15, long_click: {text: '{Control+BackSpace}'}}, {key: returnButton,
+          width: 15, key_back_color: enter_key_back_color, key_text_color: enter_key_text_color, hilited_key_back_color: hilited_enter_key_back_color,
+          hilited_key_text_color: hilited_enter_key_text_color}]}
+  english:
+    name: 英文
+    ascii_mode: 1
+    height: 56
+    lock: false
+    keys:
+    - {row: [{key: qButton, width: 10, popup: ['1', Q], alt_label: '1', swipe_down: '1'}, {key: wButton,
+          width: 10, popup: ['2', W], alt_label: '2', swipe_down: '2'}, {key: eButton, width: 10, popup: [
+            '3', E, ê, ë, ē, é, ě, è, ė, ę, ȩ, ḝ, ə], alt_label: '3', swipe_down: '3'}, {key: rButton,
+          width: 10, popup: ['4', R], alt_label: '4', swipe_down: '4'}, {key: tButton, width: 10, popup: [
+            '5', T], alt_label: '5', swipe_down: '5'}, {key: yButton, width: 10, popup: ['6', Y, ÿ, ұ,
+            ү, ӯ, ў], alt_label: '6', swipe_down: '6'}, {key: uButton, width: 10, popup: ['7', U, û, ü,
+            ū, ú, ǔ, ù], alt_label: '7', swipe_down: '7'}, {key: iButton, width: 10, popup: ['8', I, î,
+            ï, ī, í, ǐ, ì, į, ı], alt_label: '8', swipe_down: '8'}, {key: oButton, width: 10, popup: [
+            '9', O, ô, ö, ō, ó, ǒ, ò, œ, ø, õ], alt_label: '9', swipe_down: '9'}, {key: pButton, width: 10,
+          popup: ['0', P], alt_label: '0', swipe_down: '0'}]}
+    - {row: [{width: 5}, {key: aButton, width: 10, popup: ['@', A, â, ä, ā, á, ǎ, à, æ, ã, å, ą], alt_label: '@',
+          swipe_down: '@'}, {key: sButton, width: 10, popup: ['*', S, ß, ś, š, ş], alt_label: '*', swipe_down: '*'},
+        {key: dButton, width: 10, popup: [+, D, ð], alt_label: +, swipe_down: +}, {key: fButton, width: 10,
+          popup: ['-', F], alt_label: '-', swipe_down: '-'}, {key: gButton, width: 10, popup: ['=', G,
+            ğ], alt_label: '=', swipe_down: '='}, {key: hButton, width: 10, popup: [/, H], alt_label: /,
+          swipe_down: /}, {key: jButton, width: 10, popup: ['#', J], alt_label: '#', swipe_down: '#'},
+        {key: kButton, width: 10, popup: [(, K, '[', '{'], alt_label: (, swipe_down: (}, {key: lButton,
+          width: 10, popup: [), L, ']', '}', ł], alt_label: ), swipe_down: )}, {width: 5}]}
+    - {row: [{key: shiftButton, width: 15}, {key: zButton, width: 10, popup: [，, '''', Z, '`', ž, ź, ż],
+          alt_label: ，, swipe_down: ，}, {key: xButton, width: 10, popup: [。, ':', X, ×], alt_label: 。,
+          swipe_down: 。}, {key: cButton, width: 10, popup: [？, '"', C, ç, ć, č], alt_label: ？, swipe_down: ？},
+        {key: vButton, width: 10, popup: [！, '?', V, ¿, ü, ǖ, ǘ, ǚ, ǜ], alt_label: ！, swipe_down: ！},
+        {key: bButton, width: 10, popup: [：, '!', B, ¡], alt_label: ：, swipe_down: ：}, {key: nButton,
+          width: 10, popup: [；, '~', N, ñ, ń], alt_label: ；, swipe_down: ；}, {key: mButton, width: 10,
+          popup: [、, \, M], alt_label: 、, swipe_down: 、}, {key: backspaceButton, width: 15, long_click: {
+            text: '{Control+BackSpace}'}}]}
+    - {row: [{key: keyboardNumberButton, width: 12.5}, {key: keyboardSymbolsButton, width: 12.5}, {key: commaButton,
+          width: 10}, {key: spaceButton, width: -1, label: {text: 空格}, long_click: {text: '{LANGUAGE_SWITCH}'}},
+        {key: periodButton, width: 10}, {key: returnButton, width: 20, key_back_color: enter_key_back_color,
+          key_text_color: enter_key_text_color, hilited_key_back_color: hilited_enter_key_back_color,
+          hilited_key_text_color: hilited_enter_key_text_color}]}
+  editor:
+    name: 编辑
+    ascii_mode: 1
+    height: 56
+    lock: false
+    keys:
+    - {row: [{key: selectAllButton, width: 20}, {key: wordLeftButton, width: 20}, {key: cursorUpButton,
+          width: 20}, {key: wordRightButton, width: 20}, {key: spaceButton, width: 20}]}
+    - {row: [{key: cutButton, width: 20}, {key: cursorLeftButton, width: 20}, {key: shiftButton, width: 20},
+        {key: cursorRightButton, width: 20}, {key: keyboardNumberButton, width: 20}]}
+    - {row: [{key: copyButton, width: 20}, {key: homeButton, width: 20}, {key: cursorDownButton, width: 20},
+        {key: endButton, width: 20}, {key: backspaceButton, width: 20, long_click: {text: '{Control+BackSpace}'}}]}
+    - {row: [{key: pasteButton, width: 20}, {key: undoButton, width: 20}, {key: tabButton, width: 20},
+        {key: redoButton, width: 20}, {key: returnButton, width: 20, key_back_color: enter_key_back_color,
+          key_text_color: enter_key_text_color, hilited_key_back_color: hilited_enter_key_back_color,
+          hilited_key_text_color: hilited_enter_key_text_color}]}
+liquid_keyboard:
+  single_width: 56
+  key_height: 44
+  margin_x: 4
+  cell_divider: 1
+  cell_divider_color: border_color
+  tab_spacing: 4
+  fixed_key_bar: {position: BOTTOM, keys: [liquidKeyboardExitButton, keyboardLettersButton, clipboardButton,
+      backspaceButton]}
+  tab_column_width: 72
+  keyboards: [history, punct, math, currency, arrow, ordinal, greek, russian, unit, emoji, kaomoji, tabs]
+  history: {name: 常用, type: HISTORY}
+  punct: {name: 标点, type: SINGLE, keys: ，。、；：！？…—～·《》〈〉「」『』【】（）〔〕〔〕}
+  math: {name: 数学, type: SINGLE, keys: ＋－×÷＝≠≈≤≥±∞√∫∑∏∈∉∅°′″πμΩ‰％}
+  currency: {name: 货币, type: SINGLE, keys: ¥＄€£₩₹₽₺₴¢₡₦฿₱₪₫}
+  arrow: {name: 箭头, type: SINGLE, keys: ←↑→↓↔↕⇐⇒⇔↩↪⬅⬆⬇➡➔➜➝}
+  ordinal: {name: 序号, type: SINGLE, keys: ①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ}
+  greek: {name: 希腊, type: SINGLE, keys: αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ}
+  russian: {name: 俄语, type: SINGLE, keys: абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ}
+  unit: {name: 单位, type: SINGLE, keys: ㎡㎏㎝㎜㎞℃℉°‰‱㎐㎑㎒㎎㎠㎤㎥㎗㎘㏄ΩÅµ}
+  emoji: {name: 表情, type: SINGLE, keys: 😀😃😄😁😆😅🤣😂🙂🙃😉😊😇🥰😍🤩😘😗😚😙😋😛😜🤪😝🤑🤗🤭🤫🤔😐😑😶😏😒🙄😬😌😔😪🤤😴😷🤒🤕🤢🤮🥵🥶😵🤯🤠🥳😎🤓🧐😕😟🙁😮😯😲😳🥺😦😧😨😰😥😢😭😱😖😣😞😓😩😫🥱😤😡😠🤬😈💀💩🤡👻🙈🙉🙊💌💘💖💗💓💞💕💔❤🧡💛💚💙💜🤎🖤🤍💯💢💥💫💦💨👍👎👌✌🙏💪👏🙌👋🤝✊👊👀💡🔥⭐🌟🌈☀☁☔❄⛄🎉🎊🎁🎈🎂🌹🌸🌻🍀🌙🍎🍊}
+  kaomoji: {name: 颜文字, type: SYMBOL, keys: [(•‿•), (￣▽￣), (╯°□°)╯, (っ˘ω˘ς), ¯\_(ツ)_/¯, (＾▽＾), (；一_一),
+      (・∀・), (｡♥‿♥｡), (๑•̀ㅂ•́)و, (ง •̀_•́)ง, ヽ(°〇°)ﾉ, (=^･ω･^=), (´・ω・`), ( ˘ω˘ ), (・_・;), (#`Д´), (＃`д´)]}
+  tabs: {name: 更多, type: TABS}

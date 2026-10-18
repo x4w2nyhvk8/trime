@@ -1,0 +1,124 @@
+# v3 键名迁移表（切片 3 的迁移脚本输入）
+#
+# 覆盖上游 trime.yaml 的全部 106 个 preset_keys，一个不多一个不少。
+# 动作体（send/command/option/toggle/states/text）一律照抄上游，只改键名；
+# 本表由 doc/Keyboard.md 的契约推导，校验见 validate-key-renames 检查。
+version: 3
+
+# 原样保留：Android Intent 键名（契约 §1.4）
+unchanged:
+  - BRIGHTNESS_DOWN
+  - BRIGHTNESS_UP
+  - VOLUME_DOWN
+  - VOLUME_UP
+  - VOLUME_MUTE
+  - CALCULATOR
+  - CALENDAR
+  - CONTACTS
+  - ENVELOPE
+  - EXPLORER
+  - MUSIC
+  - POWER
+  - SEARCH
+  - SLEEP
+  - VOICE_ASSIST
+
+# 改名：一对一
+renames:
+  Shift_L: shiftButton
+  Return: returnButton
+  Hide: hideButton
+  BackSpace: backspaceButton
+  space: spaceButton
+  Escape: escapeButton
+  Home: homeButton
+  Insert: insertButton
+  Delete: deleteButton
+  End: endButton
+  Page_Up: pageUpButton
+  Page_Down: pageDownButton
+  Left: cursorLeftButton
+  Down: cursorDownButton
+  Up: cursorUpButton
+  Right: cursorRightButton
+  select_all: selectAllButton
+  Clear: clearButton
+  cut: cutButton
+  cut_all: cutAllButton
+  copy: copyButton
+  copy_all: copyAllButton
+  paste: pasteButton
+  paste_text: pasteTextButton
+  share_text: shareTextButton
+  redo: redoButton
+  undo: undoButton
+  F4: schemaMenuButton
+  BackToPreviousSyllable: backToPreviousSyllableButton
+  CommitRawInput: commitRawInputButton
+  CommitScriptText: commitScriptTextButton
+  CommitComment: commitCommentButton
+  DeleteCandidate: deleteCandidateButton
+  Mode_switch: modeSwitchButton
+  Zenkaku_Hankaku: eisuButton
+  Henkan: simplificationSwitchButton
+  Charset_switch: charsetSwitchButton
+  Punct_switch: punctSwitchButton
+  Keyboard_symbols: keyboardSymbolsButton
+  Keyboard_number: keyboardNumberButton
+  Keyboard_mini: keyboardMiniButton
+  Keyboard_letter: keyboardLettersButton
+  Keyboard_default: keyboardDefaultButton
+  Keyboard_switch: keyboardSwitchButton
+  liquid_keyboard_switch: liquidKeyboardSwitchButton
+  liquid_keyboard_exit: liquidKeyboardExitButton
+  liquid_keyboard_emoji: liquidKeyboardEmojiButton
+  clipboard_window: clipboardButton
+  set_theme_ink: themeSwitchButton
+  IME_switch: imeSwitchButton
+  IME_last: imeLastButton
+  IME_next: imeNextButton
+  Schema_switch: schemaNextButton
+  one_hand_switch_1: oneHandLeftButton
+  one_hand_switch_2: oneHandRightButton
+  one_hand_switch_3: oneHandSwitchButton
+  Help: helpButton
+  Info: infoButton
+  Menu: menuButton
+  Settings: settingsButton
+  Theme_settings: themeSettingsButton
+  Schema_settings: schemaSettingsButton
+  Candidate_switch: candidateSwitchButton
+  Comment_switch: commentSwitchButton
+  Hint_switch: hintSwitchButton
+  Date: dateButton
+  ChineseDate: chineseDateButton
+  Time: timeButton
+  TrimeApp: trimeAppButton
+  TrimeCmp: trimeComponentButton
+  Homepage: openHomepageButton
+  CommitHomepage: commitHomepageButton
+  RepeatCommit: repeatCommitButton
+  Wiki: webSearchButton
+  Google: webSearchButton
+  MoeDict: webSearchButton
+  Baidu: webSearchButton
+  Zdic: webSearchButton
+  Zdic2: webSearchButton
+  WebSearch: webSearchButton
+  Search: searchTextButton
+  Share: shareButton
+  Deploy: deployButton
+  Sync: syncButton
+  updateConfig: updateConfigButton
+
+# 合并：多个旧键收敛到同一个新键（差异由布局条目的字段表达）
+merges:
+  Return1: returnButton
+  Return2: returnButton
+  space1: spaceButton
+
+# 移除：动作本身已不存在于 v3
+dropped:
+  set_color_ink: "配色方案（preset_color_schemes）已移除，该键无对应动作"
+  Color_switch: "配色方案选择器已移除（send: PROG_RED 不再有配色弹窗）"
+  Color_settings: "配色设置入口已移除（option: color 不再存在）"

@@ -18,17 +18,17 @@ import androidx.annotation.ColorInt
 import androidx.collection.LruCache
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.math.MathUtils
-import com.osfans.trime.core.data.DataManager
 import com.osfans.trime.util.ColorUtils
 import com.osfans.trime.util.NinePatchBitmapFactory
 import com.osfans.trime.util.WeakHashSet
 import com.osfans.trime.util.isNightMode
+import timber.log.Timber
 
 /**
  * Global entry point for the colors and drawables of the active theme.
  *
  * The activation state itself lives in the current [ThemeScope], which
- * [attachTheme] replaces on every theme switch; scheme switches update the
+ * [attachTheme] replaces on every theme switch; day/night switches update the
  * same scope in place. String-keyed lookups below ([getColor], [getDrawable])
  * resolve through that scope so that keys only a theme can define (per-key
  * keyboard colors, image-valued entries) keep working, while [activeColorScheme]
@@ -48,7 +48,7 @@ object ColorManager {
     private var generation = 0L
 
     /**
-     * Bumped whenever the active scheme changes. Scheme-dependent caches
+     * Bumped whenever the active color table changes. Table-dependent caches
      * (e.g. per-key colors in Key) re-resolve when it moves.
      */
     val colorGeneration: Long
@@ -105,43 +105,46 @@ object ColorManager {
         activateScheme(notify = false)
     }
 
-    /**
-     * Switches to the scheme [schemeId] and remembers it as the user's choice.
-     * The scheme is resolved from the preference afterwards, so the day/night
-     * links a scheme may declare are honoured, like an automatic switch.
-     */
-    fun setColorScheme(schemeId: String) {
-        prefs.normalModeColor.setValue(schemeId)
-        activateScheme(notify = true)
-    }
-
     private fun requireScope(): ThemeScope = requireNotNull(scope) { "ColorManager is not initialized" }
 
+    /**
+     * Resolves the active color table from the theme's `day.yaml`/`night.yaml`
+     * tables, the follow-system-day-night preference and the current mode.
+     */
     private fun resolveActiveScheme(theme: Theme): ColorScheme = ColorSchemeResolver.resolve(
-        schemes = theme.presetColorSchemes,
-        selectedSchemeId = prefs.normalModeColor.getValue(),
+        dayColors = theme.dayColors,
+        nightColors = theme.nightColors,
         followSystemDayNight = prefs.followSystemDayNight.getValue(),
         isNightMode = isNightMode,
     )
 
     /**
-     * Re-resolves the active scheme from the prefs and current theme, or
-     * activates the given one. Listener notification fires only when the
-     * scheme actually changed.
+     * Resolves the mode whose resources the theme draws with. It is the same
+     * decision [resolveActiveScheme] makes ([ColorSchemeResolver] owns both), so
+     * the color table and the `images/` directory cannot disagree.
      */
-    private fun activateScheme(
-        scheme: ColorScheme? = null,
-        notify: Boolean,
-    ) {
+    private fun resolveActiveMode(theme: Theme): ThemeMode = ColorSchemeResolver.modeOf(
+        dayColors = theme.dayColors,
+        nightColors = theme.nightColors,
+        followSystemDayNight = prefs.followSystemDayNight.getValue(),
+        isNightMode = isNightMode,
+    )
+
+    /**
+     * Re-resolves the active color table and mode from the prefs and current
+     * theme. Listener notification fires only when one of them actually changed
+     * (the mode matters on its own: two modes can share a table, but they read
+     * different `images/` directories).
+     */
+    private fun activateScheme(notify: Boolean) {
         val activeScope = scope ?: return
-        val target = scheme ?: resolveActiveScheme(activeScope.theme)
-        if (activeScope.activeColorScheme == target) return
-        activeScope.updateScheme(target)
+        val mode = resolveActiveMode(activeScope.theme)
+        val target = resolveActiveScheme(activeScope.theme)
+        if (activeScope.activeColorScheme == target && activeScope.activeMode == mode) return
+        activeScope.updateScheme(target, mode)
         generation++
         if (notify) fireChange()
     }
-
-    private fun backgroundFolder(scope: ThemeScope) = scope.theme.style.backgroundFolder
 
     /**
      * Resolves a color key against the given scope. Exposed so UI code can
@@ -199,6 +202,18 @@ object ColorManager {
         value: String,
     ): Drawable? {
         val path = resolveImageFilePath(scope, value)
+        if (path == null) {
+            // A theme resolves images only inside its own package images/
+            // (doc/Theme.md §3). Saying so here keeps a missing image from
+            // looking like an unreadable one once the decoder gets the path.
+            Timber.w(
+                "Theme '%s' has no image '%s' for '%s' mode",
+                scope.theme.name,
+                value,
+                scope.activeMode.dirName,
+            )
+            return null
+        }
         val bitmap =
             bitmapCache?.get(path)
                 ?: BitmapFactory.decodeFile(path)?.also {
@@ -217,16 +232,17 @@ object ColorManager {
         return bitmap.toDrawable(Resources.getSystem())
     }
 
+    /**
+     * The path of the image [value] resolves to in [scope], or null when the
+     * theme does not carry it. A theme package resolves in its own
+     * `images/<mode>/` then `images/` (doc/Theme.md §3).
+     */
     private fun resolveImageFilePath(
         scope: ThemeScope,
         value: String,
-    ): String {
-        val default = DataManager.userDataDir.resolve("backgrounds/${backgroundFolder(scope)}/$value")
-        if (!default.exists()) {
-            val fallback = DataManager.userDataDir.resolve("backgrounds/$value")
-            if (fallback.exists()) return fallback.absolutePath
-        }
-        return default.absolutePath
+    ): String? {
+        val packageDir = scope.packageDir ?: return null
+        return ThemeResources.resolveInPackage(packageDir, scope.activeMode, value)?.absolutePath
     }
 
     @ColorInt

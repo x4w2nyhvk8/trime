@@ -13,7 +13,8 @@ data class PresetKey(
     val option: String = "",
     val select: String = "",
     val toggle: String = "",
-    val label: String = "",
+    /** The key's label: a static text, a dynamic source or none (doc/Keyboard.md §2.2). */
+    val label: KeyLabel = KeyLabel.None,
     val preview: String? = null,
     val shiftLock: String = "",
     val commit: String = "",

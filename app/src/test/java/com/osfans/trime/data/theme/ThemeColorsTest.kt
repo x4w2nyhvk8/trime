@@ -63,9 +63,9 @@ class ThemeColorsTest :
                 shouldThrow<IllegalArgumentException> { view.keyBackColor }
             }
         }
-        Given("the built-in tongwenfeng theme") {
-            val theme = ThemeTestSupport.decodeBuiltinTheme("tongwenfeng.trime.yaml")
-            val colors = theme.presetColorSchemes.getValue("default")
+        Given("the built-in trime theme") {
+            val theme = ThemeTestSupport.decodeBuiltinTheme("trime")
+            val colors = theme.dayColors
             val view = ThemeColors(ColorTable.resolve(colors, theme.fallbackColors, parseHex))
             Then("the day scheme colors resolve to the parsed scheme values") {
                 view.candidateTextColor shouldBe parseHex(colors.getValue("candidate_text_color"))

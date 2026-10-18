@@ -127,7 +127,7 @@ class ColorTableTest :
                 ColorTable.isImageValue("0xffffff") shouldBe false
             }
         }
-        Given("every scheme of the built-in themes") {
+        Given("every table of the built-in theme") {
             val builtinFallbackStrings = ColorKey.builtinFallbackColors.mapKeys { it.key.key }.mapValues { it.value.key }
 
             /** The pre-R2 resolveValue walk, replayed for comparison. */
@@ -154,34 +154,22 @@ class ColorTableTest :
                 }
             }
 
-            for (themeName in listOf("trime.yaml", "tongwenfeng.trime.yaml")) {
-                val theme = ThemeTestSupport.decodeBuiltinTheme(themeName)
-                When("the theme $themeName is loaded") {
-                    for ((id, colors) in theme.presetColorSchemes) {
-                        val table = ColorTable.resolve(colors, theme.fallbackColors, parseHex)
-                        Then("scheme '$id' resolves every key like the legacy walk") {
-                            for (entry in ColorKey.entries) {
-                                val expected = legacyWalk(entry.key, colors, theme.fallbackColors)
-                                ColorTable.resolveRaw(entry.key, colors, theme.fallbackColors) shouldBe expected
-                                if (expected == null) {
-                                    table.unresolvedKeys shouldContain entry
-                                } else {
-                                    table.unresolvedKeys shouldNotContain entry
-                                }
+            val theme = ThemeTestSupport.decodeBuiltinTheme("trime")
+            val night = theme.nightColors ?: error("the built-in theme ships a night table")
+            for ((tableName, colors) in listOf("day.yaml" to theme.dayColors, "night.yaml" to night)) {
+                When("the table $tableName is resolved") {
+                    val table = ColorTable.resolve(colors, theme.fallbackColors, parseHex)
+                    Then("every key resolves like the legacy walk") {
+                        for (entry in ColorKey.entries) {
+                            val expected = legacyWalk(entry.key, colors, theme.fallbackColors)
+                            ColorTable.resolveRaw(entry.key, colors, theme.fallbackColors) shouldBe expected
+                            if (expected == null) {
+                                table.unresolvedKeys shouldContain entry
+                            } else {
+                                table.unresolvedKeys shouldNotContain entry
                             }
                         }
                     }
-                }
-            }
-        }
-        Given("candidate_border_color, which UI code requests but the built-in themes never define") {
-            When("a built-in theme is resolved") {
-                val theme = ThemeTestSupport.decodeBuiltinTheme("trime.yaml")
-                val colors = theme.presetColorSchemes.values.first()
-                val table = ColorTable.resolve(colors, theme.fallbackColors, parseHex)
-                Then("the key is reported unresolved and resolves to None") {
-                    table.unresolvedKeys shouldContain ColorKey.CANDIDATE_BORDER_COLOR
-                    table[ColorKey.CANDIDATE_BORDER_COLOR] shouldBe ColorTable.Value.None
                 }
             }
         }

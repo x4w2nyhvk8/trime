@@ -9,6 +9,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,6 +19,11 @@ import com.osfans.trime.data.db.ClipboardHelper
 import com.osfans.trime.data.db.CollectionHelper
 import com.osfans.trime.data.db.DatabaseBean
 import com.osfans.trime.data.prefs.AppPrefs
+import com.osfans.trime.data.theme.ClipboardItemKind
+import com.osfans.trime.data.theme.ItemStyleResolver
+import com.osfans.trime.data.theme.PanelPage
+import com.osfans.trime.data.theme.PanelSize
+import com.osfans.trime.data.theme.PanelStyleResolver
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.ime.core.InputTabLayout
@@ -31,6 +38,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
+import splitties.dimensions.dp
 import splitties.views.recyclerview.verticalLayoutManager
 
 class ClipboardWindow(di: DI, private val initialTab: Int = 0) : BoardWindow.BarBoardWindow(di) {
@@ -135,7 +143,7 @@ class ClipboardWindow(di: DI, private val initialTab: Int = 0) : BoardWindow.Bar
     }
 
     private val clipboardPage by lazy {
-        ClipboardPageUi(context).apply {
+        ClipboardPageUi(context, scope).apply {
             recyclerView.apply {
                 layoutManager = verticalLayoutManager()
                 adapter = clipboardBeansAdapter
@@ -144,7 +152,7 @@ class ClipboardWindow(di: DI, private val initialTab: Int = 0) : BoardWindow.Bar
     }
 
     private val collectionPage by lazy {
-        ClipboardPageUi(context).apply {
+        ClipboardPageUi(context, scope).apply {
             recyclerView.apply {
                 layoutManager = verticalLayoutManager()
                 adapter = collectionBeansAdapter
@@ -216,16 +224,42 @@ class ClipboardWindow(di: DI, private val initialTab: Int = 0) : BoardWindow.Bar
                 0 -> R.string.clipboard
                 else -> R.string.collection
             }
+        val titleStyle = ItemStyleResolver.clipboardItemStyle(theme, ClipboardItemKind.TITLE)
         tabUi.label.apply {
             setText(label)
-            textSize = theme.style.candidateTextSize
+            textSize = titleStyle.labelSize
             setTypeface(theme.fonts.candidate, Typeface.BOLD)
-            setTextColor(scope.colors.keyTextColor)
+            setTextColor(scope.color(titleStyle.textColor))
         }
+    }
+
+    /**
+     * The host adds the panel view with its own layout params, so a declared
+     * `height`/`width`/`max_height` is applied here, once, by rewriting them
+     * (doc/Theme.md §8.2). Nothing declared leaves them alone.
+     */
+    private fun applyPanelSize() {
+        val panelStyle = PanelStyleResolver.panelStyle(theme, PanelPage.CLIPBOARD)
+        val declaredHeight = panelStyle.height
+        val declaredWidth = panelStyle.width
+        val maxHeight = panelStyle.maxHeight
+        if (declaredHeight == null && declaredWidth == null && maxHeight <= 0) return
+        clipboardLayout.updateLayoutParams<ViewGroup.LayoutParams> {
+            declaredHeight?.let { height = sizePx(it) }
+            declaredWidth?.let { width = sizePx(it) }
+            if (maxHeight > 0) height = context.dp(maxHeight)
+        }
+    }
+
+    /** A panel dimension as a layout-params value: a dp number, `WRAP_CONTENT` or `MATCH_PARENT`. */
+    private fun sizePx(size: PanelSize): Int = when (size) {
+        PanelSize.Auto, PanelSize.Fill -> size.layoutValue
+        is PanelSize.Fixed -> context.dp(size.dp)
     }
 
     override fun onAttached() {
         wasAttached = true
+        applyPanelSize()
         clipboardLayout.viewPager.setCurrentItem(initialTab, false)
         clipboardBeansSubmitJob = service.lifecycleScope.launch {
             clipboardBeansPager.flow.collect {
@@ -248,12 +282,16 @@ class ClipboardWindow(di: DI, private val initialTab: Int = 0) : BoardWindow.Bar
 
     override fun refreshColors() {
         if (!wasAttached) return
+        clipboardLayout.refreshColors()
         clipboardLayout.titleUi.deleteAllButton.refreshColors()
         clipboardLayout.titleUi.tabLayout.reconfigureTabs { tabUi, position ->
             configureTab(tabUi, position)
         }
         clipboardBeansAdapter.refreshColors()
         collectionBeansAdapter.refreshColors()
+        for (i in 0 until clipboardPagesAdapter.pages.size()) {
+            clipboardPagesAdapter.pages.valueAt(i).refreshColors()
+        }
     }
 
     override fun onCreateBarView(): View = clipboardLayout.titleUi.root

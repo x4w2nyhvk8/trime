@@ -6,20 +6,12 @@
 package com.osfans.trime.ime.symbol
 
 import android.view.View
-import androidx.core.content.ContextCompat
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.osfans.trime.daemon.RimeSession
-import com.osfans.trime.daemon.launchOnReady
 import com.osfans.trime.data.SymbolHistory
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.data.theme.model.LiquidKeyboard
 import com.osfans.trime.ime.core.TrimeInputMethodService
 import com.osfans.trime.ime.keyboard.CommonKeyboardActionListener
-import com.osfans.trime.ime.keyboard.KeyboardWindow
 import com.osfans.trime.ime.window.BoardWindow
-import com.osfans.trime.ime.window.BoardWindowManager
 import com.osfans.trime.ime.window.ResidentWindow
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -30,9 +22,7 @@ class LiquidWindow(di: DI) :
     override val showTitle = false
 
     private val service: TrimeInputMethodService by instance()
-    private val rime: RimeSession by instance()
     private val scope: ThemeScope by instance()
-    private val windowManager: BoardWindowManager by instance()
     private val commonKeyboardActionListener: CommonKeyboardActionListener by instance()
 
     private lateinit var liquidLayout: LiquidLayout
@@ -43,12 +33,13 @@ class LiquidWindow(di: DI) :
     private val adapter by lazy {
         LiquidAdapter(scope) {
             when (currentDataType) {
-                LiquidKeyboard.DataType.SYMBOL -> triggerSymbolInput(this.altText)
-
+                // Every cell commits its text verbatim: the panel no longer goes
+                // through the engine (and no longer flips ascii mode) just to
+                // type a kaomoji (doc/Theme.md §9).
                 LiquidKeyboard.DataType.TABS -> {
-                    val realPosition = scope.theme.liquidKeyboard.getTagList()
+                    val index = scope.theme.liquidKeyboard.getTagList()
                         .indexOfFirst { it.label == this.text }
-                    setDataByIndex(realPosition)
+                    if (index >= 0) setDataByIndex(index)
                 }
 
                 else -> {
@@ -59,13 +50,6 @@ class LiquidWindow(di: DI) :
                     }
                 }
             }
-        }
-    }
-
-    private val mainLayoutManager by lazy {
-        FlexboxLayoutManager(context).apply {
-            flexDirection = FlexDirection.ROW
-            flexWrap = FlexWrap.WRAP
         }
     }
 
@@ -83,12 +67,13 @@ class LiquidWindow(di: DI) :
             }
         }
         recyclerView.apply {
-            layoutManager = mainLayoutManager
             this.adapter = this@LiquidWindow.adapter
         }
     }
 
-    override fun onCreateBarView() = liquidLayout.tabsUi.root
+    // The category column lives inside the layout (left of the grid), so the
+    // window has no bar of its own.
+    override fun onCreateBarView(): View? = null
 
     override fun onAttached() {}
 
@@ -117,19 +102,5 @@ class LiquidWindow(di: DI) :
 
     private fun submitData(data: List<LiquidKeyboard.KeyItem>) {
         adapter.submitList(data)
-    }
-
-    private fun triggerSymbolInput(symbol: String) {
-        rime.launchOnReady {
-            val (isAsciiMode, isAsciiPunch) = it.statusCached.run { isAsciiMode to isAsciiPunct }
-            if (isAsciiMode) it.setRuntimeOption("ascii_mode", false)
-            if (isAsciiPunch) it.setRuntimeOption("ascii_punct", false)
-            it.clearComposition()
-            it.simulateKeySequence(symbol)
-            if (isAsciiPunch) it.setRuntimeOption("ascii_punct", true)
-            ContextCompat.getMainExecutor(service).execute {
-                windowManager.attachWindow(KeyboardWindow)
-            }
-        }
     }
 }

@@ -67,7 +67,7 @@ class CandidateItemUi(
         view(::AutoScaleTextView) {
             id = View.generateViewId()
             this.textSize = this@CandidateItemUi.textSize
-            typeface = theme.fonts.candidate
+            typeface = theme.fonts.candidateWeighted
             isSingleLine = true
             gravity = gravityCenter
             scaleMode = AutoScaleTextView.Mode.Proportional
