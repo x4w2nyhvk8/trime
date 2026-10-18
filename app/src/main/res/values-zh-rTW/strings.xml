@@ -21,8 +21,6 @@
     <string name="build_info_format">建構者：%1$s\n建構 Git 雜湊值：%2$s\n建構時間：%3$s</string>
     <string name="selected_theme">主題</string>
     <string name="selected_theme_summary">選取想要的主題</string>
-    <string name="normal_mode_color">配色</string>
-    <string name="normal_mode_color_summary">選取想要的配色</string>
     <string name="reset">回廠</string>
     <string name="reset_hint">使用預設的內建設置覆蓋共享資料夾下相同檔案</string>
     <string name="sound_on_keypress">按鍵聲音</string>
@@ -178,7 +176,6 @@
     <string name="navbar_background">導航欄背景</string>
     <string name="no_theme_to_select">當前沒有主題可選擇。</string>
     <string name="theme_unavailable_fallback">主題“%1$s”不可用，已切換為“%2$s”。</string>
-    <string name="no_color_to_select">當前沒有配色方案可選擇。</string>
     <string name="no_effect_to_select">當前沒有按鍵音效可選擇。</string>
     <string name="setup_channel">設定精靈</string>
     <string name="forget_this_word">忘記該詞</string>
@@ -201,7 +198,6 @@
     <string name="candidates_window_position">候選詞視窗位置</string>
     <string name="deploy_failure">部署失敗</string>
     <string name="view_deploy_failure_log">部署失敗。點此檢視錯誤日誌。</string>
-    <string name="hide_input_bar">隱藏輸入工具欄</string>
     <string name="hide_key_symbol">隱藏按鍵符號</string>
     <string name="hide_key_hint">隱藏按鍵註解</string>
     <string name="navbar_bkg_none">無背景</string>

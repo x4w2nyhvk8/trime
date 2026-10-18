@@ -13,7 +13,6 @@ import androidx.preference.PreferenceScreen
 import com.osfans.trime.R
 import com.osfans.trime.data.prefs.PreferenceDelegateFragment
 import com.osfans.trime.data.theme.ThemeManager
-import com.osfans.trime.ui.main.settings.ColorPickerDialog
 import com.osfans.trime.ui.main.settings.ThemePickerDialog
 import com.osfans.trime.util.addPreference
 import com.osfans.trime.util.startActivity
@@ -27,10 +26,6 @@ class ThemeSettingsFragment : PreferenceDelegateFragment(ThemeManager.prefs) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         findPreference<Preference>("selected_theme")?.setOnPreferenceClickListener {
             lifecycleScope.launch { ThemePickerDialog.build(lifecycleScope, requireContext()).show() }
-            true
-        }
-        findPreference<Preference>("normal_mode_color")?.setOnPreferenceClickListener {
-            lifecycleScope.launch { ColorPickerDialog.build(lifecycleScope, requireContext()).show() }
             true
         }
     }

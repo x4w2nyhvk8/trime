@@ -60,8 +60,8 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
             updateContent()
         }
 
-    private var optionStyles: List<String> = listOf()
-    private var singleStyle = ""
+    private var optionIcons: List<String> = listOf()
+    private var singleIcon = ""
 
     private var actionLabel = ""
     private var config: ToolBar.Button? = null
@@ -90,11 +90,11 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
 
         val fg = config.foreground
         val toggle = keyAction.toggle
-        if (toggle.isNotEmpty() && config.foreground.optionStyles.size == 2) {
+        if (toggle.isNotEmpty() && config.foreground.optionIcons.size == 2) {
             option = toggle
-            optionStyles = fg.optionStyles
+            optionIcons = fg.optionIcons
         } else {
-            singleStyle = fg.style
+            singleIcon = fg.icon
         }
         actionLabel = keyAction.getLabel(KeyboardWindow.currentKeyboard)
 
@@ -177,6 +177,22 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
         if (option == this.option) {
             optionEnabled = enabled
         }
+        refreshTextLabel()
+    }
+
+    /**
+     * A text-only button shows what its action resolves to *now*, so a toggle
+     * such as the language key draws 中 / 英 as the mode changes instead of the
+     * label it was built with (doc/Theme.md §8).
+     */
+    private fun refreshTextLabel() {
+        val button = config ?: return
+        if (singleIcon.isNotEmpty() || optionIcons.isNotEmpty()) return
+        val fresh = scope.theme.resolveAction(button.action).getLabel(KeyboardWindow.currentKeyboard)
+        if (fresh.isNotEmpty() && fresh != actionLabel) {
+            actionLabel = fresh
+            label.text = fresh
+        }
     }
 
     private fun backgroundStateDrawable(bg: ToolBar.Button.Background, highlight: Boolean): Drawable {
@@ -202,10 +218,10 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
     }
 
     private fun updateContent() {
-        val style = if (option != null && optionStyles.size == 2) {
-            optionStyles[if (optionEnabled) 1 else 0]
+        val style = if (option != null && optionIcons.size == 2) {
+            optionIcons[if (optionEnabled) 1 else 0]
         } else {
-            singleStyle
+            singleIcon
         }
 
         // drawable: local image or iconics

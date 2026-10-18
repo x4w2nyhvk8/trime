@@ -1,68 +1,64 @@
 /*
  * SPDX-FileCopyrightText: 2015 - 2026 Rime community
- *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package com.osfans.trime.data.theme
 
 /**
- * Pure scheme-selection logic: picks the active color scheme from the
- * selected scheme id, the follow-system-day-night preference and the current
- * night state. Extracted from ColorManager so it is unit-testable.
+ * Which of a theme's two presentations is in use. Its [dirName] names the
+ * directory under the package's `images/` that holds this mode's resources
+ * (doc/Theme.md §3), so the color-table lookup and the resource lookup share
+ * one decision instead of each deriving its own.
+ */
+internal enum class ThemeMode(
+    val dirName: String,
+) {
+    DAY("day"),
+    NIGHT("night"),
+}
+
+/**
+ * Pure day/night selection logic: picks the mode and the active color table
+ * from the theme's `day.yaml`/`night.yaml` tables, the follow-system-day-night
+ * preference and the current night state. Extracted from ColorManager so it is
+ * unit-testable.
+ *
+ * A v3 theme has no concept of a "color scheme", so there is no selection:
+ * either the day table is always used, or the day/night pair follows the mode.
  */
 internal object ColorSchemeResolver {
-    private const val DEFAULT_SCHEME = "default"
-    private const val LIGHT_SCHEME_KEY = "light_scheme"
-    private const val DARK_SCHEME_KEY = "dark_scheme"
-
     /**
-     * An explicit selection is kept until the user picks another one, also
-     * across mode switches and restarts: only a scheme declaring day/night
-     * links follows the mode, and a link pointing nowhere falls back to the
-     * scheme itself.
+     * The mode the theme is drawn in, and therefore the `images/` directory its
+     * resources resolve in.
      *
-     * @param schemes color schemes of a theme that is known to be usable;
-     *   [ThemeLoader] refuses a theme declaring none, so this map is never empty.
-     * @return the colors of the scheme in use
+     * @param dayColors the theme's day color table; [ThemeLoader] refuses a
+     *   theme with an empty one, so it is never empty here.
+     * @param nightColors the theme's night color table, or null/empty when the
+     *   theme declares none, in which case night falls back to [ThemeMode.DAY].
      */
-    fun resolve(
-        schemes: PresetColorSchemes,
-        selectedSchemeId: String,
+    fun modeOf(
+        dayColors: ColorScheme,
+        nightColors: ColorScheme?,
         followSystemDayNight: Boolean,
         isNightMode: Boolean,
-    ): ColorScheme {
-        require(schemes.isNotEmpty()) { "The theme defines no color scheme" }
-        fun scheme(id: String): ColorScheme? = schemes[id]
-        fun linkedScheme(source: ColorScheme): ColorScheme? {
-            val linkKey = if (isNightMode) DARK_SCHEME_KEY else LIGHT_SCHEME_KEY
-            return source[linkKey]?.let { scheme(it) }
-        }
-        val defaultScheme = scheme(DEFAULT_SCHEME) ?: schemes.values.first()
-        if (!followSystemDayNight) {
-            return scheme(selectedSchemeId) ?: defaultScheme
-        }
-        val selected = scheme(selectedSchemeId) ?: return linkedScheme(defaultScheme) ?: defaultScheme
-        val lightSchemeId = selected[LIGHT_SCHEME_KEY]
-        val darkSchemeId = selected[DARK_SCHEME_KEY]
-        return when {
-            lightSchemeId != null && darkSchemeId != null ->
-                // Both are set: pick by the current mode.
-                scheme(if (isNightMode) darkSchemeId else lightSchemeId)
-                    ?: linkedScheme(defaultScheme)
-                    ?: selected
+    ): ThemeMode {
+        require(dayColors.isNotEmpty()) { "The theme defines no day colors" }
+        if (followSystemDayNight && isNightMode && !nightColors.isNullOrEmpty()) return ThemeMode.NIGHT
+        return ThemeMode.DAY
+    }
 
-            lightSchemeId != null ->
-                // Light scheme only: this is a dark scheme.
-                if (isNightMode) selected else scheme(lightSchemeId) ?: selected
-
-            darkSchemeId != null ->
-                // Dark scheme only: this is a light scheme.
-                if (isNightMode) scheme(darkSchemeId) ?: selected else selected
-
-            // No links: the scheme is its own light and dark variant, so an
-            // explicit choice is kept instead of following the default scheme.
-            else -> selected
-        }
+    /**
+     * @return the color table in use, i.e. the one [modeOf] names. Night only
+     *   selects a table of its own; a theme without one keeps the day table.
+     */
+    fun resolve(
+        dayColors: ColorScheme,
+        nightColors: ColorScheme?,
+        followSystemDayNight: Boolean,
+        isNightMode: Boolean,
+    ): ColorScheme = when (modeOf(dayColors, nightColors, followSystemDayNight, isNightMode)) {
+        ThemeMode.DAY -> dayColors
+        ThemeMode.NIGHT -> nightColors ?: dayColors
     }
 }

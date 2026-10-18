@@ -39,6 +39,12 @@ data class GeneralStyle(
     val keyHeight: Int = 0,
     val keyLongTextSize: Float = 15f,
     val keyTextSize: Float = 15f,
+    /** Key label weight: `normal` (default), `medium` or `bold` (doc/Theme.md §1). */
+    val keyFontWeight: String = "",
+    /** Candidate text weight, same values as [keyFontWeight]. */
+    val candidateFontWeight: String = "",
+    /** Key corner radius as a fraction of the key height; 0 keeps [keyBorder]'s dp radius. */
+    val keyCornerRatio: Float = 0f,
     val keyTextOffsetX: Float = 0f,
     val keyTextOffsetY: Float = 0f,
     val keySymbolOffsetX: Float = 0f,
@@ -66,7 +72,6 @@ data class GeneralStyle(
     val symbolTextSize: Float = 0f,
     val textFont: MaybeStringList = MaybeStringList.Empty,
     val verticalGap: Int = 0,
-    val backgroundFolder: String = "backgrounds",
     val enterLabelMode: Int = 0,
     val enterLabels: EnterLabel = EnterLabel(),
 ) {
@@ -96,7 +101,6 @@ data class GeneralStyle(
         internal val KNOWN_KEYS: Set<String> =
             setOf(
                 "auto_caps",
-                "background_folder",
                 "candidate_border",
                 "candidate_border_round",
                 "candidate_corner_radius",
@@ -128,6 +132,8 @@ data class GeneralStyle(
                 "key_text_offset_x",
                 "key_text_offset_y",
                 "key_text_size",
+                "key_font_weight",
+                "key_corner_ratio",
                 "key_width",
                 "keyboard_height",
                 "keyboard_height_land",

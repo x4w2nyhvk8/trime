@@ -47,6 +47,11 @@ class Rime {
     trime_traits.shared_data_dir = sharedDir;
     trime_traits.user_data_dir = userDir;
     trime_traits.log_dir = "";  // set empty log_dir to log to logcat only
+    // librime forwards its level to glog's FLAGS_minloglevel (0=INFO,
+    // 1=WARNING, 2=ERROR). INFO floods logcat — leveldb's "db entry" lines on
+    // every schema load among them — and the write cost shows up on startup.
+    // WARNING keeps real problems visible; set 0 here to debug rime itself.
+    trime_traits.min_log_level = 1;
     trime_traits.app_name = "rime.trime";
     trime_traits.distribution_name = "Trime";
     trime_traits.distribution_code_name = "trime";

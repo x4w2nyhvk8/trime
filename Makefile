@@ -15,8 +15,8 @@ else
 endif
 
 
-.PHONY: all clean build debug spotlessCheck spotlessApply clang-format-lint clang-format style-lint \
-style-apply patch-apply release install translate ndk android
+.PHONY: all clean build debug test spotlessCheck spotlessApply clang-format-lint clang-format \
+style-lint style-apply patch-apply release install translate ndk android
 
 all: release
 
@@ -52,6 +52,10 @@ patch-apply:
 
 debug: patch-apply
 	$(GRADLEW) :app:assembleDebug
+
+# JVM unit tests (no device needed)
+test:
+	$(GRADLEW) :app:testDebugUnitTest
 
 # add SPDX license header
 reuse:

@@ -16,6 +16,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.KeyEvent
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.utils.sizeDp
+import com.osfans.trime.data.theme.ColorManager
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.ime.core.TrimeInputMethodService
 import com.osfans.trime.ime.popup.PopupAction
@@ -89,15 +90,17 @@ class KeyView(
         }
 
         onRelease = { behavior, isFromLongPress ->
-            Timber.d("KeyView release: label=${key.getLabel()}, behavior=$behavior, fromLongPress=$isFromLongPress")
+            Timber.d("KeyView release: label=${key.getLabel(keyboardView.labelEnter)}, behavior=$behavior, fromLongPress=$isFromLongPress")
             if (isFromLongPress) {
                 if (hasPopup) {
                     val triggerAction = PopupAction.TriggerAction(id)
                     popup.listener.onPopupAction(triggerAction)
                     triggerAction.outAction?.let { action ->
                         keyboardActionListener.onAction(theme.resolveAction(action))
-                        dismissPopupPreview()
                     }
+                    // Dismiss even when the finger slid out of the grid (no
+                    // selection): the popup must not outlive the press.
+                    dismissPopupPreview()
                     setPressedState(false)
                 } else if (isRepeatable) {
                     key.getAction(KeyBehavior.CLICK)?.let { processKeyAction(it, KeyBehavior.CLICK) }
@@ -170,7 +173,12 @@ class KeyView(
 
         onMove = { x, y, isLongPress ->
             if (isLongPress && hasPopup) {
-                popup.listener.onPopupAction(PopupAction.ChangeFocusAction(id, x, y))
+                // Relative to where the finger went down (the key centre): the
+                // popup is selected by displacement, not by reaching a cell
+                // (doc/Keyboard.md §2.4).
+                popup.listener.onPopupAction(
+                    PopupAction.ChangeFocusAction(id, x - width / 2f, y - height / 2f),
+                )
             }
         }
 
@@ -189,12 +197,23 @@ class KeyView(
             } else {
                 key.onReleased()
             }
+            animatePress(pressed)
             invalidate()
         }
     }
 
+    /** A slight press-down scale, the way mainstream keyboards answer a tap. */
+    private fun animatePress(pressed: Boolean) {
+        animate().cancel()
+        animate()
+            .scaleX(if (pressed) PRESS_SCALE else 1f)
+            .scaleY(if (pressed) PRESS_SCALE else 1f)
+            .setDuration(if (pressed) PRESS_IN_MS else PRESS_OUT_MS)
+            .start()
+    }
+
     private fun processKeyAction(action: KeyAction, behavior: KeyBehavior) {
-        Timber.d("processKeyAction: label=${key.getLabel()}, code=${action.code}, type=$behavior")
+        Timber.d("processKeyAction: label=${key.getLabel(keyboardView.labelEnter)}, code=${action.code}, type=$behavior")
 
         if (action.isModifierKey) {
             keyboard.clickModifierKey(
@@ -256,7 +275,7 @@ class KeyView(
 
     private fun showPopupPreview(behavior: KeyBehavior = KeyBehavior.CLICK) {
         if (!keyboardView.popupOnKeyPress) return
-        key.getPreviewText(behavior).takeIf { it.isNotEmpty() }?.let { previewText ->
+        key.getPreviewText(behavior, keyboardView.labelEnter).takeIf { it.isNotEmpty() }?.let { previewText ->
             val context = if (previewText.isIconFont) {
                 previewText
             } else {
@@ -293,12 +312,15 @@ class KeyView(
 
         drawBackground(canvas, key)
 
-        val label = key.getLabel().let {
-            if (it == "enter_labels") keyboardView.labelEnter else it
-        }
+        val assetIcon = key.keyStyle.assetIcon
+        if (assetIcon.isNotEmpty()) {
+            drawAssetIcon(canvas, assetIcon)
+        } else {
+            val label = key.getLabel(keyboardView.labelEnter)
 
-        if (label.isNotEmpty()) {
-            drawLabel(canvas, label)
+            if (label.isNotEmpty()) {
+                drawLabel(canvas, label)
+            }
         }
 
         val symbol = key.symbolLabel
@@ -310,13 +332,73 @@ class KeyView(
         if (hint.isNotEmpty()) {
             drawSymbol(canvas, hint, isTop = false)
         }
+
+        if (key.altLabel.isNotEmpty()) {
+            drawAltLabel(canvas, key.altLabel)
+        }
     }
+
+    /**
+     * Draws the `alt_label` spare character in the lower-left corner, the way
+     * fcitx5 shows an AlphabetKey's `alt` (doc/Keyboard.md §2.5). Display only:
+     * the swipe action that types it is a separate `swipe_*` field.
+     */
+    private fun drawAltLabel(canvas: Canvas, text: String) {
+        symbolPaint.apply {
+            color = key.getSymbolColor()
+            this.textSize = sp(key.symbolTextSize.takeIf { it > 0f } ?: keyboardView.symbolTextSize)
+            typeface = theme.fonts.symbol
+        }
+        val inset = dp(3f)
+        val baseline = height - paddingBottom - inset
+        canvas.drawText(text, paddingLeft + inset, baseline, symbolPaint)
+    }
+
+    /**
+     * Draws a theme package's `asset_icon` centred in the key.
+     *
+     * The drawable comes from [ColorManager.getDrawable], so a package image is
+     * resolved inside the theme package for the current mode — and a missing one
+     * is reported by that lookup instead of failing silently here.
+     */
+    private fun drawAssetIcon(canvas: Canvas, value: String) {
+        val icon = ColorManager.getDrawable(value) ?: return
+
+        val size = iconTextSize().toInt()
+        val halfSize = size / 2
+        val centerX = (width - paddingLeft - paddingRight) / 2f + paddingLeft
+        val centerY = (height - paddingTop - paddingBottom) / 2f + paddingTop
+
+        icon.setBounds(
+            (centerX - halfSize).toInt(),
+            (centerY - halfSize).toInt(),
+            (centerX + halfSize).toInt(),
+            (centerY + halfSize).toInt(),
+        )
+        icon.draw(canvas)
+    }
+
+    /**
+     * The size an icon foreground — a `system_icon` glyph or an `asset_icon`
+     * bitmap — is drawn at: the style's `icon_size` when it sets one, else the
+     * key's own text size, else the keyboard default.
+     */
+    private fun iconTextSize(): Float = sp(
+        key.keyStyle.iconSize.takeIf { it > 0 }?.toFloat()
+            ?: key.keyTextSize.takeIf { it > 0f }
+            ?: keyboardView.keyTextSize,
+    )
 
     private fun drawBackground(canvas: Canvas, k: Key) {
         val bg = k.getBackgroundDrawable() ?: return
 
         if (bg is GradientDrawable) {
-            k.roundCorner.takeIf { it > 0f }?.let { bg.cornerRadius = dp(it) }
+            val ratio = keyboardView.keyCornerRatio
+            if (ratio > 0f) {
+                bg.cornerRadius = height * ratio
+            } else {
+                k.roundCorner.takeIf { it > 0f }?.let { bg.cornerRadius = dp(it) }
+            }
             k.keyBorder.takeIf { it > 0 }?.let { bg.setStroke(dp(it), k.getBorderColor()) }
         }
 
@@ -329,9 +411,20 @@ class KeyView(
         bg.draw(canvas)
     }
 
+    private companion object {
+        const val PRESS_SCALE = 0.94f
+        const val PRESS_IN_MS = 60L
+        const val PRESS_OUT_MS = 90L
+    }
+
     private fun drawLabel(canvas: Canvas, label: String) {
         val textColor = key.getTextColor()
-        val textSize = sp(key.keyTextSize.takeIf { it > 0 } ?: if (label.length > 1 && !label.isIconFont) keyboardView.keyLongTextSize else keyboardView.keyTextSize)
+        val textSize = if (label.isIconFont) {
+            // A `system_icon` style sizes its glyph with `icon_size`.
+            iconTextSize()
+        } else {
+            sp(key.keyTextSize.takeIf { it > 0 } ?: if (label.length > 1) keyboardView.keyLongTextSize else keyboardView.keyTextSize)
+        }
 
         if (label.isIconFont) {
             drawIcon(canvas, label, textSize.toInt(), textColor, key.keyTextOffsetX, key.keyTextOffsetY)
@@ -339,7 +432,7 @@ class KeyView(
             textPaint.apply {
                 color = textColor
                 this.textSize = textSize
-                typeface = theme.fonts.key
+                typeface = theme.fonts.keyWeighted
                 clearShadowLayer()
             }
 

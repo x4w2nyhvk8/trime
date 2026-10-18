@@ -25,7 +25,11 @@ class ThemeFonts(private val theme: Theme) {
 
     private data class TypefaceKey(val files: List<FileState>)
 
-    private val fontDir get() = File(DataManager.userDataDir, "fonts")
+    /** The global font drop (user data `fonts/`) — the fallback for every file a theme names. */
+    private val globalFontDir get() = File(DataManager.userDataDir, "fonts")
+
+    /** A theme may ship its own font files under `<package>/fonts/`; those win over the global drop. */
+    private val packageFontDir get() = theme.packageDir?.let { File(it, "fonts") }
 
     private val fontFamilyCache =
         object : androidx.collection.LruCache<FileState, FontFamily>(16) {}
@@ -52,6 +56,28 @@ class ThemeFonts(private val theme: Theme) {
     val key: Typeface
         get() = getTypeface(style.keyFont.toList())
 
+    /** [key] at the theme's `key_font_weight` (doc/Theme.md §1). */
+    val keyWeighted: Typeface get() = withWeight(key, style.keyFontWeight)
+
+    /** [candidate] at the theme's `candidate_font_weight`. */
+    val candidateWeighted: Typeface get() = withWeight(candidate, style.candidateFontWeight)
+
+    /**
+     * Android has no numeric weight on `Typeface.create(base, style)` before
+     * API 28, so `medium` falls back to the system's medium family there.
+     */
+    private fun withWeight(base: Typeface, weight: String): Typeface = when (weight.lowercase()) {
+        "medium" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Typeface.create(base, 500, false)
+        } else {
+            Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        }
+
+        "bold" -> Typeface.create(base, Typeface.BOLD)
+
+        else -> base
+    }
+
     val label: Typeface
         get() = getTypeface(style.labelFont.toList())
 
@@ -68,10 +94,16 @@ class ThemeFonts(private val theme: Theme) {
         get() = getTypeface(theme.toolBar.buttonFont.toList())
 
     private fun makeFileStateList(names: List<String>): List<FileState> = names.asSequence()
-        .map { File(fontDir, it) }
+        .map { resolveFontFile(it) }
         .filter { it.isFile }
         .map { FileState(it.path, it.lastModified(), it.length()) }
         .toList()
+
+    /** `<package>/fonts/<name>` first, then the global `fonts/<name>` (doc/Theme.md §3). */
+    private fun resolveFontFile(name: String): File {
+        val packaged = packageFontDir?.let { File(it, name) }
+        return if (packaged != null && packaged.isFile) packaged else File(globalFontDir, name)
+    }
 
     private fun resolveKey(fonts: List<String>): TypefaceKey {
         val existing = makeFileStateList(fonts)

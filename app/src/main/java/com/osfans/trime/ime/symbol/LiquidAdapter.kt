@@ -24,6 +24,15 @@ class LiquidAdapter(
         val ui: LiquidItemUi,
     ) : RecyclerView.ViewHolder(ui.root)
 
+    /** The grid's cell height in px: the panel's height divided by [GRID_ROWS]. */
+    var cellHeight: Int = 0
+
+    companion object {
+        /** The symbol grid is 4 columns wide and 5 rows tall (doc/Theme.md §9). */
+        const val GRID_COLUMNS = 4
+        const val GRID_ROWS = 5
+    }
+
     override fun onCreateViewHolder(
         context: Context,
         parent: ViewGroup,
@@ -34,9 +43,15 @@ class LiquidAdapter(
             scaleMode = AutoScaleTextView.Mode.Proportional
             gravity = gravityCenter
             updateLayoutParams {
-                width = context.dp(scope.theme.liquidKeyboard.singleWidth)
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
             }
         }
+        ui.root.layoutParams =
+            RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                cellHeight.takeIf { it > 0 } ?: ViewGroup.LayoutParams.MATCH_PARENT,
+            )
         return ViewHolder(ui)
     }
 

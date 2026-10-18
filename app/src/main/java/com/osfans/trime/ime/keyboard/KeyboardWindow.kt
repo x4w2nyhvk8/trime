@@ -263,6 +263,28 @@ class KeyboardWindow(di: DI) :
         return final
     }
 
+    /**
+     * Follows Rime's ascii mode (doc/Keyboard.md §3.1): a keyboard that declares
+     * `ascii_keyboard` hands the letters to it when ascii mode turns on, and the
+     * switch back returns to the keyboard that declared it. A keyboard without
+     * the field (number, symbols, editor) is left alone.
+     */
+    fun followAsciiMode(ascii: Boolean) {
+        val current = currentKeyboardId
+        val target =
+            if (ascii) {
+                theme.presetKeyboards[current]?.asciiKeyboard.orEmpty()
+            } else {
+                theme.presetKeyboards.entries
+                    .firstOrNull { it.value.asciiKeyboard == current }
+                    ?.key
+                    .orEmpty()
+            }
+        if (target.isNotEmpty() && target != current && theme.presetKeyboards.containsKey(target)) {
+            switchKeyboard(target)
+        }
+    }
+
     fun switchKeyboard(to: String) {
         val target = evalKeyboard(to)
         ContextCompat.getMainExecutor(service).execute {

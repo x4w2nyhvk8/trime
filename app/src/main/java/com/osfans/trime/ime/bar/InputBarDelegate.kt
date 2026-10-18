@@ -71,11 +71,16 @@ class InputBarDelegate(override val di: DI) :
     private val candidate: CompactCandidateDelegate by instance()
     private val rime: RimeSession by instance()
 
-    val themedHeight = theme.style.run { candidateViewHeight + commentHeight }
+    // One row hosts both the candidate page and the toolbar page (doc/Theme.md
+    // §8), so it must stay tall enough for the candidate text; `tool_bar.height`
+    // lets the toolbar (and its buttons) grow past it.
+    val themedHeight = run {
+        val candidates = theme.style.run { candidateViewHeight + commentHeight }
+        val toolbar = theme.toolBar.height.takeIf { it > 0 } ?: 0
+        maxOf(candidates, toolbar)
+    }
 
     private val prefs = AppPrefs.defaultInstance()
-
-    private val hideQuickBar by prefs.keyboard.hideInputBar
 
     private val clipboardSuggestion by prefs.clipboard.clipboardSuggestion
 
@@ -243,12 +248,6 @@ class InputBarDelegate(override val di: DI) :
 
     val view by lazy {
         ViewAnimator(context).apply {
-            visibility =
-                if (hideQuickBar) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
             background =
                 scope.decorDrawable(
                     "candidate_background",

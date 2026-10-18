@@ -7,8 +7,10 @@ package com.osfans.trime.ime.symbol
 import android.content.Context
 import android.graphics.Color
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter4.BaseQuickAdapter
+import com.osfans.trime.data.theme.ColorManager
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.data.theme.model.LiquidKeyboard
@@ -25,7 +27,6 @@ import splitties.views.dsl.core.wrapContent
 import splitties.views.dsl.recyclerview.recyclerView
 import splitties.views.gravityCenter
 import splitties.views.horizontalPadding
-import splitties.views.recyclerview.horizontalLayoutManager
 
 class LiquidTabsUi(
     override val ctx: Context,
@@ -33,29 +34,47 @@ class LiquidTabsUi(
 ) : Ui {
     private val theme: Theme get() = scope.theme
 
+    private val liquid get() = theme.liquidKeyboard
+
+    /** The tab chip's corner radius, falling back to the candidate pill (doc/Theme.md §9.2). */
+    private val cornerRadiusPx: Float =
+        ctx.dp(liquid.tabCornerRadius.takeIf { it >= 0f } ?: theme.style.candidateCornerRadius)
+
+    private fun colorOf(
+        token: String,
+        fallback: Int,
+    ): Int = token.takeIf { it.isNotEmpty() }
+        ?.let { runCatching { ColorManager.getColor(it) }.getOrNull() }
+        ?: fallback
+
     inner class TabUi : Ui {
         override val ctx = this@LiquidTabsUi.ctx
-        private val cornerRadius = ctx.dp(theme.style.candidateCornerRadius)
 
         val text =
             textView {
-                textSize = theme.style.candidateTextSize
+                textSize = liquid.tabTextSize.takeIf { it > 0f } ?: theme.style.candidateTextSize
                 typeface = theme.fonts.candidate
                 setTextColor(scope.colors.candidateTextColor)
             }
 
         override val root =
             view(::GestureFrame) {
-                minimumWidth = dp(40)
+                minimumWidth = dp(liquid.tabMinWidth.takeIf { it > 0 } ?: 40)
+                val tabPadding = liquid.tabPadding
+                val tabPadPx =
+                    if (tabPadding.isSet) dp(tabPadding.horizontal) else dp(theme.style.candidatePadding)
                 add(
                     text,
                     lParams {
                         gravity = gravityCenter
-                        horizontalPadding = dp(theme.style.candidatePadding)
+                        horizontalPadding = tabPadPx
                     },
                 )
                 background =
-                    roundedRippleDrawable(scope.colors.hilitedCandidateBackColor, cornerRadius)
+                    roundedRippleDrawable(
+                        colorOf(liquid.tabActiveBackColor, scope.colors.hilitedCandidateBackColor),
+                        cornerRadiusPx,
+                    )
             }
 
         fun setText(str: String) {
@@ -63,13 +82,17 @@ class LiquidTabsUi(
         }
 
         fun setActive(active: Boolean) {
+            val activeBack = colorOf(liquid.tabActiveBackColor, scope.colors.hilitedCandidateBackColor)
             val color =
-                if (active) scope.colors.hilitedCandidateTextColor else scope.colors.candidateTextColor
+                if (active) {
+                    colorOf(liquid.tabActiveTextColor, scope.colors.hilitedCandidateTextColor)
+                } else {
+                    colorOf(liquid.tabTextColor, scope.colors.candidateTextColor)
+                }
             val contentColor =
-                if (active) scope.colors.hilitedCandidateBackColor else Color.TRANSPARENT
+                if (active) activeBack else colorOf(liquid.tabBackColor, Color.TRANSPARENT)
             text.setTextColor(color)
-            root.background =
-                roundedRippleDrawable(scope.colors.hilitedCandidateBackColor, cornerRadius, contentColor)
+            root.background = roundedRippleDrawable(activeBack, cornerRadiusPx, contentColor)
         }
     }
 
@@ -98,7 +121,13 @@ class LiquidTabsUi(
                     setText(item!!.label)
                     setActive(position == selected)
                     root.run {
-                        layoutParams = ViewGroup.LayoutParams(wrapContent, matchParent)
+                        val spacing = ctx.dp(liquid.tabSpacing)
+                        layoutParams =
+                            (parent as? RecyclerView)?.let {
+                                RecyclerView.LayoutParams(wrapContent, matchParent).apply {
+                                    marginEnd = spacing
+                                }
+                            } ?: ViewGroup.LayoutParams(wrapContent, matchParent)
                     }
                 }
             }
@@ -123,10 +152,20 @@ class LiquidTabsUi(
 
     override val root =
         recyclerView {
-            layoutManager = horizontalLayoutManager()
+            // The categories stand in a column to the grid's left (doc/Theme.md §9).
+            layoutManager = LinearLayoutManager(ctx, RecyclerView.VERTICAL, false)
             adapter = this@LiquidTabsUi.adapter
             isVerticalScrollBarEnabled = false
             isHorizontalScrollBarEnabled = false
+            if (liquid.tabDivider > 0) {
+                addItemDecoration(
+                    TabDividerDecoration(
+                        ctx.dp(liquid.tabDivider),
+                        colorOf(liquid.tabDividerColor, scope.colors.candidateBorderColor),
+                        ctx.dp(liquid.tabSpacing),
+                    ),
+                )
+            }
         }
 
     fun setTags(tags: List<LiquidKeyboard.Tag>) {

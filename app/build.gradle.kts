@@ -47,6 +47,19 @@ android {
         resValues = true
     }
 
+    // A fixed debug key, committed with the repo, so every build (local and CI) has
+    // the same signature and a new APK installs over the previous one instead of
+    // asking for an uninstall (the auto-generated debug key differs per machine).
+    signingConfigs {
+        create("debugFixed") {
+            storeFile = file("keystore/trime-debug.p12")
+            storePassword = "trime"
+            keyAlias = "trime"
+            keyPassword = "trime"
+            storeType = "PKCS12"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -69,6 +82,7 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debugFixed")
 
             resValue("string", "trime_app_name", "@string/app_name_debug")
         }

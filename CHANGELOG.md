@@ -2,6 +2,130 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2026-10-17
+
+一次**破坏性**的主题格式与按键命名重构。旧主题按 `doc/Theme.md` §7 与 `doc/Keyboard.md` 迁移；
+`doc/key-renames.yaml` 是机器可读的全量映射表。
+
+### 💥 Breaking Changes
+
+- **主题改为目录包**：`assets/shared/<id>/theme.yaml`（+ `day.yaml` 必需、`night.yaml` 可选，缺省回落 day）。
+  单文件主题（`trime.yaml`、`tongwenfeng.trime.yaml`）、`backgrounds/` 目录、librime DSL 扩展
+  （`ThemeDslExpander`）、`style.background_folder`、`preset_color_schemes` 全部移除。
+- **键名统一为 `<角色>Button` 驼峰式**（系统 Intent 键名保持原样）；完整映射见下表。
+- **`styles:` 取代内联 `key_style`**，节点必须完整声明一层（前景/背景）；面板样式与条目样式共用同一张表，
+  同名跨族报错。
+- **`label` 多态**：静态文本 / `{source: schemaName}` / `{source: schemaId}` / `{source: enterLabel}` / `{source: custom}`；
+  移除 `label` 的隐式含义。
+- **按键条目可写 `key: <名字>`**（身份与动作分离）：命中 `preset_keys` 的名字或内置字符键名
+  （`aButton`…`zButton`、`digit0Button`…`digit9Button`、`periodButton`…），显式 `click` 优先。
+- **工具栏字段改名**：`foreground.style` → `foreground.icon`、`foreground.option_styles` → `foreground.option_icons`、
+  `back_style` → `back_icon`；新增 `tool_bar.height`（0 = 沿用候选行高）与 `tool_bar.button_size`（统一按钮尺寸）。
+- **选项面板/剪贴板可配**：新增 `option_panel:` / `clipboard:` 两节 + 面板级与条目级样式槽
+  （按**类型**分槽：命令/开关/标题；普通/置顶/标题）；动作 token `menu_keyboard` → `openOptionPanel`
+  （由默认主题的 `optionPanelButton` preset 携带）。
+- **删掉设置项「隐藏输入工具栏」**：手机端工具栏与编辑键盘是必需品，隐藏会导致盲打。
+- **未知 command 不再崩溃**：以前会落到 Android Intent 兜底并抛 `ActivityNotFoundException`；现在只记警告。
+- **rime 日志**：原生 INFO 日志（leveldb 的 `db entry` 等）压到 WARNING，减少 logcat 刷屏与启动开销。
+
+### 📋 `preset_keys` 完整映射（旧 → 新）
+
+| 旧 | 新 |
+| --- | --- |
+| `Shift_L` | `shiftButton` |
+| `Return` | `returnButton` |
+| `Hide` | `hideButton` |
+| `BackSpace` | `backspaceButton` |
+| `space` | `spaceButton` |
+| `Escape` | `escapeButton` |
+| `Home` | `homeButton` |
+| `Insert` | `insertButton` |
+| `Delete` | `deleteButton` |
+| `End` | `endButton` |
+| `Page_Up` | `pageUpButton` |
+| `Page_Down` | `pageDownButton` |
+| `Left` | `cursorLeftButton` |
+| `Down` | `cursorDownButton` |
+| `Up` | `cursorUpButton` |
+| `Right` | `cursorRightButton` |
+| `select_all` | `selectAllButton` |
+| `Clear` | `clearButton` |
+| `cut` | `cutButton` |
+| `cut_all` | `cutAllButton` |
+| `copy` | `copyButton` |
+| `copy_all` | `copyAllButton` |
+| `paste` | `pasteButton` |
+| `paste_text` | `pasteTextButton` |
+| `share_text` | `shareTextButton` |
+| `redo` | `redoButton` |
+| `undo` | `undoButton` |
+| `F4` | `schemaMenuButton` |
+| `BackToPreviousSyllable` | `backToPreviousSyllableButton` |
+| `CommitRawInput` | `commitRawInputButton` |
+| `CommitScriptText` | `commitScriptTextButton` |
+| `CommitComment` | `commitCommentButton` |
+| `DeleteCandidate` | `deleteCandidateButton` |
+| `Mode_switch` | `modeSwitchButton` |
+| `Zenkaku_Hankaku` | `eisuButton` |
+| `Henkan` | `simplificationSwitchButton` |
+| `Charset_switch` | `charsetSwitchButton` |
+| `Punct_switch` | `punctSwitchButton` |
+| `Keyboard_symbols` | `keyboardSymbolsButton` |
+| `Keyboard_number` | `keyboardNumberButton` |
+| `Keyboard_mini` | `keyboardMiniButton` |
+| `Keyboard_letter` | `keyboardLettersButton` |
+| `Keyboard_default` | `keyboardDefaultButton` |
+| `Keyboard_switch` | `keyboardSwitchButton` |
+| `liquid_keyboard_switch` | `liquidKeyboardSwitchButton` |
+| `liquid_keyboard_exit` | `liquidKeyboardExitButton` |
+| `liquid_keyboard_emoji` | `liquidKeyboardEmojiButton` |
+| `clipboard_window` | `clipboardButton` |
+| `set_theme_ink` | `themeSwitchButton` |
+| `IME_switch` | `imeSwitchButton` |
+| `IME_last` | `imeLastButton` |
+| `IME_next` | `imeNextButton` |
+| `Schema_switch` | `schemaNextButton` |
+| `one_hand_switch_1` | `oneHandLeftButton` |
+| `one_hand_switch_2` | `oneHandRightButton` |
+| `one_hand_switch_3` | `oneHandSwitchButton` |
+| `Help` | `helpButton` |
+| `Info` | `infoButton` |
+| `Menu` | `menuButton` |
+| `Settings` | `settingsButton` |
+| `Theme_settings` | `themeSettingsButton` |
+| `Schema_settings` | `schemaSettingsButton` |
+| `Candidate_switch` | `candidateSwitchButton` |
+| `Comment_switch` | `commentSwitchButton` |
+| `Hint_switch` | `hintSwitchButton` |
+| `Date` | `dateButton` |
+| `ChineseDate` | `chineseDateButton` |
+| `Time` | `timeButton` |
+| `TrimeApp` | `trimeAppButton` |
+| `TrimeCmp` | `trimeComponentButton` |
+| `Homepage` | `openHomepageButton` |
+| `CommitHomepage` | `commitHomepageButton` |
+| `RepeatCommit` | `repeatCommitButton` |
+| `Wiki` | `webSearchButton` |
+| `Google` | `webSearchButton` |
+| `MoeDict` | `webSearchButton` |
+| `Baidu` | `webSearchButton` |
+| `Zdic` | `webSearchButton` |
+| `Zdic2` | `webSearchButton` |
+| `WebSearch` | `webSearchButton` |
+| `Search` | `searchTextButton` |
+| `Share` | `shareButton` |
+| `Deploy` | `deployButton` |
+| `Sync` | `syncButton` |
+| `updateConfig` | `updateConfigButton` |
+| `Return1` | `returnButton`（合并） |
+| `Return2` | `returnButton`（合并） |
+| `space1` | `spaceButton`（合并） |
+| `set_color_ink` | 移除：配色方案（preset_color_schemes）已移除，该键无对应动作 |
+| `Color_switch` | 移除：配色方案选择器已移除（send: PROG_RED 不再有配色弹窗） |
+| `Color_settings` | 移除：配色设置入口已移除（option: color 不再存在） |
+
+原样保留（Android Intent 键名，15 个）：`BRIGHTNESS_DOWN`、`BRIGHTNESS_UP`、`VOLUME_DOWN`、`VOLUME_UP`、`VOLUME_MUTE`、`CALCULATOR`、`CALENDAR`、`CONTACTS`、`ENVELOPE`、`EXPLORER`、`MUSIC`、`POWER`、`SEARCH`、`SLEEP`、`VOICE_ASSIST`。
+
 ## [3.3.12] - 2026-09-01
 
 ### 🚀 Features

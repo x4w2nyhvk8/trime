@@ -39,7 +39,7 @@ class TabUi(
         val firstButtonConfig = theme.toolBar.buttons.firstOrNull()
         val backButtonConfig = firstButtonConfig?.copy(
             foreground = firstButtonConfig.foreground.copy(
-                style = theme.toolBar.backStyle,
+                icon = theme.toolBar.backIcon,
             ),
         )
         backButton = if (backButtonConfig != null) {
