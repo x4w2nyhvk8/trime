@@ -15,6 +15,8 @@ import com.osfans.trime.daemon.launchOnReady
 import com.osfans.trime.data.SymbolHistory
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.data.theme.model.LiquidKeyboard
+import com.osfans.trime.ime.broadcast.EnterKeyDisplayDelegate
+import com.osfans.trime.ime.broadcast.InputBroadcastReceiver
 import com.osfans.trime.ime.core.TrimeInputMethodService
 import com.osfans.trime.ime.keyboard.CommonKeyboardActionListener
 import com.osfans.trime.ime.keyboard.KeyboardWindow
@@ -26,7 +28,8 @@ import org.kodein.di.instance
 
 class LiquidWindow(di: DI) :
     BoardWindow.BarBoardWindow(di),
-    ResidentWindow {
+    ResidentWindow,
+    InputBroadcastReceiver {
     override val showTitle = false
 
     private val service: TrimeInputMethodService by instance()
@@ -34,6 +37,7 @@ class LiquidWindow(di: DI) :
     private val scope: ThemeScope by instance()
     private val windowManager: BoardWindowManager by instance()
     private val commonKeyboardActionListener: CommonKeyboardActionListener by instance()
+    private val enterKeyDisplay: EnterKeyDisplayDelegate by instance()
 
     private lateinit var liquidLayout: LiquidLayout
     private val symbolHistory = SymbolHistory(180)
@@ -74,7 +78,7 @@ class LiquidWindow(di: DI) :
     override val key: ResidentWindow.Key
         get() = LiquidWindow
 
-    override fun onCreateView(): View = LiquidLayout(context, scope, commonKeyboardActionListener).apply {
+    override fun onCreateView(): View = LiquidLayout(context, scope, commonKeyboardActionListener) { enterKeyDisplay.keyLabel }.apply {
         liquidLayout = this
         tabsUi.apply {
             setTags(scope.theme.liquidKeyboard.getTagList())
@@ -93,6 +97,10 @@ class LiquidWindow(di: DI) :
     override fun onAttached() {}
 
     override fun onDetached() {}
+
+    override fun onEnterKeyLabelUpdate(label: String) {
+        if (::liquidLayout.isInitialized) liquidLayout.updateEnterLabel(label)
+    }
 
     override fun refreshColors() {
         if (::liquidLayout.isInitialized) liquidLayout.refreshColors()

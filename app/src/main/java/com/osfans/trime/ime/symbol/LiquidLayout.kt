@@ -43,12 +43,16 @@ class LiquidLayout(
     context: Context,
     private val scope: ThemeScope,
     commonKeyboardActionListener: CommonKeyboardActionListener,
+    private val enterLabel: () -> String,
 ) : ConstraintLayout(context) {
     private val theme: Theme get() = scope.theme
 
     // TODO: 继承一个键盘视图嵌入到这里，而不是自定义一个视图
     // The fixed-key items, kept so their colors can be refreshed on scheme switches.
     private val fixedKeyItems = mutableListOf<LiquidItemUi>()
+
+    // Fixed keys that use the dynamic `enter_labels` label.
+    private val enterLabelItems = mutableListOf<LiquidItemUi>()
 
     private val fixedKeyBar =
         constraintLayout {
@@ -61,7 +65,13 @@ class LiquidLayout(
                         val presetKey = theme.presetKeys[presetKeyName]
                         val ui = LiquidItemUi(context, scope)
                         fixedKeyItems += ui
-                        ui.mainText.text = presetKey?.label ?: ""
+                        val label = presetKey?.label.orEmpty()
+                        if (label == "enter_labels") {
+                            enterLabelItems += ui
+                            ui.mainText.text = enterLabel()
+                        } else {
+                            ui.mainText.text = label
+                        }
                         ui.root.apply {
                             isRepeatable = presetKey?.repeatable ?: false
                             onClick = {
@@ -80,7 +90,9 @@ class LiquidLayout(
                         btns.forEachIndexed { i, btn ->
                             add(
                                 btn,
-                                lParams(wrapContent, matchConstraints) {
+                                lParams(wrapContent, 0) {
+                                    verticalWeight = 1f
+                                    centerHorizontally()
                                     if (i == 0) {
                                         topOfParent()
                                     } else {
@@ -104,7 +116,9 @@ class LiquidLayout(
                         btns.forEachIndexed { i, btn ->
                             add(
                                 btn,
-                                lParams(wrapContent, matchConstraints) {
+                                lParams(0, wrapContent) {
+                                    horizontalWeight = 1f
+                                    centerVertically()
                                     if (i == 0) {
                                         startOfParent()
                                     } else {
@@ -151,7 +165,7 @@ class LiquidLayout(
                 )
                 add(
                     fixedKeyBar,
-                    lParams(wrapContent, wrapContent) {
+                    lParams(matchConstraints, wrapContent) {
                         centerHorizontally()
                         topOfParent()
                         bottomToTopOf(root)
@@ -170,7 +184,7 @@ class LiquidLayout(
                 )
                 add(
                     fixedKeyBar,
-                    lParams(wrapContent, wrapContent) {
+                    lParams(matchConstraints, wrapContent) {
                         centerHorizontally()
                         topToBottomOf(root)
                         bottomOfParent()
@@ -216,6 +230,11 @@ class LiquidLayout(
                 )
             }
         }
+    }
+
+    /** Updates fixed keys labelled `enter_labels` to the current Enter action label. */
+    fun updateEnterLabel(label: String) {
+        enterLabelItems.forEach { it.mainText.text = label }
     }
 
     fun refreshColors() {
