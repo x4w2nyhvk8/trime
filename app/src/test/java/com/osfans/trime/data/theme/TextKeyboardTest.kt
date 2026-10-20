@@ -127,10 +127,10 @@ class TextKeyboardTest :
                 )
 
             Then("all four are read under their snake case names") {
-                key.hilitedKeyTextColor shouldBe "0xffff0000"
-                key.hilitedKeyBackColor shouldBe "0xff00ff00"
-                key.hilitedKeyBorderColor shouldBe "0xff0000ff"
-                key.hilitedKeySymbolColor shouldBe "0xff00ffff"
+                key.keyPressedTextColor shouldBe "0xffff0000"
+                key.keyPressedBackColor shouldBe "0xff00ff00"
+                key.keyPressedBorderColor shouldBe "0xff0000ff"
+                key.keyPressedSymbolColor shouldBe "0xff00ffff"
             }
         }
     })

@@ -166,9 +166,6 @@ object ThemeLoader {
         loadResource: (String) -> YamlNode?,
     ): Theme = ThemeYaml.parser.decodeFromYamlNode<Theme>(expandSource(themeId, node, loadResource)).withRoles()
 
-    /** Fills each preset's missing behavior fields from its `role:` (doc/Theme.md §4). */
-    internal fun Theme.withRoles(): Theme = copy(presetKeys = presetKeys.mapValues { (_, key) -> key.withRoleDefaults() })
-
     /** Applies the supported DSL subset to [node] and returns its root mapping. */
     private fun expandSource(
         themeId: String,
@@ -324,3 +321,11 @@ object ThemeLoader {
         }
     }
 }
+
+/**
+ * Fills each preset's missing behavior fields from its `role:` (doc/Theme.md §4).
+ *
+ * Top-level (instead of a [ThemeLoader] member) so JVM unit tests, which decode
+ * themes directly without going through [ThemeLoader], can apply the same defaults.
+ */
+internal fun Theme.withRoles(): Theme = copy(presetKeys = presetKeys.mapValues { (_, key) -> key.withRoleDefaults() })

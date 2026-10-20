@@ -46,13 +46,16 @@ enum class KeyRole(
     CLIPBOARD("clipboard", command = "clipboard_window"),
     HIDE("hide", send = "BACK"),
     EDITOR("editor", send = "Eisu_toggle", select = "editor"),
+    FULL_SHAPE("full_shape", send = "SWITCH_CHARSET", toggle = "full_shape"),
+    SIMPLIFICATION("simplification", send = "SWITCH_CHARSET", toggle = "simplification"),
+    EXTENDED_CHARSET("extended_charset", send = "SWITCH_CHARSET", toggle = "extended_charset"),
+    ASCII_PUNCT("ascii_punct", send = "SWITCH_CHARSET", toggle = "ascii_punct"),
     ;
 
     /** The registered role for [raw], folding case, `-` and `_` like the sources. */
     fun matches(raw: String): Boolean {
-        val normalized = raw.trim().replace("-", "_").lowercase()
-        val name = yamlName.replace("_", "")
-        return yamlName == normalized || name == normalized.replace("_", "")
+        val norm = raw.trim().replace("[-_]".toRegex(), "").lowercase()
+        return yamlName.replace("_", "").lowercase() == norm
     }
 
     companion object {

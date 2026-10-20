@@ -42,8 +42,8 @@ class SegmentUi(override val ctx: Context, private val scope: ThemeScope) : Ui {
             intArrayOf(android.R.attr.state_selected),
         ),
         intArrayOf(
-            scope.colors.keyTextColor,
-            scope.colors.hilitedKeyTextColor,
+            scope.colors.keyNormalTextColor,
+            scope.colors.keyPressedTextColor,
         ),
     )
 

@@ -90,16 +90,16 @@ window:               # 候选窗口（悬浮窗）参数
 
 # 最好保留一项，防止其他主题使用 __include 时无法加载
 fallback_colors:
-  candidate_normal_text_color: text_normal_text_color
+  candidate_normal_text_color: preedit_normal_text_color
 # 以下值是程序内置的，你也可以在这里自定义，这会覆盖默认值
 #
 #  comment_normal_text_color: candidate_normal_text_color
 #  keyboard_normal_border_color: keyboard_normal_back_color
 #  candidate_normal_separator_color: keyboard_normal_border_color
-#  text_selected_text_color: text_normal_text_color
-#  text_selected_back_color: keyboard_normal_back_color
-#  candidate_selected_text_color: text_selected_text_color
-#  candidate_selected_back_color: text_selected_back_color
+#  preedit_selected_text_color: preedit_normal_text_color
+#  preedit_selected_back_color: keyboard_normal_back_color
+#  candidate_selected_text_color: preedit_selected_text_color
+#  candidate_selected_back_color: preedit_selected_back_color
 #  label_selected_text_color: candidate_selected_text_color # 高亮候选序号 颜色
 #  comment_selected_text_color: comment_normal_text_color
 #  key_pressed_back_color: candidate_selected_back_color
@@ -133,8 +133,8 @@ fallback_colors:
 #  root_normal_back_color: keyboard_normal_back_color # 整个键盘区+候选栏的背景图/色
 #  candidate_normal_back_color: keyboard_normal_back_color #候选栏的整体背景图/色
 #  keyboard_normal_back_color: keyboard_normal_border_color #键盘区的背景图/色
-#  panel_normal_back_color: keyboard_normal_back_color # liquidKeyboard的背景图/色
-#  text_normal_back_color: keyboard_normal_back_color #编码区背景，即悬浮窗背景
+#  liquid_keyboard_normal_back_color: keyboard_normal_back_color # liquidKeyboard的背景图/色
+#  preedit_normal_back_color: keyboard_normal_back_color #编码区背景，即悬浮窗背景
 #  long_text_normal_back_color: key_normal_back_color #长文本按键的背景(剪贴板）
 
 preset_color_schemes:
@@ -145,7 +145,7 @@ preset_color_schemes:
     candidate_normal_separator_color: 0xc1c7ca #候選分割背景
     candidate_normal_text_color: 0x5a676e #候選文字
     comment_normal_text_color: 0x7b868c #提示
-    text_selected_back_color: 0xccd3d7da #標明編碼背景
+    preedit_selected_back_color: 0xccd3d7da #標明編碼背景
     candidate_selected_back_color: 0xd3d7da #標明候選背景
     candidate_selected_text_color: 0x000000 #標明候選文字
     comment_selected_text_color: 0x000000 #標明提示
@@ -156,7 +156,7 @@ preset_color_schemes:
     function_key_pressed_text_color: 0x000000 #標明按鍵關閉狀態文字
     function_key_on_pressed_back_color: 0xd3d7da #標明按鍵打開狀態背景
     function_key_on_pressed_text_color: 0x000000 #標明按鍵打開狀態文字
-    text_selected_text_color: 0x23948e #標明編碼
+    preedit_selected_text_color: 0x23948e #標明編碼
     key_normal_back_color: 0xeceff1 #按鍵背景
     #key_normal_border_color: 0xeceff1 #按鍵邊框
     key_normal_symbol_color: 0x5f6b73 #按鍵符號
@@ -170,29 +170,29 @@ preset_color_schemes:
     preview_normal_back_color: 0x55bfbfbf #按鍵提示背景
     preview_normal_text_color: 0x23948e #按鍵提示文字
     key_normal_shadow_color: 0x000000 #按鍵文字陰影
-    text_normal_text_color: 0x5a676e #編碼
-    text_normal_back_color: 0xcce4e7e9 #編碼區背景
+    preedit_normal_text_color: 0x5a676e #編碼
+    preedit_normal_back_color: 0xcce4e7e9 #編碼區背景
 
   aqua:
     name: 碧水／Aqua
     author: 佛振 <chen.sst@gmail.com>
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xeeeeec
     keyboard_normal_border_color: 0xe0e0e0
-    text_selected_text_color: 0x000000
-    text_selected_back_color: 0xd4d4d4
+    preedit_selected_text_color: 0x000000
+    preedit_selected_back_color: 0xd4d4d4
     candidate_selected_text_color: 0xffffff
     candidate_selected_back_color: 0x0a3afa
 
   azure:
     name: 青天／Azure
     author: 佛振 <chen.sst@gmail.com>
-    text_normal_text_color: 0xcae8ff
+    preedit_normal_text_color: 0xcae8ff
     candidate_normal_text_color: 0xeef8ff
     keyboard_normal_back_color: 0x014e8b
     keyboard_normal_border_color: 0x014e8b
-    text_selected_text_color: 0xeef8ff
-    text_selected_back_color: 0x014e8b
+    preedit_selected_text_color: 0xeef8ff
+    preedit_selected_back_color: 0x014e8b
     candidate_selected_text_color: 0xfffe7f
     candidate_selected_back_color: 0x015ea9
     comment_normal_text_color: 0x6496c6
@@ -200,45 +200,45 @@ preset_color_schemes:
   luna:
     name: 明月／Luna
     author: 佛振 <chen.sst@gmail.com>
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0xcccccc
-    text_selected_text_color: 0x000000
-    text_selected_back_color: 0xffff7f
+    preedit_selected_text_color: 0x000000
+    preedit_selected_back_color: 0xffff7f
     candidate_selected_text_color: 0xffffff
     candidate_selected_back_color: 0x000000
 
   ink:
     name: 墨池／Ink
     author: 佛振 <chen.sst@gmail.com>
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0x000000
-    text_selected_text_color: 0x000000
-    text_selected_back_color: 0xdddddd
+    preedit_selected_text_color: 0x000000
+    preedit_selected_back_color: 0xdddddd
     candidate_selected_text_color: 0xffffff
     candidate_selected_back_color: 0x000000
 
   lost_temple:
     name: 孤寺／Lost Temple
     author: 佛振 <chen.sst@gmail.com>, based on ir_black
-    text_normal_text_color: 0xf6f3e8
+    preedit_normal_text_color: 0xf6f3e8
     keyboard_normal_back_color: 0x444444
     keyboard_normal_border_color: 0x444444
-    text_selected_text_color: 0xcae682
-    text_selected_back_color: 0x222222
+    preedit_selected_text_color: 0xcae682
+    preedit_selected_back_color: 0x222222
     candidate_selected_text_color: 0x000000
     candidate_selected_back_color: 0xcae682
 
   dark_temple:
     name: 暗堂／Dark Temple
     author: 佛振 <chen.sst@gmail.com>, based on ir_black
-    text_normal_text_color: 0xdaf692
+    preedit_normal_text_color: 0xdaf692
     candidate_normal_text_color: 0xe6e3d8
     keyboard_normal_back_color: 0x222222
     keyboard_normal_border_color: 0x222222
-    text_selected_text_color: 0x9acfff
-    text_selected_back_color: 0x222222
+    preedit_selected_text_color: 0x9acfff
+    preedit_selected_back_color: 0x222222
     candidate_selected_text_color: 0xdaf692
     candidate_selected_back_color: 0x333333
     comment_normal_text_color: 0xff6c60
@@ -246,24 +246,24 @@ preset_color_schemes:
   starcraft:
     name: 星際我爭霸／StarCraft
     author: Contralisk <contralisk@gmail.com>, original artwork by Blizzard Entertainment
-    text_normal_text_color: 0x88aacc
+    preedit_normal_text_color: 0x88aacc
     candidate_normal_text_color: 0x55bb30
     keyboard_normal_back_color: 0x000000
     keyboard_normal_border_color: 0xa01010
-    text_selected_text_color: 0x96cbfe
-    text_selected_back_color: 0x000000
+    preedit_selected_text_color: 0x96cbfe
+    preedit_selected_back_color: 0x000000
     candidate_selected_text_color: 0xa8ff60
     candidate_selected_back_color: 0x000000
 
   google:
     name: 谷歌／Google
     author: skoj <skoj@qq.com>
-    text_normal_text_color: 0x666666
+    preedit_normal_text_color: 0x666666
     candidate_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xFFFFFF
     keyboard_normal_border_color: 0xE2E2E2
-    text_selected_text_color: 0x000000
-    text_selected_back_color: 0xFFFFFF
+    preedit_selected_text_color: 0x000000
+    preedit_selected_back_color: 0xFFFFFF
     candidate_selected_text_color: 0xFFFFFF
     candidate_selected_back_color: 0x3975CE
 
@@ -272,8 +272,8 @@ preset_color_schemes:
     author: "Aben <tntaben@gmail.com>, based on Ethan Schoonover's Solarized color scheme"
     keyboard_normal_back_color: 0x002b36
     keyboard_normal_border_color: 0x002b36
-    text_normal_text_color: 0x859900
-    text_selected_text_color: 0x2aa198
+    preedit_normal_text_color: 0x859900
+    preedit_selected_text_color: 0x2aa198
     candidate_normal_text_color: 0x839496
     candidate_selected_text_color: 0xffffff
     candidate_selected_back_color: 0xd33682
@@ -281,14 +281,14 @@ preset_color_schemes:
   tintin:
     name: "丁丁／ Tintin"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x0095d9
     keyboard_normal_border_color: 0x0095d9
     label_normal_text_color: 0xffffff
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
-    text_selected_text_color: 0x91d8f7
-    text_selected_back_color: 0x0095d9
+    preedit_selected_text_color: 0x91d8f7
+    preedit_selected_back_color: 0x0095d9
     candidate_selected_text_color: 0xffffff
     comment_selected_text_color: 0xffffff
     candidate_selected_back_color: 0xf16421
@@ -296,12 +296,12 @@ preset_color_schemes:
   dota_2:
     name: "DOTA 2"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x100f12
     keyboard_normal_border_color: 0x100f12
     label_normal_text_color: 0x8f755c
-    text_selected_text_color: 0xdd4118
-    text_selected_back_color: 0x100f12
+    preedit_selected_text_color: 0xdd4118
+    preedit_selected_back_color: 0x100f12
     candidate_normal_text_color: 0x8f755c
     comment_normal_text_color: 0x8f755c
     candidate_selected_text_color: 0xffffff
@@ -311,12 +311,12 @@ preset_color_schemes:
   brasil:
     name: "笆悉／Brasil"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x119355
     keyboard_normal_border_color: 0x119355
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0x17367d
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0x17367d
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -326,12 +326,12 @@ preset_color_schemes:
   doraemon:
     name: "銅鑼衛門／Doraemon"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xe50012
+    preedit_normal_text_color: 0xe50012
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0x009fe8
     label_normal_text_color: 0x009fe8
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0xe50012
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0xe50012
     candidate_normal_text_color: 0x009fe8
     comment_normal_text_color: 0x009fe8
     candidate_selected_text_color: 0xffffff
@@ -341,12 +341,12 @@ preset_color_schemes:
   espagna:
     name: "埃斯巴尼亞／España"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0xc30d23
     keyboard_normal_border_color: 0xc30d23
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0xf7b52c
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0xf7b52c
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -356,12 +356,12 @@ preset_color_schemes:
   gholabok:
     name: "胡蘿菔／Gholabok"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0xe83929
     keyboard_normal_border_color: 0xe83929
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0x007b43
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0x007b43
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -371,12 +371,12 @@ preset_color_schemes:
   kuma_shuzboz:
     name: "熊出沒／Kuma Shuzboz"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xf8b62d
     keyboard_normal_border_color: 0xf8b62d
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xf8b62d
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0xf8b62d
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -386,12 +386,12 @@ preset_color_schemes:
   kuon:
     name: "琨／Kuon"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x3eb370
     keyboard_normal_border_color: 0x3eb370
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0x3eb370
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0x3eb370
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0x3eb370
@@ -401,12 +401,12 @@ preset_color_schemes:
   macau:
     name: "澳門／Macau"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffd900
+    preedit_normal_text_color: 0xffd900
     keyboard_normal_back_color: 0x00a381
     keyboard_normal_border_color: 0x00a381
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0xffd900
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0xffd900
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffd900
@@ -416,12 +416,12 @@ preset_color_schemes:
   nba:
     name: "NBA"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x006ab7
     keyboard_normal_border_color: 0x006ab7
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xd71e54
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0xd71e54
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -431,12 +431,12 @@ preset_color_schemes:
   ps4:
     name: "遊驛四／PS4"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x000000
     keyboard_normal_border_color: 0x000000
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0x595757
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0x595757
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -446,12 +446,12 @@ preset_color_schemes:
   skype:
     name: "斯蓋普／Skype"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x00adef
     keyboard_normal_border_color: 0x00adef
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0x00adef
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0x00adef
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0x00adef
@@ -461,12 +461,12 @@ preset_color_schemes:
   xbox_silver:
     name: "銀色叉盒／Xbox Silver"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0x8dc21f
+    preedit_normal_text_color: 0x8dc21f
     keyboard_normal_back_color: 0xeeeeef
     keyboard_normal_border_color: 0xeeeeef
     label_normal_text_color: 0xb5f05b
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0xb5f05b
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0xb5f05b
     candidate_normal_text_color: 0x8dc21f
     comment_normal_text_color: 0x8dc21f
     candidate_selected_text_color: 0xffffff
@@ -476,12 +476,12 @@ preset_color_schemes:
   youtube:
     name: "YouTube"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xdedede
     keyboard_normal_border_color: 0xdedede
     label_normal_text_color: 0x000000
-    text_selected_text_color: 0xc30d23
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0xc30d23
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0x000000
     comment_normal_text_color: 0x000000
     candidate_selected_text_color: 0xffffff
@@ -491,14 +491,14 @@ preset_color_schemes:
   so_young:
     name: "致青春／So Young"
     author: "五磅兔 <zcunlin@foxmail.com>"
-    text_normal_text_color: 0xd33682
+    preedit_normal_text_color: 0xd33682
     keyboard_normal_back_color: 0xfdf6e3
     keyboard_normal_border_color: 0xeee8d5
     label_normal_text_color: 0x93a1a1
     candidate_normal_text_color: 0x657b83
     comment_normal_text_color: 0x268bd2
-    text_selected_text_color: 0x839496
-    text_selected_back_color: 0xeee8d5
+    preedit_selected_text_color: 0x839496
+    preedit_selected_back_color: 0xeee8d5
     candidate_selected_text_color: 0xeee8d5
     comment_selected_text_color: 0xeee8d5
     candidate_selected_back_color: 0x2aa198
@@ -506,12 +506,12 @@ preset_color_schemes:
   smurfs:
     name: "藍精靈／Smurfs"
     author: "skoj <skoj@qq.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x1778bf
     keyboard_normal_border_color: 0xe0edf5
     label_normal_text_color: 0x1778bf
-    text_selected_text_color: 0x6dbcdb
-    text_selected_back_color: 0x1778bf
+    preedit_selected_text_color: 0x6dbcdb
+    preedit_selected_back_color: 0x1778bf
     candidate_normal_text_color: 0xf6f6f6
     comment_normal_text_color: 0xf6f6f6
     candidate_selected_text_color: 0xf6f6f6
@@ -521,12 +521,12 @@ preset_color_schemes:
   wii:
     name: "Wii"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0x595757
+    preedit_normal_text_color: 0x595757
     keyboard_normal_back_color: 0xefefef
     keyboard_normal_border_color: 0xefefef
     label_normal_text_color: 0xc8c9ca
-    text_selected_text_color: 0x33ccff
-    text_selected_back_color: 0xefefef
+    preedit_selected_text_color: 0x33ccff
+    preedit_selected_back_color: 0xefefef
     candidate_normal_text_color: 0x595757
     comment_normal_text_color: 0xc8c9ca
     candidate_selected_text_color: 0xffffff
@@ -536,12 +536,12 @@ preset_color_schemes:
   android:
     name: "安卓／Android"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x1c7399
     keyboard_normal_border_color: 0x1c7399
     label_normal_text_color: 0x3588c1
-    text_selected_text_color: 0xa8c450
-    text_selected_back_color: 0x1c7399
+    preedit_selected_text_color: 0xa8c450
+    preedit_selected_back_color: 0x1c7399
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -551,11 +551,11 @@ preset_color_schemes:
   cool_breeze:
     name: "清風／Cool Breeze"
     author: "skoj <skoj@qq.com>"
-    text_normal_text_color: 0xFF0000
+    preedit_normal_text_color: 0xFF0000
     keyboard_normal_back_color: 0xFBFBFF
     keyboard_normal_border_color: 0xAAAAFF
-    text_selected_text_color: 0xCE0000
-    text_selected_back_color: 0xFBFBFF
+    preedit_selected_text_color: 0xCE0000
+    preedit_selected_back_color: 0xFBFBFF
     candidate_normal_text_color: 0x009100
     candidate_selected_text_color: 0x3A006F
     candidate_selected_back_color: 0xACD6FF
@@ -563,12 +563,12 @@ preset_color_schemes:
   google_plus:
     name: "Google+"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xc8c9ca
+    preedit_normal_text_color: 0xc8c9ca
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0xdd4b39
     label_normal_text_color: 0xc8c9ca
-    text_selected_text_color: 0xdd4b39
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0xdd4b39
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0xdd4b39
     comment_normal_text_color: 0xc8c9ca
     candidate_selected_text_color: 0xffffff
@@ -578,11 +578,11 @@ preset_color_schemes:
   modern_warfare:
     name: "現代戰爭／Modern Warfare"
     author: P1461
-    text_normal_text_color: 0x70bc14
+    preedit_normal_text_color: 0x70bc14
     keyboard_normal_back_color: 0x0d1b0a
     keyboard_normal_border_color: 0x83ad4b
-    text_selected_text_color: 0xfcfdfb
-    text_selected_back_color: 0x060e03
+    preedit_selected_text_color: 0xfcfdfb
+    preedit_selected_back_color: 0x060e03
     candidate_normal_text_color: 0xdcfeab
     comment_normal_text_color: 0xfbfdfc
     candidate_selected_text_color: 0xdcfeab
@@ -591,11 +591,11 @@ preset_color_schemes:
   brisk:
     name: "輕盈／Brisk"
     author: "skoj <skoj@qq.com>"
-    text_normal_text_color: 0xdc3822
+    preedit_normal_text_color: 0xdc3822
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0x333333
-    text_selected_text_color: 0xdc3822
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0xdc3822
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0x575757
     candidate_selected_text_color: 0xdc3822
     candidate_selected_back_color: 0xffffff
@@ -603,12 +603,12 @@ preset_color_schemes:
   starcraft_ii:
     name: "星際爭霸Ⅱ／StarCraft Ⅱ"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0xffffff
+    preedit_normal_text_color: 0xffffff
     keyboard_normal_back_color: 0x0a1929
     keyboard_normal_border_color: 0x464b53
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xffffff
-    text_selected_back_color: 0x0a1017
+    preedit_selected_text_color: 0xffffff
+    preedit_selected_back_color: 0x0a1017
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xffffff
     candidate_selected_text_color: 0xffffff
@@ -618,12 +618,12 @@ preset_color_schemes:
   steam:
     name: "Steam"
     author: "Patricivs <ipatrickmac@me.com>"
-    text_normal_text_color: 0x528ccd
+    preedit_normal_text_color: 0x528ccd
     keyboard_normal_back_color: 0x171614
     keyboard_normal_border_color: 0x383635
     label_normal_text_color: 0xffffff
-    text_selected_text_color: 0xd1cfc9
-    text_selected_back_color: 0x171614
+    preedit_selected_text_color: 0xd1cfc9
+    preedit_selected_back_color: 0x171614
     candidate_normal_text_color: 0xffffff
     comment_normal_text_color: 0xa9a7a7
     candidate_selected_text_color: 0xffffff
@@ -637,12 +637,12 @@ preset_color_schemes:
     #   http://www.flypy.com/images/mr.png
     name: "小鶴飛揚／flypy"
     author: "Pal.lxk <Pal.lxk@gmail.com>"
-    text_normal_text_color: 0x000000
+    preedit_normal_text_color: 0x000000
     keyboard_normal_back_color: 0xffffff
     keyboard_normal_border_color: 0xc6c6c6
     label_normal_text_color: 0x0080ff
-    text_selected_text_color: 0x0080ff
-    text_selected_back_color: 0xffffff
+    preedit_selected_text_color: 0x0080ff
+    preedit_selected_back_color: 0xffffff
     candidate_normal_text_color: 0x0080ff
     comment_normal_text_color: 0x0080ff
     candidate_selected_text_color: 0xb00000
@@ -653,9 +653,9 @@ preset_color_schemes:
     author: Mijiag
     keyboard_normal_back_color: 0xe3e3e3
     keyboard_normal_border_color: 0x000000
-    text_normal_text_color: 0x000000
-    text_selected_text_color: 0xe3e3e3
-    text_selected_back_color: 0x91071a
+    preedit_normal_text_color: 0x000000
+    preedit_selected_text_color: 0xe3e3e3
+    preedit_selected_back_color: 0x91071a
     candidate_selected_text_color: 0xe3e3e3
     candidate_selected_back_color: 0x730b6f
     candidate_normal_text_color: 0x000000
@@ -666,7 +666,7 @@ preset_color_schemes:
     keyboard_normal_border_color: 0xffffff
     candidate_normal_text_color: 0x7f7f7f
     comment_normal_text_color: 0x7f7f7f
-    text_selected_back_color: 0xffffff
+    preedit_selected_back_color: 0xffffff
     candidate_selected_back_color: 0xffffff
     candidate_selected_text_color: 0x7f7f7f
     comment_selected_text_color: 0x7f7f7f
@@ -675,12 +675,12 @@ preset_color_schemes:
     function_key_pressed_text_color: 0x7f7f7f
     function_key_on_pressed_back_color: 0xffffff
     function_key_on_pressed_text_color: 0x7f7f7f
-    text_selected_text_color: 0x7f7f7f
+    preedit_selected_text_color: 0x7f7f7f
     key_normal_text_color: 0x7f7f7f
     label_normal_text_color: 0x7f7f7f
     name: "一葉孤城"
     function_key_normal_text_color: 0x7f7f7f
-    text_normal_text_color: 0x7f7f7f
+    preedit_normal_text_color: 0x7f7f7f
 
 liquid_keyboard:
   # 目前只能直接写参数，不支持变量或者fallback机制。
@@ -858,21 +858,21 @@ android_keys:
 
 preset_keys:
   # 安卓
-  BRIGHTNESS_DOWN: {label: 亮度-, send: BRIGHTNESS_DOWN}
-  BRIGHTNESS_UP: {label: 亮度+, send: BRIGHTNESS_UP}
-  CALCULATOR: {label: 計算機, send: CALCULATOR}
-  CALENDAR: {label: 日曆, send: CALENDAR}
-  CONTACTS: {label: 電話簿, send: CONTACTS}
-  ENVELOPE: {label: 信箱, send: ENVELOPE}
-  EXPLORER: {label: 瀏覽器, send: EXPLORER}
-  MUSIC: {label: 音樂, send: MUSIC}
-  POWER: {label: 電源, send: POWER}
-  SEARCH: {label: 搜尋, send: SEARCH}
-  SLEEP: {label: 休眠, send: SLEEP}
-  VOICE_ASSIST: {label: 語音, send: VOICE_ASSIST}
-  VOLUME_DOWN: {label: 音量-, send: VOLUME_DOWN}
-  VOLUME_UP: {label: 音量+, send: VOLUME_UP}
-  VOLUME_MUTE: {label: 靜音, send: VOLUME_MUTE}
+  BrightnessDownKey: {label: 亮度-, send: BRIGHTNESS_DOWN}
+  BrightnessUpKey: {label: 亮度+, send: BRIGHTNESS_UP}
+  CalculatorKey: {label: 計算機, send: CALCULATOR}
+  CalendarKey: {label: 日曆, send: CALENDAR}
+  ContactsKey: {label: 電話簿, send: CONTACTS}
+  EnvelopeKey: {label: 信箱, send: ENVELOPE}
+  ExplorerKey: {label: 瀏覽器, send: EXPLORER}
+  MusicKey: {label: 音樂, send: MUSIC}
+  PowerKey: {label: 電源, send: POWER}
+  SearchKey: {label: 搜尋, send: SEARCH}
+  SleepKey: {label: 休眠, send: SLEEP}
+  VoiceAssistKey: {label: 語音, send: VOICE_ASSIST}
+  VolumeDownKey: {label: 音量-, send: VOLUME_DOWN}
+  VolumeUpKey: {label: 音量+, send: VOLUME_UP}
+  VolumeMuteKey: {label: 靜音, send: VOLUME_MUTE}
   # 編輯
   ShiftKey: {role: shift, label: Shift, shift_lock: ascii_long}
   EnterKey: {role: enter, label: enter_labels}
@@ -910,10 +910,10 @@ preset_keys:
   DeleteCandidateKey: {label: 刪詞, send: Control+Delete}
   # rime狀態
   ModeSwitchKey: {role: language, states: [ 中文, 西文 ]}
-  EisuKey: {toggle: full_shape, send: SWITCH_CHARSET, states: [ 半角, 全角 ]}
-  HenkanKey: {toggle: simplification, send: SWITCH_CHARSET, states: [ 漢字, 汉字 ]}
-  CharsetSwitchKey: {toggle: extended_charset, send: SWITCH_CHARSET, states: [ 常用, 增廣 ]}
-  PunctSwitchKey: {toggle: ascii_punct, send: SWITCH_CHARSET, states: [ 。，, ．， ]}
+  FullShapeKey: {role: full_shape, states: [ 半角, 全角 ]}
+  HenkanKey: {role: simplification, states: [ 漢字, 汉字 ]}
+  CharsetSwitchKey: {role: extended_charset, states: [ 常用, 增廣 ]}
+  PunctSwitchKey: {role: ascii_punct, states: [ 。，, ．， ]}
   #切换键盘
   SymbolPanelKey: {label: 符號, send: Eisu_toggle, select: symbols}
   NumberKey: {label: 數字, send: Eisu_toggle, select: number}
@@ -1263,7 +1263,7 @@ preset_keyboards:
     - {click: ShiftKey}
     - {click: SymbolPanelKey, long_click: NumberKey}
     - {click: ModeSwitchKey, long_click: MenuKey}
-    - {click: SpaceKey, long_click: VOICE_ASSIST, width: 30}
+    - {click: SpaceKey, long_click: VoiceAssistKey, width: 30}
     - {click: "'", long_click: '"'}
     - {click: BackspaceKey, swipe_right: DeleteKey, swipe_left: EscapeKey, width: 15}
     - {click: EnterKey, long_click: CommitCommentKey, width: 15}
@@ -1659,7 +1659,7 @@ preset_keyboards:
     - {click: ShiftKey}
     - {click: SymbolPanelKey, long_click: NumberKey}
     - {click: ModeSwitchKey, long_click: MenuKey}
-    - {click: SpaceKey, long_click: VOICE_ASSIST, width: 30}
+    - {click: SpaceKey, long_click: VoiceAssistKey, width: 30}
     - {click: "'", long_click: '"'}
     - {click: BackspaceKey, swipe_right: DeleteKey, swipe_left: EscapeKey, width: 15}
     - {click: EnterKey, long_click: CommitCommentKey, width: 15}

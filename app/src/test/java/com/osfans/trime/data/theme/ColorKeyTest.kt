@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 
 /**
  * Pins ColorKey against the historical built-in fallback chains that lived in
@@ -26,6 +27,13 @@ class ColorKeyTest :
             Then("unknown strings are not typed color keys") {
                 ColorKey.from("no_such_key").shouldBeNull()
                 ColorKey.from("").shouldBeNull()
+            }
+            Then("every key follows the <role>_<state>_<part>_color convention") {
+                val roleStatePartColor =
+                    Regex("^[a-z]+(?:_[a-z]+)*_(on_pressed|normal|pressed|on|selected)_(back|border|separator|text|symbol|shadow)_color$")
+                for (entry in ColorKey.entries) {
+                    entry.key shouldMatch roleStatePartColor
+                }
             }
         }
         Given("the built-in fallback chain table") {
@@ -53,7 +61,7 @@ class ColorKeyTest :
                 terminals.map { it.key } shouldContainExactlyInAnyOrder
                     listOf(
                         "keyboard_normal_back_color",
-                        "text_normal_text_color",
+                        "preedit_normal_text_color",
                         "candidate_normal_border_color",
                         "preview_normal_back_color",
                         "preview_normal_text_color",
@@ -68,15 +76,18 @@ class ColorKeyTest :
  */
 private val LEGACY_BUILTIN_FALLBACK_COLORS =
     mapOf(
-        "candidate_normal_text_color" to "text_normal_text_color",
+        "candidate_normal_text_color" to "preedit_normal_text_color",
         "comment_normal_text_color" to "candidate_normal_text_color",
         "keyboard_normal_border_color" to "keyboard_normal_back_color",
         "candidate_normal_separator_color" to "keyboard_normal_border_color",
-        "text_selected_text_color" to "text_normal_text_color",
-        "text_selected_back_color" to "keyboard_normal_back_color",
-        "candidate_selected_text_color" to "text_selected_text_color",
-        "candidate_selected_back_color" to "text_selected_back_color",
-        "candidate_button_selected_back_color" to "candidate_selected_back_color",
+        "preedit_selected_text_color" to "preedit_normal_text_color",
+        "preedit_selected_back_color" to "keyboard_normal_back_color",
+        "candidate_selected_text_color" to "preedit_selected_text_color",
+        "candidate_selected_back_color" to "preedit_selected_back_color",
+        "candidate_button_normal_back_color" to "candidate_normal_back_color",
+        "candidate_button_pressed_back_color" to "candidate_selected_back_color",
+        "candidate_button_normal_text_color" to "candidate_normal_text_color",
+        "candidate_button_pressed_text_color" to "candidate_selected_text_color",
         "label_selected_text_color" to "candidate_selected_text_color",
         "comment_selected_text_color" to "comment_normal_text_color",
         "key_pressed_back_color" to "candidate_selected_back_color",
@@ -111,10 +122,10 @@ private val LEGACY_BUILTIN_FALLBACK_COLORS =
         "key_normal_shadow_color" to "keyboard_normal_border_color",
         "root_normal_back_color" to "keyboard_normal_back_color",
         "candidate_normal_back_color" to "keyboard_normal_back_color",
-        "panel_normal_back_color" to "keyboard_normal_back_color",
-        "text_normal_back_color" to "keyboard_normal_back_color",
+        "liquid_keyboard_normal_back_color" to "keyboard_normal_back_color",
+        "preedit_normal_back_color" to "keyboard_normal_back_color",
         "long_text_normal_text_color" to "key_normal_text_color",
         "long_text_normal_back_color" to "key_normal_back_color",
     ).also {
-        check(it.size == 47) { "historical fallback table changed: ${it.size}" }
+        check(it.size == 50) { "historical fallback table changed: ${it.size}" }
     }

@@ -57,7 +57,7 @@ class Key(
     var isPressed = false
         private set
     var isOn = false
-        private set
+        internal set
 
     var x = 0
     var y = 0
@@ -139,30 +139,30 @@ class Key(
 
     private fun <T> schemeColor(resolve: () -> T) = SchemeColorCache(resolve)
 
-    private val keyBackground by schemeColor { getDrawable({ keyBackColor }, "key_normal_back_color") }
+    private val keyBackground by schemeColor { getDrawable({ keyNormalBackColor }, "key_normal_back_color") }
     private val offKeyBackground by schemeColor { ColorManager.getDrawable("function_key_normal_back_color") ?: keyBackground }
     private val onKeyBackground by schemeColor { ColorManager.getDrawable("function_key_on_back_color") ?: keyBackground }
-    private val hlKeyBackground by schemeColor { getDrawable({ hilitedKeyBackColor }, "key_pressed_back_color") }
+    private val hlKeyBackground by schemeColor { getDrawable({ keyPressedBackColor }, "key_pressed_back_color") }
     private val hlOffKeyBackground by schemeColor { ColorManager.getDrawable("function_key_pressed_back_color") ?: hlKeyBackground }
     private val hlOnKeyBackground by schemeColor { ColorManager.getDrawable("function_key_on_pressed_back_color") ?: hlKeyBackground }
 
-    private val keyBorderColor by schemeColor { getColor({ keyBorderColor }, "key_normal_border_color") }
+    private val keyBorderColor by schemeColor { getColor({ keyNormalBorderColor }, "key_normal_border_color") }
     private val offKeyBorderColor by schemeColor { getColor("function_key_normal_border_color", keyBorderColor) }
     private val onKeyBorderColor by schemeColor { getColor("function_key_on_border_color", keyBorderColor) }
-    private val hlKeyBorderColor by schemeColor { getColor({ hilitedKeyBorderColor }, "key_pressed_border_color") }
+    private val hlKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "key_pressed_border_color") }
     private val hlOffKeyBorderColor by schemeColor { getColor("function_key_pressed_border_color", hlKeyBorderColor) }
     private val hlOnKeyBorderColor by schemeColor { getColor("function_key_on_pressed_border_color", hlKeyBorderColor) }
 
-    private val keyTextColor by schemeColor { getColor({ keyTextColor }, "key_normal_text_color") }
+    private val keyTextColor by schemeColor { getColor({ keyNormalTextColor }, "key_normal_text_color") }
     private val offKeyTextColor by schemeColor { getColor("function_key_normal_text_color", keyTextColor) }
     private val onKeyTextColor by schemeColor { getColor("function_key_on_text_color", keyTextColor) }
-    private val hlKeyTextColor by schemeColor { getColor({ hilitedKeyTextColor }, "key_pressed_text_color") }
+    private val hlKeyTextColor by schemeColor { getColor({ keyPressedTextColor }, "key_pressed_text_color") }
     private val hlOffKeyTextColor by schemeColor { getColor("function_key_pressed_text_color", hlKeyTextColor) }
     private val hlOnKeyTextColor by schemeColor { getColor("function_key_on_pressed_text_color", hlKeyTextColor) }
-    private val keySymbolColor by schemeColor { getColor({ keySymbolColor }, "key_normal_symbol_color") }
+    private val keySymbolColor by schemeColor { getColor({ keyNormalSymbolColor }, "key_normal_symbol_color") }
     private val offKeySymbolColor by schemeColor { getColor("function_key_normal_symbol_color", keySymbolColor) }
     private val onKeySymbolColor by schemeColor { getColor("function_key_on_symbol_color", keySymbolColor) }
-    private val hlKeySymbolColor by schemeColor { getColor({ hilitedKeySymbolColor }, "key_pressed_symbol_color") }
+    private val hlKeySymbolColor by schemeColor { getColor({ keyPressedSymbolColor }, "key_pressed_symbol_color") }
     private val hlOffKeySymbolColor by schemeColor { getColor("function_key_pressed_symbol_color", hlKeySymbolColor) }
     private val hlOnKeySymbolColor by schemeColor { getColor("function_key_on_pressed_symbol_color", hlKeySymbolColor) }
 
@@ -178,8 +178,14 @@ class Key(
         parent.setModifierKey(this.code, this)
     }
 
+    /**
+     * Toggles or sets the key's on-state, used by modifier keys (Shift etc.).
+     *
+     * When [on] is true and the key is already on, it flips off; otherwise it
+     * follows [on]. Returns the resulting state.
+     */
     fun setOn(on: Boolean): Boolean {
-        isOn = on
+        isOn = if (on && isOn) false else on
         return isOn
     }
 
@@ -326,7 +332,7 @@ class Key(
             if (isPressed) {
                 hlOffKeyBackground
             } else {
-                keyDef?.keyBackColor.takeIf { !it.isNullOrEmpty() }?.let { keyBackground }
+                keyDef?.keyNormalBackColor.takeIf { !it.isNullOrEmpty() }?.let { keyBackground }
                     ?: offKeyBackground
             }
         }
@@ -336,19 +342,19 @@ class Key(
 
     fun getBorderColor(): Int = when (appearanceType) {
         2 -> if (isPressed) hlOnKeyBorderColor else onKeyBorderColor
-        1 -> if (isPressed) hlOffKeyBorderColor else getColor(keyDef?.keyBorderColor ?: "", offKeyBorderColor)
+        1 -> if (isPressed) hlOffKeyBorderColor else getColor(keyDef?.keyNormalBorderColor ?: "", offKeyBorderColor)
         else -> if (isPressed) hlKeyBorderColor else keyBorderColor
     }
 
     fun getTextColor(): Int = when (appearanceType) {
         2 -> if (isPressed) hlOnKeyTextColor else onKeyTextColor
-        1 -> if (isPressed) hlOffKeyTextColor else getColor(keyDef?.keyTextColor ?: "", offKeyTextColor)
+        1 -> if (isPressed) hlOffKeyTextColor else getColor(keyDef?.keyNormalTextColor ?: "", offKeyTextColor)
         else -> if (isPressed) hlKeyTextColor else keyTextColor
     }
 
     fun getSymbolColor(): Int = when (appearanceType) {
         2 -> if (isPressed) hlOnKeySymbolColor else onKeySymbolColor
-        1 -> if (isPressed) hlOffKeySymbolColor else getColor(keyDef?.keySymbolColor ?: "", offKeySymbolColor)
+        1 -> if (isPressed) hlOffKeySymbolColor else getColor(keyDef?.keyNormalSymbolColor ?: "", offKeySymbolColor)
         else -> if (isPressed) hlKeySymbolColor else keySymbolColor
     }
 }

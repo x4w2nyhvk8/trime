@@ -36,7 +36,7 @@ class ColorTableTest :
         }
 
         Given("a scheme that defines only the chain terminal") {
-            val table = ColorTable.resolve(scheme("text_normal_text_color" to "#102030"), emptyMap(), parseHex)
+            val table = ColorTable.resolve(scheme("preedit_normal_text_color" to "#102030"), emptyMap(), parseHex)
             Then("candidate_text_color resolves through the built-in chain") {
                 table[ColorKey.CANDIDATE_NORMAL_TEXT_COLOR].shouldBeInstanceOf<ColorTable.Value.Color>()
                     .argb shouldBe 0x102030
@@ -47,7 +47,7 @@ class ColorTableTest :
                 ColorTable.resolve(
                     scheme(
                         "candidate_normal_text_color" to "",
-                        "text_normal_text_color" to "#112233",
+                        "preedit_normal_text_color" to "#112233",
                     ),
                     emptyMap(),
                     parseHex,
