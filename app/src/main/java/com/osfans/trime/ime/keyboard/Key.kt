@@ -140,31 +140,31 @@ class Key(
     private fun <T> schemeColor(resolve: () -> T) = SchemeColorCache(resolve)
 
     private val keyBackground by schemeColor { getDrawable({ keyNormalBackColor }, "key_normal_back_color") }
-    private val offKeyBackground by schemeColor { ColorManager.getDrawable("function_key_normal_back_color") ?: keyBackground }
-    private val onKeyBackground by schemeColor { ColorManager.getDrawable("function_key_on_back_color") ?: keyBackground }
+    private val offKeyBackground by schemeColor { getDrawable({ keyNormalBackColor }, "function_key_normal_back_color") ?: keyBackground }
+    private val onKeyBackground by schemeColor { getDrawable({ keyNormalBackColor }, "function_key_on_back_color") ?: keyBackground }
     private val hlKeyBackground by schemeColor { getDrawable({ keyPressedBackColor }, "key_pressed_back_color") }
-    private val hlOffKeyBackground by schemeColor { ColorManager.getDrawable("function_key_pressed_back_color") ?: hlKeyBackground }
-    private val hlOnKeyBackground by schemeColor { ColorManager.getDrawable("function_key_on_pressed_back_color") ?: hlKeyBackground }
+    private val hlOffKeyBackground by schemeColor { getDrawable({ keyPressedBackColor }, "function_key_pressed_back_color") ?: hlKeyBackground }
+    private val hlOnKeyBackground by schemeColor { getDrawable({ keyPressedBackColor }, "function_key_on_pressed_back_color") ?: hlKeyBackground }
 
     private val keyBorderColor by schemeColor { getColor({ keyNormalBorderColor }, "key_normal_border_color") }
-    private val offKeyBorderColor by schemeColor { getColor("function_key_normal_border_color", keyBorderColor) }
-    private val onKeyBorderColor by schemeColor { getColor("function_key_on_border_color", keyBorderColor) }
+    private val offKeyBorderColor by schemeColor { getColor({ keyNormalBorderColor }, "function_key_normal_border_color") }
+    private val onKeyBorderColor by schemeColor { getColor({ keyNormalBorderColor }, "function_key_on_border_color") }
     private val hlKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "key_pressed_border_color") }
-    private val hlOffKeyBorderColor by schemeColor { getColor("function_key_pressed_border_color", hlKeyBorderColor) }
-    private val hlOnKeyBorderColor by schemeColor { getColor("function_key_on_pressed_border_color", hlKeyBorderColor) }
+    private val hlOffKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "function_key_pressed_border_color") }
+    private val hlOnKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "function_key_on_pressed_border_color") }
 
     private val keyTextColor by schemeColor { getColor({ keyNormalTextColor }, "key_normal_text_color") }
-    private val offKeyTextColor by schemeColor { getColor("function_key_normal_text_color", keyTextColor) }
-    private val onKeyTextColor by schemeColor { getColor("function_key_on_text_color", keyTextColor) }
+    private val offKeyTextColor by schemeColor { getColor({ keyNormalTextColor }, "function_key_normal_text_color") }
+    private val onKeyTextColor by schemeColor { getColor({ keyNormalTextColor }, "function_key_on_text_color") }
     private val hlKeyTextColor by schemeColor { getColor({ keyPressedTextColor }, "key_pressed_text_color") }
-    private val hlOffKeyTextColor by schemeColor { getColor("function_key_pressed_text_color", hlKeyTextColor) }
-    private val hlOnKeyTextColor by schemeColor { getColor("function_key_on_pressed_text_color", hlKeyTextColor) }
+    private val hlOffKeyTextColor by schemeColor { getColor({ keyPressedTextColor }, "function_key_pressed_text_color") }
+    private val hlOnKeyTextColor by schemeColor { getColor({ keyPressedTextColor }, "function_key_on_pressed_text_color") }
     private val keySymbolColor by schemeColor { getColor({ keyNormalSymbolColor }, "key_normal_symbol_color") }
-    private val offKeySymbolColor by schemeColor { getColor("function_key_normal_symbol_color", keySymbolColor) }
-    private val onKeySymbolColor by schemeColor { getColor("function_key_on_symbol_color", keySymbolColor) }
+    private val offKeySymbolColor by schemeColor { getColor({ keyNormalSymbolColor }, "function_key_normal_symbol_color") }
+    private val onKeySymbolColor by schemeColor { getColor({ keyNormalSymbolColor }, "function_key_on_symbol_color") }
     private val hlKeySymbolColor by schemeColor { getColor({ keyPressedSymbolColor }, "key_pressed_symbol_color") }
-    private val hlOffKeySymbolColor by schemeColor { getColor("function_key_pressed_symbol_color", hlKeySymbolColor) }
-    private val hlOnKeySymbolColor by schemeColor { getColor("function_key_on_pressed_symbol_color", hlKeySymbolColor) }
+    private val hlOffKeySymbolColor by schemeColor { getColor({ keyPressedSymbolColor }, "function_key_pressed_symbol_color") }
+    private val hlOnKeySymbolColor by schemeColor { getColor({ keyPressedSymbolColor }, "function_key_on_pressed_symbol_color") }
 
     init {
         if (keyDef != null) {
@@ -303,7 +303,8 @@ class Key(
         label.isNotEmpty() &&
             keyAction == click &&
             !keyActions.containsKey(KeyBehavior.ASCII) &&
-            !rime.run { statusCached }.let { it.isAsciiMode || it.isAsciiPunct } -> label
+            // 空格等非字符键的标签只由定义决定，不随中英文模式变化
+            (code == KeyEvent.KEYCODE_SPACE || !rime.run { statusCached }.let { it.isAsciiMode || it.isAsciiPunct }) -> label
 
         else -> keyAction!!.getLabel(parent) // 中文狀態顯示標籤
     }

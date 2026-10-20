@@ -1295,7 +1295,7 @@ preset_keyboards:
     - {click: ','}
     - {click: '='}
     - {click: DefaultKeyboardKey, long_click: SymbolPanelKey}
-    - {click: SpaceKey}
+    - {click: SpaceKey, label: 空格}
     - {click: BackspaceKey}
     - {click: EnterKey}
   symbols:

@@ -343,12 +343,45 @@ class KeyView(
                 clearShadowLayer()
             }
 
+            val availableWidth = (width - paddingLeft - paddingRight).toFloat()
+            val measuredWidth = textPaint.measureText(label)
+            // 标签超出按键宽度时先按比例缩小字号，缩到下限仍放不下则直接截断，避免两侧文字被裁剪
+            var displayLabel = label
+            if (availableWidth > 0f && measuredWidth > availableWidth) {
+                if (key.click?.showsSchemaName == true && label.length > MIN_LABEL_CHARS) {
+                    // 方案名放不下时退化为两字，字号保持不变，与同键盘其它按键协调
+                    displayLabel = label.take(MIN_LABEL_CHARS)
+                    val keptWidth = textPaint.measureText(displayLabel)
+                    if (keptWidth > availableWidth) {
+                        textPaint.textSize = textSize * availableWidth / keptWidth
+                    }
+                } else {
+                    val fittedSize = textSize * availableWidth / measuredWidth
+                    val minSize = textSize * MIN_LABEL_TEXT_SCALE
+                    if (fittedSize >= minSize) {
+                        textPaint.textSize = fittedSize
+                    } else {
+                        textPaint.textSize = minSize
+                        var length = label.length
+                        while (length > MIN_LABEL_CHARS && textPaint.measureText(label, 0, length) > availableWidth) {
+                            length--
+                        }
+                        displayLabel = label.substring(0, length)
+                        // 窄键上连最少字数都放不下时，再缩小这截文字以完整显示
+                        val keptWidth = textPaint.measureText(displayLabel)
+                        if (keptWidth > availableWidth) {
+                            textPaint.textSize = minSize * availableWidth / keptWidth
+                        }
+                    }
+                }
+            }
+
             val centerX = (width - paddingLeft - paddingRight) / 2f + paddingLeft
             val centerY = (height - paddingTop - paddingBottom) / 2f + paddingTop
             val fontMetrics = textPaint.fontMetrics
             val adjustmentY = -(fontMetrics.ascent + fontMetrics.descent) / 2f
 
-            canvas.drawText(label, centerX + sp(key.keyTextOffsetX), centerY + adjustmentY + sp(key.keyTextOffsetY), textPaint)
+            canvas.drawText(displayLabel, centerX + sp(key.keyTextOffsetX), centerY + adjustmentY + sp(key.keyTextOffsetY), textPaint)
         }
     }
 
@@ -429,5 +462,13 @@ class KeyView(
                 canvas.drawText(lines[i], centerX, lineY, symbolPaint)
             }
         }
+    }
+
+    private companion object {
+        /** 标签自动缩小字号时的下限比例，低于该比例则截断文字 */
+        const val MIN_LABEL_TEXT_SCALE = 0.75f
+
+        /** 截断时至少保留的字数，避免窄键上只剩一个字 */
+        const val MIN_LABEL_CHARS = 2
     }
 }

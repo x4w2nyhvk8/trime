@@ -89,12 +89,12 @@ class KeyAction(
 
     private val rime get() = RimeDaemon.getFirstSessionOrNull()!!
 
-    // 获取空格键的schemaName，处理初始化时可能为空的情况
+    // 获取空格键的schemaName，处理初始化时可能为空的情况；方案名最多显示 4 字
     private fun getSpaceKeySchemaName(): String = rime.run {
         statusCached.schemaName.ifEmpty {
             // 如果schemaName为空，尝试使用schemaId作为显示名称
             schemaCached.schemaId.takeIf { it.isNotEmpty() && it != ".default" } ?: ""
-        }
+        }.take(SPACE_KEY_SCHEMA_NAME_LENGTH)
     }
 
     /**
@@ -131,6 +131,10 @@ class KeyAction(
             str
         }
     }
+
+    /** 标签是否为空格键上动态显示的方案名，宽键显示全名、窄键退化为两字 */
+    val showsSchemaName: Boolean
+        get() = code == KeyEvent.KEYCODE_SPACE && label.isEmpty()
 
     fun getLabel(keyboard: Keyboard): String {
         ensureLabels()
@@ -243,6 +247,9 @@ class KeyAction(
     }
 
     companion object {
+        /** 空格键上方案名的最大显示字数 */
+        private const val SPACE_KEY_SCHEMA_NAME_LENGTH = 4
+
         private val BRACED_PATTERN = Regex("""\{[^{}]+\}""")
 
         fun getModifierKeyOnMask(keycode: Int): Int = when (keycode) {
