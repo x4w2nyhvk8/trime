@@ -46,8 +46,8 @@ class SwitchOptionEntryUi(
         frameLayout {
             background =
                 scope.decorDrawable(
-                    "key_back_color",
-                    "key_border_color",
+                    "key_normal_back_color",
+                    "key_normal_border_color",
                     dp(theme.style.keyBorder),
                     dp(theme.style.roundCorner),
                 )
@@ -120,8 +120,8 @@ class SwitchOptionEntryUi(
     fun refreshColors() {
         bkg.background =
             scope.decorDrawable(
-                "key_back_color",
-                "key_border_color",
+                "key_normal_back_color",
+                "key_normal_border_color",
                 ctx.dp(theme.style.keyBorder),
                 ctx.dp(theme.style.roundCorner),
             )

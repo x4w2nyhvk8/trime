@@ -32,7 +32,7 @@ class ThemeColorsTest :
         fun colors(vararg pairs: Pair<String, String>): ThemeColors = ThemeColors(ColorTable.resolve(scheme(*pairs), emptyMap(), parseHex))
 
         Given("a scheme defining only chain terminals") {
-            val view = colors("text_color" to "#112233", "back_color" to "#445566")
+            val view = colors("text_normal_text_color" to "#112233", "keyboard_normal_back_color" to "#445566")
             Then("every property resolves through the built-in chains") {
                 view.candidateTextColor shouldBe 0x112233
                 view.commentTextColor shouldBe 0x112233
@@ -44,7 +44,7 @@ class ThemeColorsTest :
             }
         }
         Given("a scheme with a direct entry") {
-            val view = colors("candidate_text_color" to "#aabbcc")
+            val view = colors("candidate_normal_text_color" to "#aabbcc")
             Then("the direct value wins over the chain") {
                 view.candidateTextColor shouldBe 0xaabbcc
             }
@@ -58,7 +58,7 @@ class ThemeColorsTest :
             }
         }
         Given("an image-valued key") {
-            val view = colors("key_back_color" to "bg.png")
+            val view = colors("key_normal_back_color" to "bg.png")
             Then("reading it as a color throws like ColorManager.getColor") {
                 shouldThrow<IllegalArgumentException> { view.keyBackColor }
             }
@@ -68,9 +68,9 @@ class ThemeColorsTest :
             val colors = theme.presetColorSchemes.getValue("default")
             val view = ThemeColors(ColorTable.resolve(colors, theme.fallbackColors, parseHex))
             Then("the day scheme colors resolve to the parsed scheme values") {
-                view.candidateTextColor shouldBe parseHex(colors.getValue("candidate_text_color"))
-                view.keyBackColor shouldBe parseHex(colors.getValue("key_back_color"))
-                view.textColor shouldBe parseHex(colors.getValue("text_color"))
+                view.candidateTextColor shouldBe parseHex(colors.getValue("candidate_normal_text_color"))
+                view.keyBackColor shouldBe parseHex(colors.getValue("key_normal_back_color"))
+                view.textColor shouldBe parseHex(colors.getValue("text_normal_text_color"))
             }
         }
     })

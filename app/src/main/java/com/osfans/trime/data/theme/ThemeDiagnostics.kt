@@ -8,6 +8,7 @@ package com.osfans.trime.data.theme
 
 import com.charleskorn.kaml.YamlMap
 import com.osfans.trime.data.theme.model.GeneralStyle
+import com.osfans.trime.data.theme.model.KeyRole
 import com.osfans.trime.data.theme.model.PresetKey
 import com.osfans.trime.ime.keyboard.KeyCode
 import com.osfans.trime.util.ColorUtils
@@ -44,6 +45,7 @@ object ThemeDiagnostics {
         INVALID_COLOR_VALUE,
         BROKEN_FALLBACK_TARGET,
         UNRESOLVABLE_PRESET_SEND,
+        UNKNOWN_KEY_ROLE,
         MISSING_KEYBOARD_REFERENCE,
         CYCLIC_KEYBOARD_REFERENCE,
     }
@@ -85,6 +87,7 @@ object ThemeDiagnostics {
         lintConfigVersion(node)
         lintColorSchemes(theme, parseColor)
         lintPresetSends(theme)
+        lintKeyRoles(theme)
         lintKeyboardReferences(theme)
     }
 
@@ -368,6 +371,22 @@ object ThemeDiagnostics {
                     "preset_keys/${message.substringAfter('\'').substringBefore('\'')}",
                 ),
             )
+        }
+    }
+
+    /** Warns when a preset spells a `role:` no [KeyRole] provides (doc/Theme.md §2). */
+    private fun MutableList<Finding>.lintKeyRoles(theme: Theme) {
+        theme.presetKeys.forEach { (name, key) ->
+            if (key.role.isNotEmpty() && KeyRole.of(key.role) == null) {
+                add(
+                    Finding(
+                        Severity.WARNING,
+                        Code.UNKNOWN_KEY_ROLE,
+                        "'$name' has an unknown role '${key.role}'",
+                        "preset_keys/$name/role",
+                    ),
+                )
+            }
         }
     }
 

@@ -122,8 +122,8 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
         colorStateList = ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_pressed), intArrayOf()),
             intArrayOf(
-                scope.color(fg.highlight.ifEmpty { "hilited_candidate_text_color" }),
-                scope.color(fg.normal.ifEmpty { "candidate_text_color" }),
+                scope.color(fg.highlight.ifEmpty { "candidate_selected_text_color" }),
+                scope.color(fg.normal.ifEmpty { "candidate_normal_text_color" }),
             ),
         )
         label.setTextColor(colorStateList)
@@ -181,7 +181,7 @@ class ToolButton(context: Context, private val scope: ThemeScope) : GestureFrame
 
     private fun backgroundStateDrawable(bg: ToolBar.Button.Background, highlight: Boolean): Drawable {
         val color = if (highlight) {
-            scope.color(bg.highlight.ifEmpty { "hilited_candidate_button_color" })
+            scope.color(bg.highlight.ifEmpty { "candidate_button_selected_back_color" })
         } else {
             bg.normal.takeIf { it.isNotEmpty() }?.let(scope::color) ?: 0
         }

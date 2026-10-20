@@ -119,10 +119,10 @@ class TextKeyboardTest :
             val key =
                 ThemeTestSupport.yaml.decodeFromYamlNode<TextKey>(
                     yamlMapOf(
-                        "hilited_key_text_color" to yamlScalarOf("0xffff0000"),
-                        "hilited_key_back_color" to yamlScalarOf("0xff00ff00"),
-                        "hilited_key_border_color" to yamlScalarOf("0xff0000ff"),
-                        "hilited_key_symbol_color" to yamlScalarOf("0xff00ffff"),
+                        "key_pressed_text_color" to yamlScalarOf("0xffff0000"),
+                        "key_pressed_back_color" to yamlScalarOf("0xff00ff00"),
+                        "key_pressed_border_color" to yamlScalarOf("0xff0000ff"),
+                        "key_pressed_symbol_color" to yamlScalarOf("0xff00ffff"),
                     ),
                 )
 

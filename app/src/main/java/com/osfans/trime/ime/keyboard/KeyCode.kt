@@ -106,7 +106,9 @@ object KeyCode {
         }
         val keycode = nameToKeyCode(token)
         if (keycode == 0) {
-            Timber.e("Unrecognized key '$token'")
+            // KeyAction commits such a token as text (a single character, a
+            // brace sequence, a phrase, …), so this is a hint, not an error.
+            Timber.d("Unrecognized key '$token'")
             return 0 to 0
         }
         return keycode to modifiers

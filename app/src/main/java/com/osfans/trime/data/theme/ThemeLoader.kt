@@ -144,7 +144,7 @@ object ThemeLoader {
         themeId: String,
         mapping: YamlMap,
     ): ThemeLoadResult {
-        val theme = ThemeYaml.parser.decodeFromYamlNode<Theme>(mapping)
+        val theme = ThemeYaml.parser.decodeFromYamlNode<Theme>(mapping).withRoles()
         if (theme.presetColorSchemes.isEmpty()) {
             return ThemeLoadResult.Failure(themeId, ThemeLoadError.NoColorScheme(themeId))
         }
@@ -164,7 +164,10 @@ object ThemeLoader {
         themeId: String,
         node: YamlNode,
         loadResource: (String) -> YamlNode?,
-    ): Theme = ThemeYaml.parser.decodeFromYamlNode(expandSource(themeId, node, loadResource))
+    ): Theme = ThemeYaml.parser.decodeFromYamlNode<Theme>(expandSource(themeId, node, loadResource)).withRoles()
+
+    /** Fills each preset's missing behavior fields from its `role:` (doc/Theme.md §4). */
+    internal fun Theme.withRoles(): Theme = copy(presetKeys = presetKeys.mapValues { (_, key) -> key.withRoleDefaults() })
 
     /** Applies the supported DSL subset to [node] and returns its root mapping. */
     private fun expandSource(
