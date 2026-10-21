@@ -210,11 +210,11 @@ object ColorManager {
     }
 
     /**
-     * 解析参数化渐变，语法：
-     * `linear-gradient(<角度>deg, <颜色>[, <颜色>...])`
-     * `radial-gradient(<颜色>[, <颜色>...])`
-     * `sweep-gradient(<颜色>[, <颜色>...])`
-     * 颜色可以是字面量，也可以是当前配色方案中的颜色键。
+     * Parses a parameterised gradient value:
+     * `linear-gradient(<angle>deg, <color>[, <color>...])`,
+     * `radial-gradient(<color>[, <color>...])`,
+     * `sweep-gradient(<color>[, <color>...])`.
+     * Colors may be literals or keys of the active color scheme.
      */
     private fun parseGradient(
         scope: ThemeScope,
@@ -300,7 +300,10 @@ object ColorManager {
                 }
             }
 
-        else -> drawable?.also { it.alpha = MathUtils.clamp(alpha, 0, 255) }
+        else -> drawable?.also {
+            it.alpha = MathUtils.clamp(alpha, 0, 255)
+            (it as? GradientFillDrawable)?.cornerRadius = cornerRadius
+        }
     }
 
     fun getDecorDrawable(
@@ -313,8 +316,9 @@ object ColorManager {
 }
 
 /**
- * 以 Shader 填充按键背景的 Drawable，支持线性、径向、扫描三种渐变。
- * 圆角与描边由 KeyView 在绘制时统一裁剪和描边。
+ * Drawable filled with a shader, supporting linear, radial and sweep gradients.
+ * Key backgrounds are clipped by KeyView; decoration callers can set
+ * [cornerRadius] instead.
  */
 private class GradientFillDrawable(
     private val type: String,
@@ -323,6 +327,9 @@ private class GradientFillDrawable(
 ) : Drawable() {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var shader: Shader? = null
+
+    /** Corner radius applied when draw() is used by decoration drawables */
+    var cornerRadius: Float = 0f
 
     override fun onBoundsChange(bounds: Rect) {
         val width = bounds.width().toFloat()
@@ -364,7 +371,19 @@ private class GradientFillDrawable(
     override fun draw(canvas: Canvas) {
         val current = shader ?: return
         paint.shader = current
-        canvas.drawRect(bounds, paint)
+        if (cornerRadius > 0f) {
+            canvas.drawRoundRect(
+                bounds.left.toFloat(),
+                bounds.top.toFloat(),
+                bounds.right.toFloat(),
+                bounds.bottom.toFloat(),
+                cornerRadius,
+                cornerRadius,
+                paint,
+            )
+        } else {
+            canvas.drawRect(bounds, paint)
+        }
     }
 
     override fun setAlpha(alpha: Int) {
