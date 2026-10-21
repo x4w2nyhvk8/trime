@@ -47,6 +47,16 @@ android {
         resValues = true
     }
 
+    signingConfigs {
+        // 固定 debug 签名，保证不同机器/CI 构建的 debug 包可覆盖安装，无需先卸载
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -69,6 +79,7 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debug")
 
             resValue("string", "trime_app_name", "@string/app_name_debug")
         }
