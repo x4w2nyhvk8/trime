@@ -6,6 +6,7 @@
 package com.osfans.trime.ime.symbol
 
 import android.content.Context
+import android.view.Gravity
 import com.osfans.trime.data.theme.Theme
 import com.osfans.trime.data.theme.ThemeScope
 import com.osfans.trime.ime.core.AutoScaleTextView
@@ -36,6 +37,9 @@ class LiquidItemUi(
         typeface = theme.fonts.key
         setPaddingDp(8, 4, 8, 4)
         setTextColor(scope.colors.keyNormalTextColor)
+        gravity = Gravity.CENTER
+        // 固定键条按键宽度有限，长标签（如动态 Enter 标签）等比缩小，避免溢出到相邻按键
+        scaleMode = AutoScaleTextView.Mode.Proportional
     }
 
     private val content = constraintLayout {
