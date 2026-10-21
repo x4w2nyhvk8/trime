@@ -172,6 +172,31 @@ class ThemeLoaderTest :
                 nameOf(sourceFile("name: first\n")) shouldBe "first"
                 nameOf(sourceFile("name: second\n")) shouldBe "second"
             }
+
+            Then("the files it read travel with the loaded theme") {
+                val file = sourceFile("name: t\nstyle: {}\npreset_color_schemes: {default: {}}\n")
+                val result = ThemeLoader.loadFromSource("theme", file, ThemeLoader.SourceLoader { null })
+                (result as? ThemeLoader.ThemeLoadResult.Success)?.sourceFiles shouldBe setOf(file)
+            }
+
+            Then("included files are reported too") {
+                val root = File.createTempFile("themes", "").apply {
+                    delete()
+                    mkdirs()
+                    deleteOnExit()
+                }
+                val base = File(root, "base.yaml").apply {
+                    writeText("style: {}\npreset_color_schemes: {default: {}}\n")
+                    deleteOnExit()
+                }
+                val theme = File(root, "theme.yaml").apply {
+                    writeText("name: t\n__include: base:/\n")
+                    deleteOnExit()
+                }
+                val loader = ThemeLoader.SourceLoader { id -> base.takeIf { id == "base" } }
+                val result = ThemeLoader.loadFromSource("theme", theme, loader) as ThemeLoader.ThemeLoadResult.Success
+                result.sourceFiles shouldBe setOf(theme, base)
+            }
         }
 
         Given("the source lookup") {

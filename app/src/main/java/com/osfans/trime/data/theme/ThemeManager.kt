@@ -17,6 +17,7 @@ import com.osfans.trime.util.appContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 
 object ThemeManager {
     fun interface OnThemeChangeListener {
@@ -81,11 +82,14 @@ object ThemeManager {
         val configId: String,
         val theme: Theme,
         val findings: List<ThemeDiagnostics.Finding>?,
+        val sourceFiles: Set<File> = emptySet(),
     )
 
     private fun getThemeById(id: String): ResolvedTheme {
         when (val result = ThemeLoader.loadTheme(id)) {
-            is ThemeLoader.ThemeLoadResult.Success -> return ResolvedTheme(id, result.theme, result.findings)
+            is ThemeLoader.ThemeLoadResult.Success ->
+                return ResolvedTheme(id, result.theme, result.findings, result.sourceFiles)
+
             is ThemeLoader.ThemeLoadResult.Failure -> Timber.w(result.error)
         }
 
@@ -93,7 +97,7 @@ object ThemeManager {
             when (val result = ThemeLoader.loadTheme("trime")) {
                 is ThemeLoader.ThemeLoadResult.Success -> {
                     Timber.w("Theme '$id' is unavailable, fallback to default theme 'trime'")
-                    return ResolvedTheme("trime", result.theme, result.findings)
+                    return ResolvedTheme("trime", result.theme, result.findings, result.sourceFiles)
                 }
 
                 is ThemeLoader.ThemeLoadResult.Failure -> Timber.w(result.error)
@@ -105,7 +109,7 @@ object ThemeManager {
             when (val result = ThemeLoader.loadTheme(fallbackId)) {
                 is ThemeLoader.ThemeLoadResult.Success -> {
                     Timber.w("Theme '$id' is unavailable, fallback to available theme '$fallbackId'")
-                    return ResolvedTheme(fallbackId, result.theme, result.findings)
+                    return ResolvedTheme(fallbackId, result.theme, result.findings, result.sourceFiles)
                 }
 
                 is ThemeLoader.ThemeLoadResult.Failure -> lastFailure = result.error
@@ -132,6 +136,10 @@ object ThemeManager {
         // The findings describe the file this load read; they are not tied to the
         // views, so they are refreshed even when the theme itself is unchanged.
         _activeFindings = resolvedTheme.findings
+        // Remember what this load read, so an edit on disk can be detected
+        // without consulting librime again.
+        activeSourceFiles = resolvedTheme.sourceFiles
+        activeSourceStamp = sourceStamp(activeSourceFiles)
         // A structurally equal theme suppresses the change notification below, so the
         // UI tree keeps its views and their injected scope. Replace neither the
         // caches nor the scope in that case, or later scheme changes would update
@@ -139,6 +147,36 @@ object ThemeManager {
         if (::_activeTheme.isInitialized && _activeTheme == theme) return
         ColorManager.attachTheme(theme)
         activeTheme = theme
+    }
+
+    /** Files the active theme was read from; empty when it came from a deployed artifact. */
+    private var activeSourceFiles: Set<File> = emptySet()
+
+    /** Newest modification time among [activeSourceFiles] when the theme was loaded. */
+    private var activeSourceStamp: Long = 0L
+
+    private fun sourceStamp(files: Set<File>): Long = files.maxOfOrNull(File::lastModified) ?: 0L
+
+    /**
+     * Whether a source file of the active theme was modified after it was
+     * loaded. A theme read from a deployed artifact reports no files, so it is
+     * never considered changed.
+     */
+    fun hasSourceChanged(): Boolean = activeSourceFiles.isNotEmpty() && sourceStamp(activeSourceFiles) != activeSourceStamp
+
+    /**
+     * Reloads the active theme when one of its source files changed, so an
+     * edit takes effect the next time the keyboard is shown instead of
+     * requiring a restart or a redeploy.
+     *
+     * @return whether a reload ran; false when the source is unchanged or the
+     *   reload produced a structurally identical theme.
+     */
+    suspend fun reloadIfSourceChanged(): Boolean {
+        if (!withContext(Dispatchers.IO) { hasSourceChanged() }) return false
+        val before = if (::_activeTheme.isInitialized) _activeTheme else null
+        selectTheme(prefs.selectedTheme.getValue())
+        return before !== _activeTheme
     }
 
     fun init(configuration: Configuration) {

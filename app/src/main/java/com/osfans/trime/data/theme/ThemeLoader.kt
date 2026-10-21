@@ -78,6 +78,12 @@ object ThemeLoader {
              * could not run at all.
              */
             val findings: List<ThemeDiagnostics.Finding>? = null,
+            /**
+             * Source files this load read, includes and the `.custom` patch
+             * included. Empty when the theme came from a deployed artifact, so
+             * a caller cannot watch files it never used.
+             */
+            val sourceFiles: Set<File> = emptySet(),
         ) : ThemeLoadResult
 
         data class Failure(
@@ -112,7 +118,7 @@ object ThemeLoader {
     ): ThemeLoadResult? {
         val node = sources.load(themeId, file) ?: return null
         return try {
-            decodeAndReport(themeId, expandSource(themeId, node) { id -> sources.load(id, null) })
+            decodeAndReport(themeId, expandSource(themeId, node) { id -> sources.load(id, null) }, sources.loadedFiles)
         } catch (e: ThemeDslExpander.UnsupportedDsl) {
             fallBack(themeId, e, "uses DSL outside the supported subset (%s)")
         } catch (e: ThemeDslExpander.UnresolvedReference) {
@@ -143,6 +149,7 @@ object ThemeLoader {
     internal fun decodeAndReport(
         themeId: String,
         mapping: YamlMap,
+        sourceFiles: Set<File> = emptySet(),
     ): ThemeLoadResult {
         val theme = ThemeYaml.parser.decodeFromYamlNode<Theme>(mapping).withRoles()
         if (theme.presetColorSchemes.isEmpty()) {
@@ -153,7 +160,7 @@ object ThemeLoader {
                 .onFailure { Timber.w(it, "Theme '%s': diagnostics failed", themeId) }
                 .getOrNull()
         findings?.let { ThemeDiagnostics.log(themeId, it) }
-        return ThemeLoadResult.Success(themeId, theme, findings)
+        return ThemeLoadResult.Success(themeId, theme, findings, sourceFiles)
     }
 
     /**
@@ -211,6 +218,9 @@ object ThemeLoader {
     ) {
         private val cache = HashMap<String, YamlNode?>()
 
+        /** Every file read so far, so a reload can tell whether the source changed. */
+        val loadedFiles = mutableSetOf<File>()
+
         /**
          * @param file source file of [resourceId] when it is already known.
          *   Included resources are always looked up by id. An explicit file
@@ -225,6 +235,7 @@ object ThemeLoader {
         }
 
         private fun readAndPatch(resourceId: String, file: File): YamlNode? {
+            loadedFiles += file
             val node = runCatching { ThemeYaml.parser.parseToYamlNode(file.readText()) }.getOrNull()
             return node?.let { applyCustomPatch(resourceId, it) }
         }

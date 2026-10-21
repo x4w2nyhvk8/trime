@@ -581,6 +581,14 @@ open class TrimeInputMethodService : LifecycleInputMethodService() {
         restarting: Boolean,
     ) {
         Timber.d("onStartInputView: restarting=$restarting")
+        // A theme edited on disk takes effect the next time the keyboard is
+        // shown. The reload rebuilds the input views, so the state they need
+        // has to be replayed onto the new ones.
+        lifecycleScope.launch {
+            if (ThemeManager.reloadIfSourceChanged()) {
+                inputView?.startInput(attribute, restarting = true)
+            }
+        }
         InputFeedbackManager.startInput()
         postRimeJob {
             updateRimeOption(this)
