@@ -66,6 +66,9 @@ data class Theme(
                 "preset_keyboards",
                 "preset_color_schemes",
                 "fallback_colors",
+                // 按键命名样式的定义容器；加载时由 ThemeDslExpander 展开到按键，
+                // 兼容 librime 原生 __include 语义。
+                "key_styles",
             )
     }
 }

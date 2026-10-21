@@ -159,7 +159,14 @@ colors:
   6: &color6 0xff3266a0 
   7: &color7 0x00 
   8: &color8 0xff838383 
-  
+
+#按键命名样式：按键以 __include: /key_styles/<name> 引用
+#样式值引用配色方案中的颜色键（Key 只解析一次，不是循环）
+key_styles:
+  letter:
+    key_normal_back_color: key_normal_back_color
+    key_normal_text_color: key_normal_text_color
+
 #配色方案
 preset_color_schemes:
   default:
@@ -200,14 +207,6 @@ preset_color_schemes:
     backspace_text_color: *color2 #退格键文字颜色
     vowel_back_color: *color2 #元音键(a o e i u)背景色
     vowel_text_color: *color6 #元音键(a o e i u)文字颜色
-    row1_back_color: *color2 #第一行背景色
-    row1_text_color: *color1 #第一行文字颜色
-    row2_back_color: *color2 #第二行背景色
-    row2_text_color: *color1 #第二行文字颜色
-    row3_back_color: *color2 #第三行背景色
-    row3_text_color: *color1 #第三行文字颜色
-    row4_back_color: *color2 #第四行背景色
-    row4_text_color: *color1 #第四行文字颜色
 
 #--------配色开始----------------#
   yushe:
@@ -1079,45 +1078,45 @@ preset_keyboards:
   #  height: 48
     ascii_mode: 0
     keys:
-      - {click: q, long_click: 1, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: w, long_click: 2, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: e, long_click: 3, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: r, long_click: 4, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: t, long_click: 5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: y, long_click: 6, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: u, long_click: 7, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: i, long_click: 8, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: o, long_click: 9, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: p, long_click: 0, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+      - {click: q, long_click: 1, __include: /key_styles/letter}
+      - {click: w, long_click: 2, __include: /key_styles/letter}
+      - {click: e, long_click: 3, __include: /key_styles/letter}
+      - {click: r, long_click: 4, __include: /key_styles/letter}
+      - {click: t, long_click: 5, __include: /key_styles/letter}
+      - {click: y, long_click: 6, __include: /key_styles/letter}
+      - {click: u, long_click: 7, __include: /key_styles/letter}
+      - {click: i, long_click: 8, __include: /key_styles/letter}
+      - {click: o, long_click: 9, __include: /key_styles/letter}
+      - {click: p, long_click: 0, __include: /key_styles/letter}
 
-      - {width: 5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: a, long_click: SelectAllKey, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: s, long_click: '@', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: d, long_click: '#', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: f, long_click: '$', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: g, long_click: '%', swipe_down: "date_time", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: h, long_click: '!', swipe_down: "+", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: j, long_click: '&', swipe_down: "-", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: k, long_click: '*', swipe_down: "_", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: l, long_click: '(){Left}', swipe_down: "=", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {width: 5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+      - {width: 5, __include: /key_styles/letter}
+      - {click: a, long_click: SelectAllKey, __include: /key_styles/letter}
+      - {click: s, long_click: '@', __include: /key_styles/letter}
+      - {click: d, long_click: '#', __include: /key_styles/letter}
+      - {click: f, long_click: '$', __include: /key_styles/letter}
+      - {click: g, long_click: '%', swipe_down: "date_time", __include: /key_styles/letter}
+      - {click: h, long_click: '!', swipe_down: "+", __include: /key_styles/letter}
+      - {click: j, long_click: '&', swipe_down: "-", __include: /key_styles/letter}
+      - {click: k, long_click: '*', swipe_down: "_", __include: /key_styles/letter}
+      - {click: l, long_click: '(){Left}', swipe_down: "=", __include: /key_styles/letter}
+      - {width: 5, __include: /key_styles/letter}
 
       - {click: ShiftKey, label_symbol: " ", long_click: ShiftKey, double_click: ShiftLockKey, composing: DelimiterKey, width: 15, key_pressed_back_color: enter_back_color, key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
-      - {click: z, long_click: '`', swipe_down: '[]{Left}', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: x, long_click: CutKey, swipe_down: '{}{Left}', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: c, long_click: CopyKey, swipe_down: ' ', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: v, long_click: PasteClipKey, swipe_down: PasteKey, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: b, long_click: ";", swipe_down: "\\", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: n, long_click: ":", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: m, long_click: '?', swipe_down: "|", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+      - {click: z, long_click: '`', swipe_down: '[]{Left}', __include: /key_styles/letter}
+      - {click: x, long_click: CutKey, swipe_down: '{}{Left}', __include: /key_styles/letter}
+      - {click: c, long_click: CopyKey, swipe_down: ' ', __include: /key_styles/letter}
+      - {click: v, long_click: PasteClipKey, swipe_down: PasteKey, __include: /key_styles/letter}
+      - {click: b, long_click: ";", swipe_down: "\\", __include: /key_styles/letter}
+      - {click: n, long_click: ":", __include: /key_styles/letter}
+      - {click: m, long_click: '?', swipe_down: "|", __include: /key_styles/letter}
       - {click: SlideBackspaceKey, width: 15, key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
 
       - {click: NumberKey, long_click: MenuKey, width: 12.5, key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
       - {click: EmojiSymbolTabKey, label_symbol: "简洁", long_click: "{hide_key_symbol}{hide_key_hint}", swipe_down: ColorSwitchKey, swipe_up: ColorSwitchKey, width: 12.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
-      - {click: ',', label: '，', long_click: '<>{Left}', key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+      - {click: ',', label: '，', long_click: '<>{Left}', __include: /key_styles/letter}
       - {click: SlideSpaceKey, long_click: ModeSwitchKey, swipe_left: "CursorLeftKey", swipe_right: "CursorRightKey", swipe_up: SchemaSwitchCnKey, width: 30, key_normal_back_color: space_back_color, key_normal_text_color: space_text_color}
-      - {click: '.', label: '。', long_click: ClipboardKey, key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
-      - {click: '/', long_click: PanelSwitchKey , key_text_size: "18", key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+      - {click: '.', label: '。', long_click: ClipboardKey, __include: /key_styles/letter}
+      - {click: '/', long_click: PanelSwitchKey , key_text_size: "18", __include: /key_styles/letter}
       - {click: EnterKey, label_symbol: "wiki", popup: ["TrimeWikiKey", "SettingsKey"], composing: EnterKey, swipe_up: EscapeKey, width: 15, key_normal_back_color: enter_back_color, key_normal_text_color: enter_text_color}
 
   letter:
@@ -1128,45 +1127,45 @@ preset_keyboards:
     ascii_mode: 1
     keys:
     
-      - {click: q, long_click: 1, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: w, long_click: 2, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: e, long_click: 3, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: r, long_click: 4, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: t, long_click: 5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: y, long_click: 6, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: u, long_click: 7, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: i, long_click: 8, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: o, long_click: 9, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-      - {click: p, long_click: 0, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+      - {click: q, long_click: 1, __include: /key_styles/letter}
+      - {click: w, long_click: 2, __include: /key_styles/letter}
+      - {click: e, long_click: 3, __include: /key_styles/letter}
+      - {click: r, long_click: 4, __include: /key_styles/letter}
+      - {click: t, long_click: 5, __include: /key_styles/letter}
+      - {click: y, long_click: 6, __include: /key_styles/letter}
+      - {click: u, long_click: 7, __include: /key_styles/letter}
+      - {click: i, long_click: 8, __include: /key_styles/letter}
+      - {click: o, long_click: 9, __include: /key_styles/letter}
+      - {click: p, long_click: 0, __include: /key_styles/letter}
 
-      - {width: 5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: a, long_click: SelectAllKey, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: s, long_click: '@', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: d, long_click: '#', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: f, long_click: '$', key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: g, long_click: '%', swipe_down: "date_time", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: h, long_click: '!', swipe_down: "+", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: j, long_click: '&', swipe_down: "-", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: k, long_click: '*', swipe_down: "_", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {click: l, long_click: '(){Left}', swipe_down: "=", key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-      - {width: 5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+      - {width: 5, __include: /key_styles/letter}
+      - {click: a, long_click: SelectAllKey, __include: /key_styles/letter}
+      - {click: s, long_click: '@', __include: /key_styles/letter}
+      - {click: d, long_click: '#', __include: /key_styles/letter}
+      - {click: f, long_click: '$', __include: /key_styles/letter}
+      - {click: g, long_click: '%', swipe_down: "date_time", __include: /key_styles/letter}
+      - {click: h, long_click: '!', swipe_down: "+", __include: /key_styles/letter}
+      - {click: j, long_click: '&', swipe_down: "-", __include: /key_styles/letter}
+      - {click: k, long_click: '*', swipe_down: "_", __include: /key_styles/letter}
+      - {click: l, long_click: '(){Left}', swipe_down: "=", __include: /key_styles/letter}
+      - {width: 5, __include: /key_styles/letter}
 
       - {click: ShiftKey, composing: DelimiterKey, width: 15, key_pressed_back_color: enter_back_color, key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
-      - {click: z, long_click: '`', swipe_down: '[]{Left}', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: x, long_click: CutKey, swipe_down: '{}{Left}', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: c, long_click: CopyKey, swipe_down: ' ', key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: v, long_click: PasteClipKey, swipe_down: PasteKey, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: b, long_click: ";", swipe_down: "\\", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: n, long_click: ":", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-      - {click: m, long_click: '?', swipe_down: "|", key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+      - {click: z, long_click: '`', swipe_down: '[]{Left}', __include: /key_styles/letter}
+      - {click: x, long_click: CutKey, swipe_down: '{}{Left}', __include: /key_styles/letter}
+      - {click: c, long_click: CopyKey, swipe_down: ' ', __include: /key_styles/letter}
+      - {click: v, long_click: PasteClipKey, swipe_down: PasteKey, __include: /key_styles/letter}
+      - {click: b, long_click: ";", swipe_down: "\\", __include: /key_styles/letter}
+      - {click: n, long_click: ":", __include: /key_styles/letter}
+      - {click: m, long_click: '?', swipe_down: "|", __include: /key_styles/letter}
       - {click: BackspaceKey, width: 15, key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
 
       - {click: NumberKey, long_click: MenuKey, width: 12.5, key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
       - {click: EmojiSymbolTabKey, long_click: ThemeSettingsKey, width: 12.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
-      - {click: ',', label: '，', long_click: '<>{Left}', key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+      - {click: ',', label: '，', long_click: '<>{Left}', __include: /key_styles/letter}
       - {label: '______', click: SlideSpaceKey, long_click: SpaceR2Key, swipe_left: "CursorLeftKey", swipe_right: "CursorRightKey", swipe_up: WindKeyboardKey, width: 30, key_normal_back_color: space_back_color, key_normal_text_color: space_text_color}
-      - {click: '.', label: '。', long_click: KaomojiHappyKey, key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
-      - {click: SpaceR2Key, long_click: PanelSwitchKey, key_text_size: "18", key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+      - {click: '.', label: '。', long_click: KaomojiHappyKey, __include: /key_styles/letter}
+      - {click: SpaceR2Key, long_click: PanelSwitchKey, key_text_size: "18", __include: /key_styles/letter}
       - {click: EnterKey, composing: EnterKey, swipe_up: EscapeKey, width: 15, key_normal_back_color: enter_back_color, key_normal_text_color: enter_text_color}
 
   number:
@@ -3883,37 +3882,37 @@ preset_keyboards:
    # height: 48
     keys:
   #  第一行
-    - {label: 'Zh', long_click: 1, click: 'z',  width: 15.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'Sh', long_click: 2, click: 's', width: 12.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'Ch', long_click: 3, click: 'c', width: 12, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+    - {label: 'Zh', long_click: 1, click: 'z',  width: 15.5, __include: /key_styles/letter}
+    - {label: 'Sh', long_click: 2, click: 's', width: 12.5, __include: /key_styles/letter}
+    - {label: 'Ch', long_click: 3, click: 'c', width: 12, __include: /key_styles/letter}
     - {click: CaretKey, long_click: Digit0Key, composing: 'a', ascii: 'a', swipe_up: ImeLastKey, swipe_right: ImeLastKey, width: 20, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'ZF', click: 'f', long_click: SelectAllKey, swipe_up: h, width: 12, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'SW', long_click: MenuKey, click: 'w', swipe_up: '*', width: 12.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'CM', long_click: DeleteCandidateKey, click: 'm', swipe_up: RadicalSymbolsKey, swipe_right: RadicalSymbolsKey, swipe_down: HideKey, width: 15.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+    - {label: 'ZF', click: 'f', long_click: SelectAllKey, swipe_up: h, width: 12, __include: /key_styles/letter}
+    - {label: 'SW', long_click: MenuKey, click: 'w', swipe_up: '*', width: 12.5, __include: /key_styles/letter}
+    - {label: 'CM', long_click: DeleteCandidateKey, click: 'm', swipe_up: RadicalSymbolsKey, swipe_right: RadicalSymbolsKey, swipe_down: HideKey, width: 15.5, __include: /key_styles/letter}
   #  第二行
-    - {label: 'L', long_click: 4, click: 'l', width: 15.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {repeatable: true, label: 'D', long_click: 5, click: 'd', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'Y', long_click: 6, click: 'y', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+    - {label: 'L', long_click: 4, click: 'l', width: 15.5, __include: /key_styles/letter}
+    - {repeatable: true, label: 'D', long_click: 5, click: 'd', width: 11.5, __include: /key_styles/letter}
+    - {label: 'Y', long_click: 6, click: 'y', width: 11.5, __include: /key_styles/letter}
     - {click: ExclaimKey, long_click: KeyboardU2Key, composing: 'u', ascii: 'u', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
     - {click: QuestionKey, long_click: KeyboardI2Key, composing: 'i', ascii: 'i', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'NH', long_click: CopyKey, click: 'n', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {repeatable: true, label: 'J', long_click: PasteKey, click: 'j', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'TR', click: 't', long_click: ColorSwitchKey, swipe_up: CommitCommentKey, width: 15.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+    - {label: 'NH', long_click: CopyKey, click: 'n', width: 11.5, __include: /key_styles/letter}
+    - {repeatable: true, label: 'J', long_click: PasteKey, click: 'j', width: 11.5, __include: /key_styles/letter}
+    - {label: 'TR', click: 't', long_click: ColorSwitchKey, swipe_up: CommitCommentKey, width: 15.5, __include: /key_styles/letter}
   #  第三行
-    - {label: 'PK', long_click: 7, click: 'p', width: 15.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-    - {label: 'Q~', long_click: 8, click: 'q', width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'PK', long_click: 7, click: 'p', width: 15.5, __include: /key_styles/letter}
+    - {label: 'Q~', long_click: 8, click: 'q', width: 11.5, __include: /key_styles/letter}
     - {click: CommaKey, long_click: Digit9Key, composing: 'o', ascii: 'o', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'G', click: 'g', long_click: "[]{Left}", width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-    - {label: 'B', click: 'b', long_click: "(){Left}", width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'G', click: 'g', long_click: "[]{Left}", width: 11.5, __include: /key_styles/letter}
+    - {label: 'B', click: 'b', long_click: "(){Left}", width: 11.5, __include: /key_styles/letter}
     - {click: PeriodKey, long_click: StrokeTurningKey, composing: 'e', ascii: 'e', swipe_up: SchemaSwitchEnKey, width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'X', click: 'x', long_click: CutKey, width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'X', click: 'x', long_click: CutKey, width: 11.5, __include: /key_styles/letter}
     - {label: "⌫", click: BackspaceKey, width: 15.5, key_text_size: "25", key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
   #  第四行
     - {label: "'分词", click: NumberKey, long_click: WindMnemonicKeyboardKey, composing: WordSplitKey, ascii: '.',  swipe_down: ShiftKey, width: 15.5, key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
     - {label: '一', click: EmojiSymbolTabKey, long_click: ThemeSettingsKey, composing: LetterAKey, ascii: 'k', combo: k, width: 11.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
-    - {label: '✾', click: LetterVKey, long_click: VoiceAssistKey, composing: LetterUKey, ascii: 'v', width: 11.5, key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+    - {label: '✾', click: LetterVKey, long_click: VoiceAssistKey, composing: LetterUKey, ascii: 'v', width: 11.5, __include: /key_styles/letter}
     - {label: '______', click: SpaceKey, long_click: SpaceRKey, swipe_up: DefaultEnglishKeyboardKey, width: 23, round_corner: *round1, key_normal_back_color: space_back_color, key_normal_text_color: space_text_color}
-    - {label: '丿', click: LetterRKey, long_click: TabKey, composing: LetterIKey, ascii: 'h', combo: h, width: 11.5, key_text_size: "19", key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+    - {label: '丿', click: LetterRKey, long_click: TabKey, composing: LetterIKey, ascii: 'h', combo: h, width: 11.5, key_text_size: "19", __include: /key_styles/letter}
     - {label: '丶', click: SpaceR1Key, long_click: SelectOneCharKey, composing: LetterOKey, ascii: 'r', combo: r, width: 11.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
     - {label: 'Enter', long_click: EnterKey, click: EnterKey, swipe_up: EscapeKey, composing: LetterEKey, width: 15.5, round_corner: *round3, key_normal_back_color: enter_back_color, key_normal_text_color: enter_text_color}
 
@@ -3924,37 +3923,37 @@ preset_keyboards:
   #  height: 48
     keys:
   #  第一行
-    - {label: 'Zh', long_click: 1, click: 'z', hint: 'iang uai',  width: 15.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'Sh', long_click: 2, click: 's', hint: 'en', width: 12.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'Ch', long_click: 3, click: 'c', hint: 'eng ie', width: 12, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+    - {label: 'Zh', long_click: 1, click: 'z', hint: 'iang uai',  width: 15.5, __include: /key_styles/letter}
+    - {label: 'Sh', long_click: 2, click: 's', hint: 'en', width: 12.5, __include: /key_styles/letter}
+    - {label: 'Ch', long_click: 3, click: 'c', hint: 'eng ie', width: 12, __include: /key_styles/letter}
     - {click: CaretKey, long_click: Digit0Key, composing: 'a', ascii: 'a', hint: 'a ia', swipe_up: ImeLastKey, swipe_right: SpaceRKey, width: 20, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'ZF', click: 'f', long_click: SelectAllKey, hint: 'er ang', swipe_up: h, width: 12, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'SW', long_click: MenuKey, click: 'w', hint: 'an', swipe_up: '*', width: 12.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
-    - {label: 'CM', long_click: DeleteCandidateKey, click: 'm', hint: 'v uan', swipe_up: RadicalSymbolsKey, swipe_right: RadicalSymbolsKey, swipe_down: HideKey, width: 15.5, key_normal_back_color: row1_back_color, key_normal_text_color: row1_text_color}
+    - {label: 'ZF', click: 'f', long_click: SelectAllKey, hint: 'er ang', swipe_up: h, width: 12, __include: /key_styles/letter}
+    - {label: 'SW', long_click: MenuKey, click: 'w', hint: 'an', swipe_up: '*', width: 12.5, __include: /key_styles/letter}
+    - {label: 'CM', long_click: DeleteCandidateKey, click: 'm', hint: 'v uan', swipe_up: RadicalSymbolsKey, swipe_right: RadicalSymbolsKey, swipe_down: HideKey, width: 15.5, __include: /key_styles/letter}
   #  第二行
-    - {label: 'L', long_click: 4, click: 'l', hint: 'ai ue', width: 15.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'D', long_click: 5, click: 'd', hint: 'uo', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'Y', long_click: 6, click: 'y', hint: 'in ing', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+    - {label: 'L', long_click: 4, click: 'l', hint: 'ai ue', width: 15.5, __include: /key_styles/letter}
+    - {label: 'D', long_click: 5, click: 'd', hint: 'uo', width: 11.5, __include: /key_styles/letter}
+    - {label: 'Y', long_click: 6, click: 'y', hint: 'in ing', width: 11.5, __include: /key_styles/letter}
     - {click: ExclaimKey, long_click: KeyboardU2Key, composing: 'u', ascii: 'u', hint: 'u', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
     - {click: QuestionKey, long_click: KeyboardI2Key, composing: 'i', ascii: 'i', hint: 'i', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'NH', long_click: CopyKey, click: 'n', hint: 'ao', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'J', long_click: PasteKey, click: 'j', hint: 'ou', width: 11.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
-    - {label: 'TR', click: 't', long_click: ColorSwitchKey, hint: 'ong iong', swipe_up: CommitCommentKey, width: 15.5, key_normal_back_color: row2_back_color, key_normal_text_color: row2_text_color}
+    - {label: 'NH', long_click: CopyKey, click: 'n', hint: 'ao', width: 11.5, __include: /key_styles/letter}
+    - {label: 'J', long_click: PasteKey, click: 'j', hint: 'ou', width: 11.5, __include: /key_styles/letter}
+    - {label: 'TR', click: 't', long_click: ColorSwitchKey, hint: 'ong iong', swipe_up: CommitCommentKey, width: 15.5, __include: /key_styles/letter}
   #  第三行
-    - {label: 'PK', long_click: 7, click: 'p', hint: 'ei un', width: 15.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-    - {label: 'Q~', long_click: 8, click: 'q', hint: 'ian', width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'PK', long_click: 7, click: 'p', hint: 'ei un', width: 15.5, __include: /key_styles/letter}
+    - {label: 'Q~', long_click: 8, click: 'q', hint: 'ian', width: 11.5, __include: /key_styles/letter}
     - {click: CommaKey, long_click: Digit9Key, composing: 'o', ascii: 'o', hint: 'uang', width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'G', click: 'g', long_click: "[]{Left}", hint: 'ui', width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
-    - {label: 'B', click: 'b', long_click: "(){Left}", hint: 'iu ua', width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'G', click: 'g', long_click: "[]{Left}", hint: 'ui', width: 11.5, __include: /key_styles/letter}
+    - {label: 'B', click: 'b', long_click: "(){Left}", hint: 'iu ua', width: 11.5, __include: /key_styles/letter}
     - {click: PeriodKey, long_click: StrokeTurningKey, composing: 'e', ascii: 'e', hint: 'e', swipe_up: SchemaSwitchEnKey, width: 11.5, key_normal_back_color: vowel_back_color, key_normal_text_color: vowel_text_color}
-    - {label: 'X', click: 'x', long_click: CutKey, hint: 'iao', width: 11.5, key_normal_back_color: row3_back_color, key_normal_text_color: row3_text_color}
+    - {label: 'X', click: 'x', long_click: CutKey, hint: 'iao', width: 11.5, __include: /key_styles/letter}
     - {label: "⌫", click: BackspaceKey, width: 15.5, key_text_size: "25", key_normal_back_color: backspace_back_color, key_normal_text_color: backspace_text_color}
   #  第四行
     - {label: "'分词", click: NumberKey, long_click: WindKeyboardKey, composing: WordSplitKey, ascii: '.', width: 15.5, key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
     - {label: '一', click: EmojiSymbolTabKey, long_click: ThemeSettingsKey, composing: LetterAKey, ascii: 'k', combo: k, width: 11.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
-    - {label: '✾', click: LetterVKey, long_click: VoiceAssistKey, composing: LetterUKey, ascii: 'v', width: 11.5, key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+    - {label: '✾', click: LetterVKey, long_click: VoiceAssistKey, composing: LetterUKey, ascii: 'v', width: 11.5, __include: /key_styles/letter}
     - {label: '______', click: SpaceKey, long_click: SpaceRKey, swipe_up: DefaultEnglishKeyboardKey, round_corner: *round1, width: 23, key_normal_back_color: space_back_color, key_normal_text_color: space_text_color}
-    - {label: '丿', click: LetterRKey, long_click: TabKey, composing: LetterIKey, ascii: 'h', combo: h, width: 11.5, key_normal_back_color: row4_back_color, key_normal_text_color: row4_text_color}
+    - {label: '丿', click: LetterRKey, long_click: TabKey, composing: LetterIKey, ascii: 'h', combo: h, width: 11.5, __include: /key_styles/letter}
     - {label: '丶', click: SpaceR1Key, long_click: SelectOneCharKey, composing: LetterOKey, ascii: 'r', combo: r, width: 11.5, key_text_size: "18", key_normal_back_color: function_back_color, key_normal_text_color: function_text_color}
     - {label: 'Enter', long_click: EnterKey, click: EnterKey, swipe_up: EscapeKey, composing: LetterEKey, width: 15.5, round_corner: *round3, key_normal_back_color: enter_back_color, key_normal_text_color: enter_text_color}
 

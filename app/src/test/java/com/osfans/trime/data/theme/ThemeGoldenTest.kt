@@ -67,7 +67,7 @@ class ThemeGoldenTest :
                     theme.presetKeyboards.filterValues { it.keys.isEmpty() }.keys shouldBe emptySet()
                 }
 
-                Then("the default keyboard decodes keys incl. inline flow mappings and per-key colors") {
+                Then("the default keyboard decodes keys incl. inline flow mappings and key styles") {
                     val keyboard = theme.presetKeyboards.getValue("default")
                     keyboard.name shouldBe "26键默认布局"
                     keyboard.author shouldBe "暖暖"
@@ -77,8 +77,9 @@ class ThemeGoldenTest :
                     val firstKey = keyboard.keys.first()
                     firstKey.click shouldBe KeyActionToken.Plain("q")
                     firstKey.longClick shouldBe KeyActionToken.Plain("1")
-                    firstKey.keyNormalBackColor shouldBe "row1_back_color"
-                    firstKey.keyNormalTextColor shouldBe "row1_text_color"
+                    // __include: /key_styles/letter 已展开为样式中的颜色键
+                    firstKey.keyNormalBackColor shouldBe "key_normal_back_color"
+                    firstKey.keyNormalTextColor shouldBe "key_normal_text_color"
                 }
 
                 Then("all 46 color schemes are decoded, with the default scheme intact") {
