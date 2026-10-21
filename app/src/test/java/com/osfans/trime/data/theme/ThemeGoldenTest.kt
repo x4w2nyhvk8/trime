@@ -77,8 +77,8 @@ class ThemeGoldenTest :
                     val firstKey = keyboard.keys.first()
                     firstKey.click shouldBe KeyActionToken.Plain("q")
                     firstKey.longClick shouldBe KeyActionToken.Plain("1")
-                    firstKey.keyNormalBackColor shouldBe "bh1"
-                    firstKey.keyNormalTextColor shouldBe "th1"
+                    firstKey.keyNormalBackColor shouldBe "row1_back_color"
+                    firstKey.keyNormalTextColor shouldBe "row1_text_color"
                 }
 
                 Then("all 46 color schemes are decoded, with the default scheme intact") {
