@@ -36,7 +36,7 @@ class LiquidItemUi(
         textSize = theme.style.keyTextSize
         typeface = theme.fonts.key
         setPaddingDp(8, 4, 8, 4)
-        setTextColor(scope.colors.keyNormalTextColor)
+        setTextColor(scope.colors.keyTextColor)
         gravity = Gravity.CENTER
         // 固定键条按键宽度有限，长标签（如动态 Enter 标签）等比缩小，避免溢出到相邻按键
         scaleMode = AutoScaleTextView.Mode.Proportional
@@ -44,8 +44,8 @@ class LiquidItemUi(
 
     private val content = constraintLayout {
         background = scope.decorDrawable(
-            "key_normal_back_color",
-            "key_normal_border_color",
+            "key_back_color",
+            "key_border_color",
             dp(theme.style.keyBorder),
             dp(theme.style.roundCorner),
         )
@@ -63,10 +63,10 @@ class LiquidItemUi(
 
     /** Restyles the item after a scheme switch. */
     fun refreshColors() {
-        mainText.setTextColor(scope.colors.keyNormalTextColor)
+        mainText.setTextColor(scope.colors.keyTextColor)
         content.background = scope.decorDrawable(
-            "key_normal_back_color",
-            "key_normal_border_color",
+            "key_back_color",
+            "key_border_color",
             ctx.dp(theme.style.keyBorder),
             ctx.dp(theme.style.roundCorner),
         )
