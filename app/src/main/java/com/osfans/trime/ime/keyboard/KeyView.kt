@@ -9,10 +9,13 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.view.KeyEvent
 import android.view.animation.DecelerateInterpolator
@@ -58,6 +61,14 @@ class KeyView(
     private val symbolPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
     }
+
+    // 底边、阴影填充与边框描边
+    private val decorationPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+    }
+    private val clipPath = Path()
+    private val keyRect = RectF()
 
     private var cachedIcon: IconicsDrawable? = null
     private var cachedIconName: String? = null
@@ -348,18 +359,97 @@ class KeyView(
     private fun drawBackground(canvas: Canvas, k: Key) {
         val bg = k.getBackgroundDrawable() ?: return
 
-        if (bg is GradientDrawable) {
-            k.roundCorner.takeIf { it > 0f }?.let { bg.cornerRadius = dp(it) }
-            k.keyBorder.takeIf { it > 0 }?.let { bg.setStroke(dp(it), k.getBorderColor()) }
+        // 单键间距：只在绘制层内缩，不影响触摸区域
+        val margin = dp(k.keyMargin)
+        val left = paddingLeft + margin
+        val top = paddingTop + margin
+        val right = width - paddingRight - margin
+        val bottom = height - paddingBottom - margin
+        if (right <= left || bottom <= top) return
+        keyRect.set(left, top, right, bottom)
+
+        val radius = dp(k.roundCorner.coerceAtLeast(0f))
+
+        // 阴影：同形状下移，硬阴影，避免依赖软件层模糊
+        val shadowColor = k.getShadowColor()
+        val shadowSize = dp(theme.style.shadowRadius)
+        if (shadowSize > 0f && Color.alpha(shadowColor) > 0) {
+            decorationPaint.color = shadowColor
+            canvas.drawRoundRect(
+                keyRect.left,
+                keyRect.top + shadowSize,
+                keyRect.right,
+                keyRect.bottom + shadowSize,
+                radius,
+                radius,
+                decorationPaint,
+            )
         }
 
-        bg.setBounds(
-            paddingLeft,
-            paddingTop,
-            width - paddingRight,
-            height - paddingBottom,
-        )
-        bg.draw(canvas)
+        // 底边：先画整高圆角矩形，再由背景覆盖上部，形成键帽效果
+        val bottomSize = dp(k.keyBottomSize)
+        val bottomColor = k.getBottomColor()
+        val hasBottom = bottomSize > 0f && Color.alpha(bottomColor) > 0
+        if (hasBottom) {
+            decorationPaint.color = bottomColor
+            canvas.drawRoundRect(keyRect, radius, radius, decorationPaint)
+        }
+
+        val bgBottom = if (hasBottom) bottom - bottomSize else bottom
+        if (bgBottom <= top) return
+        bg.setBounds(left.toInt(), top.toInt(), right.toInt(), bgBottom.toInt())
+
+        // 有底边时背景上圆下平，其余情况四角圆角
+        if (bg is GradientDrawable) {
+            if (hasBottom) {
+                bg.cornerRadii = floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f)
+            } else {
+                bg.cornerRadius = radius
+            }
+            bg.draw(canvas)
+        } else {
+            if (radius > 0f || hasBottom) {
+                canvas.save()
+                clipPath.reset()
+                if (hasBottom) {
+                    clipPath.addRoundRect(
+                        left,
+                        top,
+                        right,
+                        bgBottom,
+                        floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f),
+                        Path.Direction.CW,
+                    )
+                } else {
+                    clipPath.addRoundRect(
+                        keyRect,
+                        radius,
+                        radius,
+                        Path.Direction.CW,
+                    )
+                }
+                canvas.clipPath(clipPath)
+            }
+            bg.draw(canvas)
+            if (radius > 0f || hasBottom) canvas.restore()
+        }
+
+        // 边框：描边居中，需内缩半个线宽，避免被裁剪掉
+        if (k.keyBorder > 0) {
+            val stroke = dp(k.keyBorder).toFloat()
+            borderPaint.color = k.getBorderColor()
+            borderPaint.strokeWidth = stroke
+            val inset = stroke / 2f
+            canvas.drawRoundRect(
+                keyRect.left + inset,
+                keyRect.top + inset,
+                keyRect.right - inset,
+                keyRect.bottom - inset,
+                radius,
+                radius,
+                borderPaint,
+            )
+        }
     }
 
     private fun drawLabel(canvas: Canvas, label: String) {

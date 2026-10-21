@@ -4,6 +4,7 @@
 
 package com.osfans.trime.ime.keyboard
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import androidx.annotation.ColorInt
@@ -80,6 +81,8 @@ class Key(
     val symbolTextSize: Float = keyDef?.symbolTextSize ?: 0f
     val roundCorner: Float = keyDef?.roundCorner?.takeIf { it >= 0 } ?: parent.roundCorner
     val keyBorder: Int = keyDef?.keyBorder?.takeIf { it >= 0 } ?: parent.keyBorder
+    val keyBottomSize: Float = keyDef?.keyBottomSize?.takeIf { it >= 0 } ?: parent.keyBottomSize
+    val keyMargin: Float = keyDef?.keyMargin?.takeIf { it >= 0 } ?: parent.keyMargin
     var keyTextOffsetX = 0f
         get() = field + keyOffsetX
     var keyTextOffsetY = 0f
@@ -152,6 +155,28 @@ class Key(
     private val hlKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "key_pressed_border_color") }
     private val hlOffKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "function_key_pressed_border_color") }
     private val hlOnKeyBorderColor by schemeColor { getColor({ keyPressedBorderColor }, "function_key_on_pressed_border_color") }
+
+    // 底边与阴影为可选样式：配色方案未定义时按透明处理，不绘制
+    private val keyBottomColor by schemeColor {
+        keyDef?.keyNormalBottomColor?.takeIf { it.isNotEmpty() }
+            ?.let { getColor(it, Color.TRANSPARENT) }
+            ?: getColor("key_normal_bottom_color", Color.TRANSPARENT)
+    }
+    private val hlKeyBottomColor by schemeColor {
+        keyDef?.keyPressedBottomColor?.takeIf { it.isNotEmpty() }
+            ?.let { getColor(it, Color.TRANSPARENT) }
+            ?: getColor("key_pressed_bottom_color", Color.TRANSPARENT)
+    }
+    private val keyShadowColor by schemeColor {
+        keyDef?.keyNormalShadowColor?.takeIf { it.isNotEmpty() }
+            ?.let { getColor(it, Color.TRANSPARENT) }
+            ?: getColor("key_normal_shadow_color", Color.TRANSPARENT)
+    }
+    private val hlKeyShadowColor by schemeColor {
+        keyDef?.keyPressedShadowColor?.takeIf { it.isNotEmpty() }
+            ?.let { getColor(it, Color.TRANSPARENT) }
+            ?: getColor("key_pressed_shadow_color", Color.TRANSPARENT)
+    }
 
     private val keyTextColor by schemeColor { getColor({ keyNormalTextColor }, "key_normal_text_color") }
     private val offKeyTextColor by schemeColor { getColor({ keyNormalTextColor }, "function_key_normal_text_color") }
@@ -346,6 +371,10 @@ class Key(
         1 -> if (isPressed) hlOffKeyBorderColor else getColor(keyDef?.keyNormalBorderColor ?: "", offKeyBorderColor)
         else -> if (isPressed) hlKeyBorderColor else keyBorderColor
     }
+
+    fun getBottomColor(): Int = if (isPressed) hlKeyBottomColor else keyBottomColor
+
+    fun getShadowColor(): Int = if (isPressed) hlKeyShadowColor else keyShadowColor
 
     fun getTextColor(): Int = when (appearanceType) {
         2 -> if (isPressed) hlOnKeyTextColor else onKeyTextColor

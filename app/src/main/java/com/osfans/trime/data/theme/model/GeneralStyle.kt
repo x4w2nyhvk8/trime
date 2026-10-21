@@ -36,6 +36,10 @@ data class GeneralStyle(
     val keyboardPaddingLandBottom: Int = 0,
     val keyFont: MaybeStringList = MaybeStringList.Empty,
     val keyBorder: Int = 0,
+    /** 按鍵底邊高度（dp），0 表示不繪製 */
+    val keyBottomSize: Float = 0f,
+    /** 按鍵繪製內縮（dp），用於形成單鍵間距 */
+    val keyMargin: Float = 0f,
     val keyHeight: Int = 0,
     val keyLongTextSize: Float = 15f,
     val keyTextSize: Float = 15f,

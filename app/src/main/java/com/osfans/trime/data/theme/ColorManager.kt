@@ -8,9 +8,17 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.LinearGradient
 import android.graphics.NinePatch
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.RadialGradient
 import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.SweepGradient
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.NinePatchDrawable
@@ -23,6 +31,10 @@ import com.osfans.trime.util.ColorUtils
 import com.osfans.trime.util.NinePatchBitmapFactory
 import com.osfans.trime.util.WeakHashSet
 import com.osfans.trime.util.isNightMode
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.sin
 
 /**
  * Global entry point for the colors and drawables of the active theme.
@@ -35,6 +47,8 @@ import com.osfans.trime.util.isNightMode
  * and the scope's [ThemeScope.colors] expose the typed view for UI code.
  */
 object ColorManager {
+    private val GRADIENT_PATTERN =
+        Regex("""^(linear-gradient|radial-gradient|sweep-gradient)\((.*)\)$""")
     private var scope: ThemeScope? = null
     private val prefs = ThemeManager.prefs
 
@@ -190,8 +204,39 @@ object ColorManager {
     ): Drawable? {
         if (value.isEmpty()) return null
         if (ColorTable.isImageValue(value)) return imageDrawable(scope, value)
+        parseGradient(scope, value)?.let { return it }
         val color = runCatching { ColorUtils.parseColor(value) }.getOrDefault(Color.TRANSPARENT)
         return GradientDrawable().apply { setColor(color) }
+    }
+
+    /**
+     * 解析参数化渐变，语法：
+     * `linear-gradient(<角度>deg, <颜色>[, <颜色>...])`
+     * `radial-gradient(<颜色>[, <颜色>...])`
+     * `sweep-gradient(<颜色>[, <颜色>...])`
+     * 颜色可以是字面量，也可以是当前配色方案中的颜色键。
+     */
+    private fun parseGradient(
+        scope: ThemeScope,
+        value: String,
+    ): Drawable? {
+        val match = GRADIENT_PATTERN.matchEntire(value.trim()) ?: return null
+        val type = match.groupValues[1]
+        val args = match.groupValues[2].split(',').map { it.trim() }.filter { it.isNotEmpty() }
+        var angle = 90f
+        val colorArgs =
+            if (type == "linear-gradient" && args.firstOrNull()?.endsWith("deg") == true) {
+                angle = args.first().removeSuffix("deg").toFloatOrNull() ?: 90f
+                args.drop(1)
+            } else {
+                args
+            }
+        if (colorArgs.size < 2) return null
+        val colors =
+            colorArgs.map { token ->
+                runCatching { resolveColor(scope, token) }.getOrDefault(Color.TRANSPARENT)
+            }.toIntArray()
+        return GradientFillDrawable(type, colors, angle)
     }
 
     private fun imageDrawable(
@@ -265,4 +310,71 @@ object ColorManager {
         cornerRadius: Float = 0f,
         alpha: Int = 255,
     ): Drawable? = resolveDecorDrawable(requireScope(), colorKey, borderColorKey, borderPx, cornerRadius, alpha)
+}
+
+/**
+ * 以 Shader 填充按键背景的 Drawable，支持线性、径向、扫描三种渐变。
+ * 圆角与描边由 KeyView 在绘制时统一裁剪和描边。
+ */
+private class GradientFillDrawable(
+    private val type: String,
+    private val colors: IntArray,
+    private val angleDegrees: Float,
+) : Drawable() {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var shader: Shader? = null
+
+    override fun onBoundsChange(bounds: Rect) {
+        val width = bounds.width().toFloat()
+        val height = bounds.height().toFloat()
+        val centerX = bounds.exactCenterX()
+        val centerY = bounds.exactCenterY()
+        shader =
+            when (type) {
+                "linear-gradient" -> {
+                    val radians = Math.toRadians(angleDegrees.toDouble())
+                    val dx = sin(radians).toFloat()
+                    val dy = -cos(radians).toFloat()
+                    val half = (abs(width * dx) + abs(height * dy)) / 2f
+                    LinearGradient(
+                        centerX - dx * half,
+                        centerY - dy * half,
+                        centerX + dx * half,
+                        centerY + dy * half,
+                        colors,
+                        null,
+                        Shader.TileMode.CLAMP,
+                    )
+                }
+
+                "radial-gradient" ->
+                    RadialGradient(
+                        centerX,
+                        centerY,
+                        max(width, height) / 2f,
+                        colors,
+                        null,
+                        Shader.TileMode.CLAMP,
+                    )
+
+                else -> SweepGradient(centerX, centerY, colors, null)
+            }
+    }
+
+    override fun draw(canvas: Canvas) {
+        val current = shader ?: return
+        paint.shader = current
+        canvas.drawRect(bounds, paint)
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

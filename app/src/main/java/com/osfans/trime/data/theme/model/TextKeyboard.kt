@@ -21,6 +21,10 @@ data class TextKeyboard(
     val verticalGap: Int = 0,
     val roundCorner: Float = -1f,
     val keyBorder: Int = -1,
+    /** 按鍵底邊高度（dp），-1 表示跟隨主題 */
+    val keyBottomSize: Float = -1f,
+    /** 按鍵繪製內縮（dp），-1 表示跟隨主題 */
+    val keyMargin: Float = -1f,
     val columns: Int = 30,
     val asciiMode: Int = 1,
     val resetAsciiMode: Boolean = false,
@@ -51,6 +55,10 @@ data class TextKeyboard(
         val height: Float = 0f,
         val roundCorner: Float = -1f,
         val keyBorder: Int = -1,
+        /** 按鍵底邊高度（dp），-1 表示跟隨鍵盤 */
+        val keyBottomSize: Float = -1f,
+        /** 按鍵繪製內縮（dp），-1 表示跟隨鍵盤 */
+        val keyMargin: Float = -1f,
         val label: String = "",
         val labelSymbol: String = "",
         val hint: String = "",
@@ -69,10 +77,14 @@ data class TextKeyboard(
         val keyNormalBackColor: String = "",
         val keyNormalBorderColor: String = "",
         val keyNormalSymbolColor: String = "",
+        val keyNormalBottomColor: String = "",
+        val keyNormalShadowColor: String = "",
         val keyPressedTextColor: String = "",
         val keyPressedBackColor: String = "",
         val keyPressedBorderColor: String = "",
         val keyPressedSymbolColor: String = "",
+        val keyPressedBottomColor: String = "",
+        val keyPressedShadowColor: String = "",
         @Serializable(with = LenientStringListSerializer::class)
         val popup: List<String> = emptyList(),
         // behaviors

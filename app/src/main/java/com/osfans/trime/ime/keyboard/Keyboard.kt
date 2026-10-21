@@ -49,6 +49,14 @@ class Keyboard(
     val keyBorder: Int =
         resolveNonNegative(selfConfig?.keyBorder, theme.style.keyBorder)
 
+    /** 默認按鍵底邊高度  */
+    val keyBottomSize: Float =
+        resolveNonNegative(selfConfig?.keyBottomSize, theme.style.keyBottomSize)
+
+    /** 默認按鍵繪製內縮  */
+    val keyMargin: Float =
+        resolveNonNegative(selfConfig?.keyMargin, theme.style.keyMargin)
+
     /** 鍵盤的Shift鍵  */
     var mShiftKey: Key? = null
     var mCtrlKey: Key? = null
