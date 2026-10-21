@@ -10,6 +10,7 @@ import com.osfans.trime.data.theme.model.KeyRole
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 
 /** Pins the `role:` vocabulary of doc/Theme.md §2. */
 class KeyRoleTest :
@@ -17,6 +18,12 @@ class KeyRoleTest :
         Given("the role table") {
             Then("the names are unique") {
                 KeyRole.entries.map { it.yamlName }.toSet().size shouldBe KeyRole.entries.size
+            }
+            Then("the names follow the snake_case vocabulary") {
+                val snakeCase = Regex("^[a-z][a-z0-9_]*$")
+                for (entry in KeyRole.entries) {
+                    entry.yamlName shouldMatch snakeCase
+                }
             }
             Then("the usual spellings all resolve") {
                 KeyRole.of("enter") shouldBe KeyRole.ENTER

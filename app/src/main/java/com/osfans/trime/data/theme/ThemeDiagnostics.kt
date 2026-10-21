@@ -43,6 +43,7 @@ object ThemeDiagnostics {
         MISSING_DEFAULT_SCHEME,
         MISSING_SCHEME_LINK,
         INVALID_COLOR_VALUE,
+        CONFLICTING_COLOR_KEY,
         BROKEN_FALLBACK_TARGET,
         UNRESOLVABLE_PRESET_SEND,
         UNKNOWN_KEY_ROLE,
@@ -86,6 +87,7 @@ object ThemeDiagnostics {
         lintStyleKeys(node)
         lintConfigVersion(node)
         lintColorSchemes(theme, parseColor)
+        lintLegacyColorKeys(theme)
         lintPresetSends(theme)
         lintKeyRoles(theme)
         lintKeyboardReferences(theme)
@@ -313,6 +315,34 @@ object ThemeDiagnostics {
         }
 
         lintFallbackTargets(theme, schemes)
+    }
+
+    /**
+     * A theme may still spell a canonical color key under its pre-rename name,
+     * but defining both leaves the legacy value dead: resolution reads the
+     * canonical key first. Reported where the shadowed spelling sits so the
+     * author removes the one that has no effect.
+     */
+    private fun MutableList<Finding>.lintLegacyColorKeys(theme: Theme) {
+        fun check(colors: Map<String, String>, path: (String) -> String) {
+            colors.keys.forEach { key ->
+                val canonical = LegacyColorAliases.resolve(key) ?: return@forEach
+                if (canonical !in colors) return@forEach
+                add(
+                    Finding(
+                        Severity.WARNING,
+                        Code.CONFLICTING_COLOR_KEY,
+                        "'$key' is the pre-rename spelling of '$canonical', which is also defined; " +
+                            "the legacy value is ignored",
+                        path(key),
+                    ),
+                )
+            }
+        }
+        theme.presetColorSchemes.forEach { (id, colors) ->
+            check(colors) { "preset_color_schemes/$id/$it" }
+        }
+        check(theme.fallbackColors) { "fallback_colors/$it" }
     }
 
     /**

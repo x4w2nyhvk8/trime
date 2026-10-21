@@ -35,6 +35,18 @@ class ColorKeyTest :
                     entry.key shouldMatch roleStatePartColor
                 }
             }
+            Then("legacy spellings never shadow a canonical key") {
+                for (entry in ColorKey.entries) {
+                    LegacyColorAliases.resolve(entry.key).shouldBeNull()
+                }
+            }
+            Then("legacy spellings map back to the canonical key they replace") {
+                for (entry in ColorKey.entries) {
+                    for (legacy in LegacyColorAliases.aliasesOf(entry.key)) {
+                        LegacyColorAliases.resolve(legacy) shouldBe entry.key
+                    }
+                }
+            }
         }
         Given("the built-in fallback chain table") {
             val historical = LEGACY_BUILTIN_FALLBACK_COLORS
