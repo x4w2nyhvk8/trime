@@ -76,39 +76,6 @@ class KeyActionTest :
             }
         }
 
-        given("a preset that names a role instead of a send") {
-            `when`("the role supplies the behavior") {
-                then("it resolves exactly like the explicit send would") {
-                    val enter = KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "enter")))
-                    enter.code shouldBe KeyEvent.KEYCODE_ENTER
-                    val space = KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "space")))
-                    space.code shouldBe KeyEvent.KEYCODE_SPACE
-                }
-            }
-            `when`("the entry spells the field itself") {
-                then("the explicit field wins over the role") {
-                    val action =
-                        KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "enter", send = "space")))
-                    action.code shouldBe KeyEvent.KEYCODE_SPACE
-                }
-            }
-            `when`("the role only names data-driven behavior") {
-                then("the toggle and select defaults are applied") {
-                    val keyboard = KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "keyboard")))
-                    keyboard.select shouldBe ".next"
-                    val language = KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "language")))
-                    language.toggle shouldBe "ascii_mode"
-                }
-            }
-            `when`("the role is unknown") {
-                then("the entry keeps its own fields instead of failing") {
-                    val action =
-                        KeyAction(KeyActionToken.Plain("k"), mapOf("k" to PresetKey(role = "no_such_role", send = "space")))
-                    action.code shouldBe KeyEvent.KEYCODE_SPACE
-                }
-            }
-        }
-
         given("a plain token with key-code syntax") {
             `when`("it is a modifier expression without braces") {
                 then("the key code and the modifier mask are resolved") {

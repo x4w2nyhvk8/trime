@@ -119,7 +119,7 @@ class PopupKeyboardUi(
 
     private val focusBackground = GradientDrawable().apply {
         cornerRadius = radius
-        setColor(scope.colors.popupSelectedBackColor)
+        setColor(scope.colors.popupPressedBackColor)
     }
 
     private val rowCount: Int
@@ -241,7 +241,7 @@ class PopupKeyboardUi(
     private fun markFocus(index: Int) {
         keyUis.getOrNull(index)?.apply {
             root.background = focusBackground
-            val color = scope.colors.popupSelectedTextColor
+            val color = scope.colors.popupPressedTextColor
             textView.setTextColor(color)
             imageView.drawable?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
@@ -258,7 +258,7 @@ class PopupKeyboardUi(
 
     override fun refreshColors() {
         inactiveBackground.setColor(scope.colors.popupBackColor)
-        focusBackground.setColor(scope.colors.popupSelectedBackColor)
+        focusBackground.setColor(scope.colors.popupPressedBackColor)
         keyUis.forEachIndexed { index, _ ->
             if (index == focusedIndex) markFocus(index) else markInactive(index)
         }

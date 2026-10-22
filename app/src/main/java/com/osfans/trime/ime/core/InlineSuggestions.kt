@@ -34,7 +34,7 @@ object InlineSuggestions {
     ): InlineSuggestionsRequest {
         val textColor = colors.candidateTextColor
         val altTextColor = colors.commentTextColor
-        val isDark = ColorUtils.isContrastedDark(colors.backColor)
+        val isDark = ColorUtils.isContrastedDark(colors.keyboardBackColor)
         val chipDrawable = if (isDark) {
             R.drawable.bg_inline_suggestion_dark
         } else {

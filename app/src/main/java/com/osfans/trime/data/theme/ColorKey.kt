@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: 2015 - 2026 Rime community
- *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -9,29 +8,36 @@ package com.osfans.trime.data.theme
 /**
  * Canonical theme color keys. The YAML spelling is the lowercased enum name.
  *
- * Keys name a role, an optional state and a part: `<role>_[state_]<part>_color`.
- * The default state is not spelled out, so `key_back_color` is the normal state
- * and `key_pressed_back_color` is the pressed one.
+ * Keys name a role and an optional state: `<role>_[pressed_]<part>_color`.
+ * The default state is not spelled out, so `key_back_color` is the normal
+ * state and `key_pressed_back_color` is the pressed one. Candidate highlight
+ * is the same `pressed` state: candidates do not distinguish touch and
+ * highlight.
+ *
+ * The keyboard canvas is a role of its own ([KEYBOARD_BACK_COLOR],
+ * [KEYBOARD_TEXT_COLOR]); the canvas outline belongs to the independent
+ * `border` role ([BORDER_BACK_COLOR]).
  *
  * The enum covers every key the built-in fallback chains can hop through and
  * every key the runtime requests; theme-defined keys that do not appear here
- * are resolved through [com.osfans.trime.data.theme.ColorTable]'s string path.
+ * are resolved through [ColorTable]'s string path.
  */
 enum class ColorKey {
     KEYBOARD_BACK_COLOR,
-    KEYBOARD_BORDER_COLOR,
+    KEYBOARD_TEXT_COLOR,
+    BORDER_BACK_COLOR,
     CANDIDATE_BACK_COLOR,
     CANDIDATE_BORDER_COLOR,
     CANDIDATE_SEPARATOR_COLOR,
     CANDIDATE_TEXT_COLOR,
-    CANDIDATE_SELECTED_BACK_COLOR,
-    CANDIDATE_SELECTED_TEXT_COLOR,
+    CANDIDATE_PRESSED_BACK_COLOR,
+    CANDIDATE_PRESSED_TEXT_COLOR,
     COMMENT_TEXT_COLOR,
-    COMMENT_SELECTED_TEXT_COLOR,
+    COMMENT_PRESSED_TEXT_COLOR,
     PREEDIT_BACK_COLOR,
     PREEDIT_TEXT_COLOR,
-    PREEDIT_SELECTED_BACK_COLOR,
-    PREEDIT_SELECTED_TEXT_COLOR,
+    PREEDIT_PRESSED_BACK_COLOR,
+    PREEDIT_PRESSED_TEXT_COLOR,
     KEY_BACK_COLOR,
     KEY_BORDER_COLOR,
     KEY_TEXT_COLOR,
@@ -49,20 +55,20 @@ enum class ColorKey {
     FUNCTION_KEY_PRESSED_BORDER_COLOR,
     FUNCTION_KEY_PRESSED_TEXT_COLOR,
     FUNCTION_KEY_PRESSED_SYMBOL_COLOR,
-    FUNCTION_KEY_ON_BACK_COLOR,
-    FUNCTION_KEY_ON_BORDER_COLOR,
-    FUNCTION_KEY_ON_TEXT_COLOR,
-    FUNCTION_KEY_ON_SYMBOL_COLOR,
-    FUNCTION_KEY_ON_PRESSED_BACK_COLOR,
-    FUNCTION_KEY_ON_PRESSED_BORDER_COLOR,
-    FUNCTION_KEY_ON_PRESSED_TEXT_COLOR,
-    FUNCTION_KEY_ON_PRESSED_SYMBOL_COLOR,
+    MODIFIER_KEY_BACK_COLOR,
+    MODIFIER_KEY_BORDER_COLOR,
+    MODIFIER_KEY_TEXT_COLOR,
+    MODIFIER_KEY_SYMBOL_COLOR,
+    MODIFIER_KEY_PRESSED_BACK_COLOR,
+    MODIFIER_KEY_PRESSED_BORDER_COLOR,
+    MODIFIER_KEY_PRESSED_TEXT_COLOR,
+    MODIFIER_KEY_PRESSED_SYMBOL_COLOR,
     POPUP_BACK_COLOR,
     POPUP_TEXT_COLOR,
-    POPUP_SELECTED_BACK_COLOR,
-    POPUP_SELECTED_TEXT_COLOR,
+    POPUP_PRESSED_BACK_COLOR,
+    POPUP_PRESSED_TEXT_COLOR,
     LABEL_COLOR,
-    LABEL_SELECTED_TEXT_COLOR,
+    LABEL_PRESSED_TEXT_COLOR,
     CANDIDATE_BUTTON_BACK_COLOR,
     CANDIDATE_BUTTON_TEXT_COLOR,
     CANDIDATE_BUTTON_PRESSED_BACK_COLOR,
@@ -85,7 +91,7 @@ enum class ColorKey {
          * The typed [ColorKey] for a YAML color key, or null for keys that
          * only a theme defines.
          */
-        fun from(key: String): ColorKey? = byKey[key] ?: LegacyColorAliases.resolve(key)?.let(byKey::get)
+        fun from(key: String): ColorKey? = byKey[key]
 
         /**
          * Built-in fallback chains previously hardcoded in ColorManager:
@@ -94,24 +100,33 @@ enum class ColorKey {
          */
         internal val builtinFallbackColors: Map<ColorKey, ColorKey> =
             mapOf(
-                CANDIDATE_TEXT_COLOR to PREEDIT_TEXT_COLOR,
+                BORDER_BACK_COLOR to KEYBOARD_BACK_COLOR,
+                CANDIDATE_TEXT_COLOR to KEYBOARD_TEXT_COLOR,
                 COMMENT_TEXT_COLOR to CANDIDATE_TEXT_COLOR,
-                KEYBOARD_BORDER_COLOR to KEYBOARD_BACK_COLOR,
-                CANDIDATE_SEPARATOR_COLOR to KEYBOARD_BORDER_COLOR,
-                PREEDIT_SELECTED_TEXT_COLOR to PREEDIT_TEXT_COLOR,
-                PREEDIT_SELECTED_BACK_COLOR to KEYBOARD_BACK_COLOR,
-                CANDIDATE_SELECTED_TEXT_COLOR to PREEDIT_SELECTED_TEXT_COLOR,
-                CANDIDATE_SELECTED_BACK_COLOR to PREEDIT_SELECTED_BACK_COLOR,
+                CANDIDATE_SEPARATOR_COLOR to BORDER_BACK_COLOR,
+                CANDIDATE_BORDER_COLOR to BORDER_BACK_COLOR,
+                PREEDIT_TEXT_COLOR to KEYBOARD_TEXT_COLOR,
+                PREEDIT_BACK_COLOR to KEYBOARD_BACK_COLOR,
+                PREEDIT_PRESSED_TEXT_COLOR to KEYBOARD_TEXT_COLOR,
+                PREEDIT_PRESSED_BACK_COLOR to KEYBOARD_BACK_COLOR,
+                CANDIDATE_PRESSED_TEXT_COLOR to PREEDIT_PRESSED_TEXT_COLOR,
+                CANDIDATE_PRESSED_BACK_COLOR to PREEDIT_PRESSED_BACK_COLOR,
                 CANDIDATE_BUTTON_BACK_COLOR to CANDIDATE_BACK_COLOR,
                 CANDIDATE_BUTTON_TEXT_COLOR to CANDIDATE_TEXT_COLOR,
-                CANDIDATE_BUTTON_PRESSED_BACK_COLOR to CANDIDATE_SELECTED_BACK_COLOR,
-                CANDIDATE_BUTTON_PRESSED_TEXT_COLOR to CANDIDATE_SELECTED_TEXT_COLOR,
-                LABEL_SELECTED_TEXT_COLOR to CANDIDATE_SELECTED_TEXT_COLOR,
-                COMMENT_SELECTED_TEXT_COLOR to COMMENT_TEXT_COLOR,
-                KEY_PRESSED_BACK_COLOR to CANDIDATE_SELECTED_BACK_COLOR,
+                CANDIDATE_BUTTON_PRESSED_BACK_COLOR to CANDIDATE_PRESSED_BACK_COLOR,
+                CANDIDATE_BUTTON_PRESSED_TEXT_COLOR to CANDIDATE_PRESSED_TEXT_COLOR,
+                LABEL_PRESSED_TEXT_COLOR to CANDIDATE_PRESSED_TEXT_COLOR,
+                COMMENT_PRESSED_TEXT_COLOR to COMMENT_TEXT_COLOR,
+                KEY_PRESSED_BACK_COLOR to CANDIDATE_PRESSED_BACK_COLOR,
                 KEY_PRESSED_BORDER_COLOR to KEY_BORDER_COLOR,
-                KEY_PRESSED_TEXT_COLOR to CANDIDATE_SELECTED_TEXT_COLOR,
-                KEY_PRESSED_SYMBOL_COLOR to COMMENT_SELECTED_TEXT_COLOR,
+                KEY_PRESSED_TEXT_COLOR to CANDIDATE_PRESSED_TEXT_COLOR,
+                KEY_PRESSED_SYMBOL_COLOR to COMMENT_PRESSED_TEXT_COLOR,
+                KEY_BACK_COLOR to KEYBOARD_BACK_COLOR,
+                KEY_BORDER_COLOR to BORDER_BACK_COLOR,
+                KEY_TEXT_COLOR to CANDIDATE_TEXT_COLOR,
+                KEY_SYMBOL_COLOR to COMMENT_TEXT_COLOR,
+                KEY_SHADOW_COLOR to BORDER_BACK_COLOR,
+                LABEL_COLOR to CANDIDATE_TEXT_COLOR,
                 FUNCTION_KEY_BACK_COLOR to KEY_BACK_COLOR,
                 FUNCTION_KEY_BORDER_COLOR to KEY_BORDER_COLOR,
                 FUNCTION_KEY_TEXT_COLOR to KEY_TEXT_COLOR,
@@ -120,99 +135,28 @@ enum class ColorKey {
                 FUNCTION_KEY_PRESSED_BORDER_COLOR to KEY_PRESSED_BORDER_COLOR,
                 FUNCTION_KEY_PRESSED_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
                 FUNCTION_KEY_PRESSED_SYMBOL_COLOR to KEY_PRESSED_SYMBOL_COLOR,
-                FUNCTION_KEY_ON_BACK_COLOR to KEY_PRESSED_BACK_COLOR,
-                FUNCTION_KEY_ON_BORDER_COLOR to KEY_PRESSED_BORDER_COLOR,
-                FUNCTION_KEY_ON_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
-                FUNCTION_KEY_ON_SYMBOL_COLOR to KEY_PRESSED_SYMBOL_COLOR,
-                FUNCTION_KEY_ON_PRESSED_BACK_COLOR to KEY_PRESSED_BACK_COLOR,
-                FUNCTION_KEY_ON_PRESSED_BORDER_COLOR to KEY_PRESSED_BORDER_COLOR,
-                FUNCTION_KEY_ON_PRESSED_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
-                FUNCTION_KEY_ON_PRESSED_SYMBOL_COLOR to KEY_PRESSED_SYMBOL_COLOR,
-                KEY_BACK_COLOR to CANDIDATE_BACK_COLOR,
-                KEY_BORDER_COLOR to KEYBOARD_BORDER_COLOR,
-                KEY_TEXT_COLOR to CANDIDATE_TEXT_COLOR,
-                KEY_SYMBOL_COLOR to COMMENT_TEXT_COLOR,
-                KEY_SHADOW_COLOR to KEYBOARD_BORDER_COLOR,
-                LABEL_COLOR to CANDIDATE_TEXT_COLOR,
+                MODIFIER_KEY_BACK_COLOR to KEY_BACK_COLOR,
+                MODIFIER_KEY_BORDER_COLOR to KEY_BORDER_COLOR,
+                MODIFIER_KEY_TEXT_COLOR to KEY_TEXT_COLOR,
+                MODIFIER_KEY_SYMBOL_COLOR to KEY_SYMBOL_COLOR,
+                MODIFIER_KEY_PRESSED_BACK_COLOR to KEY_PRESSED_BACK_COLOR,
+                MODIFIER_KEY_PRESSED_BORDER_COLOR to KEY_PRESSED_BORDER_COLOR,
+                MODIFIER_KEY_PRESSED_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
+                MODIFIER_KEY_PRESSED_SYMBOL_COLOR to KEY_PRESSED_SYMBOL_COLOR,
                 POPUP_BACK_COLOR to KEY_BACK_COLOR,
                 POPUP_TEXT_COLOR to KEY_TEXT_COLOR,
-                POPUP_SELECTED_BACK_COLOR to KEY_PRESSED_BACK_COLOR,
-                POPUP_SELECTED_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
+                POPUP_PRESSED_BACK_COLOR to KEY_PRESSED_BACK_COLOR,
+                POPUP_PRESSED_TEXT_COLOR to KEY_PRESSED_TEXT_COLOR,
                 ROOT_BACK_COLOR to KEYBOARD_BACK_COLOR,
                 CANDIDATE_BACK_COLOR to KEYBOARD_BACK_COLOR,
                 LIQUID_KEYBOARD_BACK_COLOR to KEYBOARD_BACK_COLOR,
-                PREEDIT_BACK_COLOR to KEYBOARD_BACK_COLOR,
                 LONG_TEXT_COLOR to KEY_TEXT_COLOR,
                 LONG_TEXT_BACK_COLOR to KEY_BACK_COLOR,
+                PREVIEW_BACK_COLOR to KEY_BACK_COLOR,
+                PREVIEW_TEXT_COLOR to KEY_TEXT_COLOR,
             )
 
         /** The fallback hop for a key, or null when the key is a chain terminal. */
         fun fallbackOf(key: ColorKey): ColorKey? = builtinFallbackColors[key]
     }
-}
-
-/**
- * The pre-unification color keys of doc/Theme.md, so a theme written before the
- * `<role>_[state_]<part>_color` rename still resolves.
- */
-object LegacyColorAliases {
-    private val aliases: Map<String, String> =
-        mapOf(
-            "back_color" to "candidate_back_color",
-            "keyboard_background" to "keyboard_back_color",
-            "root_background" to "root_back_color",
-            "border_color" to "keyboard_border_color",
-            "hilited_key_back_color" to "key_pressed_back_color",
-            "hilited_key_border_color" to "key_pressed_border_color",
-            "hilited_key_text_color" to "key_pressed_text_color",
-            "hilited_key_symbol_color" to "key_pressed_symbol_color",
-            "off_key_back_color" to "function_key_back_color",
-            "off_key_border_color" to "function_key_border_color",
-            "off_key_text_color" to "function_key_text_color",
-            "off_key_symbol_color" to "function_key_symbol_color",
-            "on_key_back_color" to "function_key_on_back_color",
-            "on_key_border_color" to "function_key_on_border_color",
-            "on_key_text_color" to "function_key_on_text_color",
-            "on_key_symbol_color" to "function_key_on_symbol_color",
-            "hilited_off_key_back_color" to "function_key_pressed_back_color",
-            "hilited_off_key_border_color" to "function_key_pressed_border_color",
-            "hilited_off_key_text_color" to "function_key_pressed_text_color",
-            "hilited_off_key_symbol_color" to "function_key_pressed_symbol_color",
-            "hilited_on_key_back_color" to "function_key_on_pressed_back_color",
-            "hilited_on_key_border_color" to "function_key_on_pressed_border_color",
-            "hilited_on_key_text_color" to "function_key_on_pressed_text_color",
-            "hilited_on_key_symbol_color" to "function_key_on_pressed_symbol_color",
-            "candidate_background" to "candidate_back_color",
-            "hilited_candidate_back_color" to "candidate_selected_back_color",
-            "hilited_candidate_text_color" to "candidate_selected_text_color",
-            "hilited_candidate_button_color" to "candidate_button_pressed_back_color",
-            "candidate_button_selected_back_color" to "candidate_button_pressed_back_color",
-            "candidate_button_normal_back_color" to "candidate_button_back_color",
-            "candidate_button_normal_text_color" to "candidate_button_text_color",
-            "hilited_back_color" to "preedit_selected_back_color",
-            "hilited_text_color" to "preedit_selected_text_color",
-            "text_color" to "preedit_text_color",
-            "text_back_color" to "preedit_back_color",
-            "text_normal_back_color" to "preedit_back_color",
-            "text_normal_text_color" to "preedit_text_color",
-            "text_selected_back_color" to "preedit_selected_back_color",
-            "text_selected_text_color" to "preedit_selected_text_color",
-            "hilited_comment_text_color" to "comment_selected_text_color",
-            "hilited_popup_back_color" to "popup_selected_back_color",
-            "hilited_popup_text_color" to "popup_selected_text_color",
-            "hilited_label_color" to "label_selected_text_color",
-            "shadow_color" to "key_shadow_color",
-            "panel_back_color" to "liquid_keyboard_back_color",
-            "panel_normal_back_color" to "liquid_keyboard_back_color",
-            "liquid_keyboard_background" to "liquid_keyboard_back_color",
-        )
-
-    /** The canonical key for a legacy color key, or null when [name] is not a legacy key. */
-    fun resolve(name: String): String? = aliases[name]
-
-    /**
-     * All legacy spellings that map to [canonical], so a theme written against
-     * the old `doc/Theme.md` keys still feeds the canonical table slot.
-     */
-    fun aliasesOf(canonical: String): List<String> = aliases.entries.filter { it.value == canonical }.map { it.key }
 }

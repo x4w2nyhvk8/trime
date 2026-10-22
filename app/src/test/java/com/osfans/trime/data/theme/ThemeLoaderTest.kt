@@ -292,7 +292,7 @@ class ThemeLoaderTest :
                             config_version: "3.0"
                             name: fixture
                             style: {candidate_texts_size: 12}
-                            preset_color_schemes: {default: {back_color: "#000000"}}
+                            preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                             height: 5
                             """.trimIndent(),
                         ).mapping!!,

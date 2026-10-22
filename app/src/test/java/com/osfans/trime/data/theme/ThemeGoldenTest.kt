@@ -89,7 +89,7 @@ class ThemeGoldenTest :
                 }
 
                 Then("fallback colors override table is decoded") {
-                    theme.fallbackColors shouldBe mapOf("candidate_text_color" to "text_color")
+                    theme.fallbackColors shouldBe mapOf("candidate_text_color" to "keyboard_text_color")
                 }
 
                 Then("preset keys with inline maps are decoded") {

@@ -69,10 +69,10 @@ data class TextKeyboard(
         val keyBackColor: String = "",
         val keyBorderColor: String = "",
         val keySymbolColor: String = "",
-        val hilitedKeyTextColor: String = "",
-        val hilitedKeyBackColor: String = "",
-        val hilitedKeyBorderColor: String = "",
-        val hilitedKeySymbolColor: String = "",
+        val pressedKeyTextColor: String = "",
+        val pressedKeyBackColor: String = "",
+        val pressedKeyBorderColor: String = "",
+        val pressedKeySymbolColor: String = "",
         @Serializable(with = LenientStringListSerializer::class)
         val popup: List<String> = emptyList(),
         // behaviors

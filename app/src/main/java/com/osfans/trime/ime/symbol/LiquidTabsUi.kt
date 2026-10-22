@@ -55,7 +55,7 @@ class LiquidTabsUi(
                     },
                 )
                 background =
-                    roundedRippleDrawable(scope.colors.candidateSelectedBackColor, cornerRadius)
+                    roundedRippleDrawable(scope.colors.candidatePressedBackColor, cornerRadius)
             }
 
         fun setText(str: String) {
@@ -64,12 +64,12 @@ class LiquidTabsUi(
 
         fun setActive(active: Boolean) {
             val color =
-                if (active) scope.colors.candidateSelectedTextColor else scope.colors.candidateTextColor
+                if (active) scope.colors.candidatePressedTextColor else scope.colors.candidateTextColor
             val contentColor =
-                if (active) scope.colors.candidateSelectedBackColor else Color.TRANSPARENT
+                if (active) scope.colors.candidatePressedBackColor else Color.TRANSPARENT
             text.setTextColor(color)
             root.background =
-                roundedRippleDrawable(scope.colors.candidateSelectedBackColor, cornerRadius, contentColor)
+                roundedRippleDrawable(scope.colors.candidatePressedBackColor, cornerRadius, contentColor)
         }
     }
 

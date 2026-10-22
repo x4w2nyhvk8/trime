@@ -32,15 +32,15 @@ class ThemeColorsTest :
         fun colors(vararg pairs: Pair<String, String>): ThemeColors = ThemeColors(ColorTable.resolve(scheme(*pairs), emptyMap(), parseHex))
 
         Given("a scheme defining only chain terminals") {
-            val view = colors("preedit_text_color" to "#112233", "keyboard_back_color" to "#445566")
+            val view = colors("keyboard_text_color" to "#112233", "keyboard_back_color" to "#778899")
             Then("every property resolves through the built-in chains") {
                 view.candidateTextColor shouldBe 0x112233
                 view.commentTextColor shouldBe 0x112233
                 view.keyTextColor shouldBe 0x112233
-                view.candidateSelectedBackColor shouldBe 0x445566
-                view.functionKeyOnPressedBackColor shouldBe 0x445566
+                view.candidatePressedBackColor shouldBe 0x778899
+                view.modifierKeyPressedBackColor shouldBe 0x778899
                 view.preeditTextColor shouldBe 0x112233
-                view.backColor shouldBe 0x445566
+                view.keyboardBackColor shouldBe 0x778899
             }
         }
         Given("a scheme with a direct entry") {
@@ -70,7 +70,7 @@ class ThemeColorsTest :
             Then("the day scheme colors resolve to the parsed scheme values") {
                 view.candidateTextColor shouldBe parseHex(colors.getValue("candidate_text_color"))
                 view.keyBackColor shouldBe parseHex(colors.getValue("key_back_color"))
-                view.preeditTextColor shouldBe parseHex(colors.getValue("text_color"))
+                view.preeditTextColor shouldBe parseHex(colors.getValue("keyboard_text_color"))
             }
         }
     })

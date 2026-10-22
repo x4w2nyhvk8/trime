@@ -73,7 +73,7 @@ abstract class BaseInputView(
     fun showCandidateActionMenu(idx: Int, text: String, view: View, global: Boolean) {
         candidateActionMenu?.dismiss()
         candidateActionMenu = null
-        val highlightColor = scope.colors.candidateSelectedTextColor
+        val highlightColor = scope.colors.candidatePressedTextColor
         val title = buildSpannedString {
             bold {
                 color(highlightColor) { append(text) }

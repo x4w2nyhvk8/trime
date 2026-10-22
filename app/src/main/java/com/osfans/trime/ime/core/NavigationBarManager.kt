@@ -100,7 +100,7 @@ class NavigationBarManager {
     ) {
         val backColor =
             runCatching {
-                colors.backColor
+                colors.keyboardBackColor
             }.getOrDefault(Color.BLACK)
         if (shouldUpdateNavbarForeground) {
             WindowCompat

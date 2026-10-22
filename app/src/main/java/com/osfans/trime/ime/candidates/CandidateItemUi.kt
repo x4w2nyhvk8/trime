@@ -55,9 +55,9 @@ class CandidateItemUi(
     // Read at use time so a scheme switch re-binds rows with the new colors.
     private val textColor: Int get() = scope.colors.candidateTextColor
     private val commentColor: Int get() = scope.colors.commentTextColor
-    private val hlCommentColor: Int get() = scope.colors.commentSelectedTextColor
-    private val hlTextColor: Int get() = scope.colors.candidateSelectedTextColor
-    private val hlBackColor: Int get() = scope.colors.candidateSelectedBackColor
+    private val hlCommentColor: Int get() = scope.colors.commentPressedTextColor
+    private val hlTextColor: Int get() = scope.colors.candidatePressedTextColor
+    private val hlBackColor: Int get() = scope.colors.candidatePressedBackColor
 
     private val commentPosition = theme.style.commentPosition
     private val commentVerticalBias = theme.style.commentVerticalBias

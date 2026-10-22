@@ -45,7 +45,7 @@ class ThemeScopeTest :
             Then("colors resolves through the scheme") {
                 s.activeColorScheme shouldBe schemeA
                 s.colors.candidateTextColor shouldBe 0x112233
-                shouldThrow<IllegalArgumentException> { s.colors.backColor }
+                shouldThrow<IllegalArgumentException> { s.colors.keyboardBackColor }
             }
         }
         Given("a scope whose scheme switches from A to B") {

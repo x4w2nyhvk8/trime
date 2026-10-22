@@ -115,22 +115,22 @@ class TextKeyboardTest :
             }
         }
 
-        Given("a key with per-key highlight overrides") {
+        Given("a key with per-key pressed overrides") {
             val key =
                 ThemeTestSupport.yaml.decodeFromYamlNode<TextKey>(
                     yamlMapOf(
-                        "hilited_key_text_color" to yamlScalarOf("0xffff0000"),
-                        "hilited_key_back_color" to yamlScalarOf("0xff00ff00"),
-                        "hilited_key_border_color" to yamlScalarOf("0xff0000ff"),
-                        "hilited_key_symbol_color" to yamlScalarOf("0xff00ffff"),
+                        "pressed_key_text_color" to yamlScalarOf("0xffff0000"),
+                        "pressed_key_back_color" to yamlScalarOf("0xff00ff00"),
+                        "pressed_key_border_color" to yamlScalarOf("0xff0000ff"),
+                        "pressed_key_symbol_color" to yamlScalarOf("0xff00ffff"),
                     ),
                 )
 
             Then("all four are read under their snake case names") {
-                key.hilitedKeyTextColor shouldBe "0xffff0000"
-                key.hilitedKeyBackColor shouldBe "0xff00ff00"
-                key.hilitedKeyBorderColor shouldBe "0xff0000ff"
-                key.hilitedKeySymbolColor shouldBe "0xff00ffff"
+                key.pressedKeyTextColor shouldBe "0xffff0000"
+                key.pressedKeyBackColor shouldBe "0xff00ff00"
+                key.pressedKeyBorderColor shouldBe "0xff0000ff"
+                key.pressedKeySymbolColor shouldBe "0xff00ffff"
             }
         }
     })

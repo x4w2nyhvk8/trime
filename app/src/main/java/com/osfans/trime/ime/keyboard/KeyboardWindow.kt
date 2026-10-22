@@ -380,7 +380,9 @@ class KeyboardWindow(di: DI) :
 
     override fun onRimeOptionUpdated(value: RimeMessage.OptionMessage.Data) {
         val option = value.option
-        activeKeyboard?.updateToggle(option, value.value)
+        activeKeyboard?.updateToggle(option, value.value)?.forEach { key ->
+            currentKeyboardView?.invalidateKeyByIndex(key.index)
+        }
         when {
             option.startsWith("_keyboard_") -> {
                 val target = option.removePrefix("_keyboard_")
@@ -400,10 +402,11 @@ class KeyboardWindow(di: DI) :
 
             option == "ascii_mode" && !value.value -> {
                 // 回到中文时，释放 Shift 锁定
-                activeKeyboard?.resetShift()
+                activeKeyboard?.resetShift()?.let { key ->
+                    currentKeyboardView?.invalidateKeyByIndex(key.index)
+                }
             }
         }
-        currentKeyboardView?.invalidateAllKeys()
     }
 
     override fun onAttached() {

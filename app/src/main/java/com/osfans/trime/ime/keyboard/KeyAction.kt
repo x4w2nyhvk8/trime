@@ -177,7 +177,7 @@ class KeyAction(
             is KeyActionToken.Plain -> {
                 val label: String
                 // match like: { x: BackSpace } -> preset_keys/BackSpace: {..., send: BackSpace }
-                val preset = presetKeys[token.token]?.withRoleDefaults()
+                val preset = presetKeys[token.token]
                 if (preset != null) {
                     command = preset.command
                     option = preset.option

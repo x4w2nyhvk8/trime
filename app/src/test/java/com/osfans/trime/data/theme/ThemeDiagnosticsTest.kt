@@ -48,7 +48,7 @@ class ThemeDiagnosticsTest :
                 name: minimal
                 style: {candidate_text_size: 20}
                 preset_color_schemes:
-                  default: {back_color: "#000000"}
+                  default: {keyboard_back_color: "#000000"}
                 preset_keys:
                   A: {label: a, send: a}
                 preset_keyboards:
@@ -70,7 +70,7 @@ class ThemeDiagnosticsTest :
                         style: {}
                         height: 5
                         round_corner: 3
-                        preset_color_schemes: {default: {back_color: "#000000"}}
+                        preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                         """.trimIndent(),
                     )
                 findings.filter { it.code == Code.UNKNOWN_TOP_LEVEL_KEY } shouldContainExactlyInAnyOrder
@@ -96,7 +96,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {candidate_texts_size: 22, candidate_text_size: 20}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     """.trimIndent(),
                 )
                 findings.map { it.code to it.path } shouldBe
@@ -109,7 +109,7 @@ class ThemeDiagnosticsTest :
                 """
                 name: t
                 style: {}
-                preset_color_schemes: {default: {back_color: "#000000"}}
+                preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                 """.trimIndent()
 
             Then("a missing version is informational") {
@@ -151,7 +151,7 @@ class ThemeDiagnosticsTest :
 
             Then("a missing default scheme is reported") {
                 lintCodes(
-                    "config_version: \"3.0\"\nname: t\nstyle: {}\npreset_color_schemes: {ink: {back_color: \"#000000\"}}\n",
+                    "config_version: \"3.0\"\nname: t\nstyle: {}\npreset_color_schemes: {ink: {keyboard_back_color: \"#000000\"}}\n",
                 ) shouldBe listOf(Code.MISSING_DEFAULT_SCHEME)
             }
 
@@ -162,7 +162,7 @@ class ThemeDiagnosticsTest :
                     name: t
                     style: {}
                     preset_color_schemes:
-                      default: {back_color: "#000000", dark_scheme: night}
+                      default: {keyboard_back_color: "#000000", dark_scheme: night}
                     """.trimIndent(),
                 )
                 findings.single().let {
@@ -179,11 +179,11 @@ class ThemeDiagnosticsTest :
                     name: t
                     style: {}
                     preset_color_schemes:
-                      default: {back_color: "not-a-color"}
+                      default: {keyboard_back_color: "not-a-color"}
                     """.trimIndent(),
                 )
                 findings.filter { it.code == Code.INVALID_COLOR_VALUE }.map { it.path } shouldBe
-                    listOf("preset_color_schemes/default/back_color")
+                    listOf("preset_color_schemes/default/keyboard_back_color")
             }
 
             Then("a value a custom scheme key carries is reported at that key") {
@@ -192,7 +192,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000", my_base: "nope"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000", my_base: "nope"}}
                     fallback_colors: {key_back_color: my_base}
                     """.trimIndent(),
                 )
@@ -203,31 +203,13 @@ class ThemeDiagnosticsTest :
                 }
             }
 
-            Then("a legacy color key shadowed by its canonical spelling is reported") {
-                val findings = lint(
-                    """
-                    config_version: "3.0"
-                    name: t
-                    style: {}
-                    preset_color_schemes:
-                      default: {candidate_back_color: "#000000", back_color: "#111111"}
-                    fallback_colors: {preedit_text_color: x, text_color: x}
-                    """.trimIndent(),
-                )
-                findings.filter { it.code == Code.CONFLICTING_COLOR_KEY }.map { it.path } shouldBe
-                    listOf(
-                        "preset_color_schemes/default/back_color",
-                        "fallback_colors/text_color",
-                    )
-            }
-
             Then("a fallback_colors entry pointing at nothing is reported") {
                 val findings = lint(
                     """
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     fallback_colors:
                       key_back_color: no_such_key
                     """.trimIndent(),
@@ -246,9 +228,9 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000", text_color: "#ffffff"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000", keyboard_text_color: "#ffffff"}}
                     fallback_colors:
-                      candidate_text_color: text_color
+                      candidate_text_color: keyboard_text_color
                       my_panel: candidate_text_color
                     """.trimIndent(),
                 ) shouldBe emptyList()
@@ -260,7 +242,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     fallback_colors:
                       my_panel: my_panel_color
                       my_panel_color: my_panel
@@ -276,7 +258,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     preset_keys:
                       BROKEN: {label: x, send: NotAKey}
                     """.trimIndent(),
@@ -294,7 +276,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     preset_keyboards:
                       letter:
                         name: letter
@@ -316,7 +298,7 @@ class ThemeDiagnosticsTest :
                     config_version: "3.0"
                     name: t
                     style: {}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     preset_keyboards:
                       letter: {name: letter, import_preset: symbols, keys: [{click: a}]}
                       symbols: {name: symbols, import_preset: letter, keys: [{click: a}]}
@@ -372,7 +354,7 @@ class ThemeDiagnosticsTest :
                         config_version: "3.0"
                         name: t
                         style: {candidate_texts_size: 12}
-                        preset_color_schemes: {default: {back_color: "#000000", hilited_back_color: "nope"}}
+                        preset_color_schemes: {default: {keyboard_back_color: "#000000", preedit_pressed_back_color: "nope"}}
                         height: 5
                         """.trimIndent(),
                     )
@@ -383,7 +365,7 @@ class ThemeDiagnosticsTest :
                     listOf(
                         "I Theme 'fixture': unknown key 'height' in ''; the runtime ignores it",
                         "W Theme 'fixture': unknown key 'candidate_texts_size' in 'style'; the runtime ignores it",
-                        "W Theme 'fixture': scheme 'default': 'hilited_back_color' cannot be parsed as a color (value 'nope')",
+                        "W Theme 'fixture': scheme 'default': 'preedit_pressed_back_color' cannot be parsed as a color (value 'nope')",
                     )
             }
 
@@ -394,7 +376,7 @@ class ThemeDiagnosticsTest :
                         config_version: "3.0"
                         name: t
                         style: {candidate_text_size: 12}
-                        preset_color_schemes: {default: {back_color: "#000000"}}
+                        preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                         """.trimIndent(),
                     )
                 val theme = ThemeTestSupport.yaml.decodeFromYamlNode<Theme>(node)
@@ -412,7 +394,7 @@ class ThemeDiagnosticsTest :
                     name: t
                     height: 5
                     style: {candidate_texts_size: 12}
-                    preset_color_schemes: {default: {back_color: "#000000"}}
+                    preset_color_schemes: {default: {keyboard_back_color: "#000000"}}
                     """.trimIndent(),
                 )
 

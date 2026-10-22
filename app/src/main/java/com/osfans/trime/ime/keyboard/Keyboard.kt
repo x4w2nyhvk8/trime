@@ -346,7 +346,7 @@ class Keyboard(
 
     /**
      * Mirrors a Rime option's new value onto the keys that toggle it, so a switch
-     * key paints with its `on` colors.
+     * key paints with its `on` colors, and returns the keys whose state changed.
      *
      * The value is assigned directly instead of toggled, because the same option
      * may be flipped by multiple keys or by Rime itself.
@@ -354,10 +354,15 @@ class Keyboard(
     fun updateToggle(
         option: String,
         enabled: Boolean,
-    ) {
+    ): List<Key> {
+        val changed = mutableListOf<Key>()
         keys.forEach { key ->
-            if (key.toggle == option) key.isOn = enabled
+            if (key.toggle == option && key.isOn != enabled) {
+                key.isOn = enabled
+                changed += key
+            }
         }
+        return changed
     }
 
     val keys: List<Key>
@@ -420,9 +425,17 @@ class Keyboard(
         return if (on) setModifier(keycode, keepOn) else setModifier(keycode, keyDown)
     }
 
-    fun resetShift() {
-        mShiftKey?.setOn(false)
+    /**
+     * 释放 Shift 锁定。
+     *
+     * @return 外观需要重绘的 Shift 键；状态未变化时为 null
+     */
+    fun resetShift(): Key? {
+        val key = mShiftKey ?: return null
+        val changed = key.isOn || modifier.hasFlag(KeyEvent.META_SHIFT_ON)
+        key.setOn(false)
         setModifier(KeyEvent.META_SHIFT_ON, false)
+        return key.takeIf { changed }
     }
 
     fun refreshModifier(): Boolean {
