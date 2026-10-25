@@ -88,6 +88,40 @@ class ColorTableTest :
                     .path shouldBe "bg.png"
             }
         }
+        Given("a gradient-valued color key") {
+            val table =
+                ColorTable.resolve(
+                    scheme("key_back_color" to "gradient(#102030, #405060, vertical)"),
+                    emptyMap(),
+                    parseHex,
+                )
+            Then("the entry is a gradient with parsed endpoints") {
+                val gradient =
+                    table[ColorKey.KEY_BACK_COLOR]
+                        .shouldBeInstanceOf<ColorTable.Value.Gradient>()
+                gradient.start shouldBe 0x102030
+                gradient.end shouldBe 0x405060
+                gradient.orientation shouldBe ColorTable.GradientOrientation.TOP_BOTTOM
+            }
+        }
+        Given("a gradient with a diagonal direction") {
+            Then("the direction is parsed") {
+                ColorTable.parseGradient("gradient(#000000, #ffffff, tl_br)", parseHex)
+                    ?.orientation shouldBe ColorTable.GradientOrientation.TL_BR
+            }
+        }
+        Given("a gradient with an invalid endpoint or direction") {
+            val table =
+                ColorTable.resolve(
+                    scheme("key_back_color" to "gradient(#102030, not-a-color, vertical)"),
+                    emptyMap(),
+                    parseHex,
+                )
+            Then("it is reported as invalid and resolves to None") {
+                table.invalidValues shouldContain ColorKey.KEY_BACK_COLOR
+                table[ColorKey.KEY_BACK_COLOR] shouldBe ColorTable.Value.None
+            }
+        }
         Given("a scheme value that is neither image nor parseable color") {
             val table = ColorTable.resolve(scheme("candidate_text_color" to "not-a-color"), emptyMap(), parseHex)
             Then("the entry reports an invalid value and resolves to None") {

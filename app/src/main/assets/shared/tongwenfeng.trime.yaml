@@ -180,7 +180,7 @@ preset_color_schemes:
     hilited_off_key_back_color: *color2 #高亮按键关闭状态背景
     hilited_off_key_text_color: *color1 #高亮按键关闭状态文本
     hilited_text_color: *color1 #高亮编码
-    key_back_color: *color2 #按键背景
+    key_back_color: "gradient(0xffffffff, 0xffe6ebf1, vertical)" #按键背景（渐变）
     key_symbol_color: *color8 #按键符号
     key_text_color: *color1 #按键文本
     keyboard_back_color: *color3 #键盘背景

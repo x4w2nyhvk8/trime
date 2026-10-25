@@ -153,10 +153,20 @@ object ColorManager {
         key: String,
     ): Int {
         val tableEntry = ColorKey.from(key)?.let { scope.colorTable?.get(it) }
-        if (tableEntry is ColorTable.Value.Color) return tableEntry.argb
+        when (tableEntry) {
+            is ColorTable.Value.Color -> return tableEntry.argb
+
+            // Text and border colors cannot carry a gradient; use its start.
+            is ColorTable.Value.Gradient -> return tableEntry.start
+
+            else -> Unit
+        }
         // Keys defined only by a theme resolve through the same chain rules.
         val scheme = requireNotNull(scope.activeColorScheme)
         val raw = ColorTable.resolveRaw(key, scheme, scope.theme.fallbackColors)
+        if (raw != null) {
+            ColorTable.parseGradient(raw, ::parseColorOrNull)?.let { return it.start }
+        }
         return try {
             if (raw == null) throw IllegalArgumentException("$key not found")
             ColorUtils.parseColor(raw)
@@ -174,6 +184,7 @@ object ColorManager {
         if (tableEntry != null) {
             return when (tableEntry) {
                 is ColorTable.Value.Color -> GradientDrawable().apply { setColor(tableEntry.argb) }
+                is ColorTable.Value.Gradient -> gradientDrawable(tableEntry)
                 is ColorTable.Value.Image -> imageDrawable(scope, tableEntry.path)
                 ColorTable.Value.None -> parseDrawable(scope, key)
             }
@@ -190,8 +201,27 @@ object ColorManager {
     ): Drawable? {
         if (value.isEmpty()) return null
         if (ColorTable.isImageValue(value)) return imageDrawable(scope, value)
-        val color = runCatching { ColorUtils.parseColor(value) }.getOrDefault(Color.TRANSPARENT)
+        ColorTable.parseGradient(value, ::parseColorOrNull)?.let { return gradientDrawable(it) }
+        val color = parseColorOrNull(value) ?: Color.TRANSPARENT
         return GradientDrawable().apply { setColor(color) }
+    }
+
+    private fun parseColorOrNull(value: String): Int? = runCatching { ColorUtils.parseColor(value) }.getOrNull()
+
+    private fun gradientDrawable(value: ColorTable.Value.Gradient): GradientDrawable = GradientDrawable(
+        value.orientation.toAndroidOrientation(),
+        intArrayOf(value.start, value.end),
+    )
+
+    private fun ColorTable.GradientOrientation.toAndroidOrientation(): GradientDrawable.Orientation = when (this) {
+        ColorTable.GradientOrientation.TOP_BOTTOM -> GradientDrawable.Orientation.TOP_BOTTOM
+        ColorTable.GradientOrientation.BOTTOM_TOP -> GradientDrawable.Orientation.BOTTOM_TOP
+        ColorTable.GradientOrientation.LEFT_RIGHT -> GradientDrawable.Orientation.LEFT_RIGHT
+        ColorTable.GradientOrientation.RIGHT_LEFT -> GradientDrawable.Orientation.RIGHT_LEFT
+        ColorTable.GradientOrientation.TL_BR -> GradientDrawable.Orientation.TL_BR
+        ColorTable.GradientOrientation.TR_BL -> GradientDrawable.Orientation.TR_BL
+        ColorTable.GradientOrientation.BL_TR -> GradientDrawable.Orientation.BL_TR
+        ColorTable.GradientOrientation.BR_TL -> GradientDrawable.Orientation.BR_TL
     }
 
     private fun imageDrawable(

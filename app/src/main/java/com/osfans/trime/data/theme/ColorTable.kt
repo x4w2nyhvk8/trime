@@ -35,6 +35,25 @@ internal class ColorTable private constructor(
 
         /** The value names an image file under the theme background folder. */
         data class Image(val path: String) : Value
+
+        /** The value is a linear gradient between two colors. */
+        data class Gradient(
+            @ColorInt val start: Int,
+            @ColorInt val end: Int,
+            val orientation: GradientOrientation,
+        ) : Value
+    }
+
+    /** Direction of a gradient, ordered from [Gradient.start] to [Gradient.end]. */
+    enum class GradientOrientation {
+        TOP_BOTTOM,
+        BOTTOM_TOP,
+        LEFT_RIGHT,
+        RIGHT_LEFT,
+        TL_BR,
+        TR_BL,
+        BL_TR,
+        BR_TL,
     }
 
     operator fun get(key: ColorKey): Value = entries[key] ?: Value.None
@@ -44,6 +63,38 @@ internal class ColorTable private constructor(
 
         /** Whether a scheme value names an image file instead of a color. */
         fun isImageValue(value: String): Boolean = IMAGE_SUFFIXES.any { value.endsWith(it) }
+
+        private val GRADIENT_PATTERN =
+            Regex("""^gradient\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([a-zA-Z_]+)\s*\)$""", RegexOption.IGNORE_CASE)
+
+        /**
+         * Parses `gradient(start, end, direction)` into a [Value.Gradient].
+         * Colors are parsed with [parseColor], so they accept the same forms as
+         * solid colors. Returns null when the value is not a gradient or any
+         * part cannot be parsed.
+         */
+        fun parseGradient(
+            value: String,
+            parseColor: (String) -> Int?,
+        ): Value.Gradient? {
+            val match = GRADIENT_PATTERN.matchEntire(value.trim()) ?: return null
+            val start = parseColor(match.groupValues[1].trim()) ?: return null
+            val end = parseColor(match.groupValues[2].trim()) ?: return null
+            val orientation = parseGradientOrientation(match.groupValues[3]) ?: return null
+            return Value.Gradient(start, end, orientation)
+        }
+
+        private fun parseGradientOrientation(value: String): GradientOrientation? = when (value.lowercase()) {
+            "vertical", "top_bottom", "tb" -> GradientOrientation.TOP_BOTTOM
+            "bottom_top", "bt" -> GradientOrientation.BOTTOM_TOP
+            "horizontal", "left_right", "lr" -> GradientOrientation.LEFT_RIGHT
+            "right_left", "rl" -> GradientOrientation.RIGHT_LEFT
+            "diagonal", "tl_br" -> GradientOrientation.TL_BR
+            "diagonal_reverse", "tr_bl" -> GradientOrientation.TR_BL
+            "bl_tr" -> GradientOrientation.BL_TR
+            "br_tl" -> GradientOrientation.BR_TL
+            else -> null
+        }
 
         /**
          * The first non-empty value for [key] together with the key that
@@ -113,10 +164,13 @@ internal class ColorTable private constructor(
                     unresolvedKeys += key
                     continue
                 }
-                val parsed = parseColor(raw)
+                val gradient = parseGradient(raw, parseColor)
+                val parsed = if (gradient == null) parseColor(raw) else null
                 entries[key] =
                     when {
                         isImageValue(raw) -> Value.Image(raw)
+
+                        gradient != null -> gradient
 
                         parsed != null -> Value.Color(parsed)
 
