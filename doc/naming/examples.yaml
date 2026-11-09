@@ -1,0 +1,194 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 三键对照 + 二维几何：现状（逐字引自本仓库）→ 统一后写法
+# current.* 的 file / line / text 由 validate.py 回查源文件，防止示例与代码脱节。
+# 命名方案 B1：token 段内 lowerCamel；YAML 字段名与 event 名 snake_case。
+version: 1
+
+meta:
+  baseline_note: "基于 develop 分支 57edd25"
+  baseline_file: "app/src/main/assets/shared/trime.yaml"
+  theme_file: "app/src/main/assets/shared/tongwenfeng.trime.yaml"
+  note: "统一后色值由 6 位 0xRRGGBB 补 alpha 为 0xAARRGGBB（FF = 不透明）"
+
+scenes:
+
+  # ─────────────────────────────────────────────────────────────
+  space_key:
+    title: "主键盘空格键（preset_keyboards.default / 预设40键）"
+    current:
+      behavior:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 884
+        text: "space: {repeatable: false, functional: false, send: space}"
+      layout:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 1027
+        text: "- {click: space, width: 30}"
+      color_back:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 161
+        text: "key_back_color: 0xeceff1 #按鍵背景"
+      color_text:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 164
+        text: "key_text_color: 0x37474f #按鍵文字"
+      color_pressed:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 153
+        text: "hilited_key_back_color: 0xd3d7da #標明按鍵背景"
+      proxy_key:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 885
+        text: "space1: {label: 空格, repeatable: false, functional: false, send: space}"
+      proxy_usage:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 701
+        text: "- space1"
+      theme_custom_label_1:
+        file: "app/src/main/assets/shared/tongwenfeng.trime.yaml"
+        line: 194
+        text: "bkg: *color2 #空格键背景色"
+      theme_custom_label_2:
+        file: "app/src/main/assets/shared/tongwenfeng.trime.yaml"
+        line: 195
+        text: "tkg: *color1 #空格键文字颜色"
+      theme_custom_label_3:
+        file: "app/src/main/assets/shared/tongwenfeng.trime.yaml"
+        line: 196
+        text: "benter: *color6 #回车键背景色"
+      diagnosis:
+        - "功能 / 位置 / 颜色 / 键面文字散在 4 处，颜色还有两套互不搭界的机制"
+        - "布局行未写颜色，靠 functional: false 隐式回退到 key_back_color"
+        - "第三方主题自定义 bkg / tkg / benter 标签，与默认方案的回退链完全不通"
+        - "functional: false 一个布尔同时管行为分类与颜色归类"
+        - "space1 是为改一个 label 造的替身键"
+    unified:
+      key:
+        id: "key.edit.space"
+        class: "space"
+        action:
+          name: "action.text.commit"
+          params: { text: " " }
+        when:
+          long_click:
+            name: "action.system.showImePicker"
+          swipe_left:
+            name: "action.edit.moveCursor"
+            params: { axis: x, continuous: true }
+          double_click:
+            name: "action.modifier.toggleCapsLock"
+            produces_state: "capsLock"
+        repeatable: false
+        label: "______"
+        geometry: { row: 3, col: 3, span: 3 }
+      colors:
+        "color.key.surface.space": "0xFFECEFF1"
+        "color.key.content.space": "0xFF37474F"
+        "color.key.surface.space.pressed": "0xFFD3D7DA"
+        "color.key.surface.space.capsLock": "0xFFD0D8E8"
+      fixed_key_bar:
+        - { key: "key.edit.space", label: "空格" }
+      notes:
+        - "class: space 是颜色路径的修饰段；动作产生 state: capsLock 是末段"
+        - "geometry 用 row/col/span 相对网格，二维布局不再依赖数组顺序与绝对百分比"
+        - "fixed_key_bar 就地覆盖 label，space1 替身键消失"
+        - "when 下用裸 event 名（snake_case 字段名），action.name 用驼峰 token"
+
+  # ─────────────────────────────────────────────────────────────
+  candidate_bar:
+    title: "候选栏（候选文字 / 注释 / 序号 / 选中态）"
+    current:
+      color_candidate_text:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 147
+        text: "candidate_text_color: 0x5a676e #候選文字"
+      color_comment:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 148
+        text: "comment_text_color: 0x7b868c #提示"
+      color_hilited_candidate_back:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 150
+        text: "hilited_candidate_back_color: 0xd3d7da #標明候選背景"
+      color_hilited_candidate_text:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 151
+        text: "hilited_candidate_text_color: 0x000000 #標明候選文字"
+      fallback_chain:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 93
+        text: "candidate_text_color: text_color"
+      diagnosis:
+        - "选中态写成 hilited_ 前缀字段，不是独立状态轴"
+        - "candidate / comment / label 是平级兄弟字段，不是子树"
+        - "fallback_colors 的链名与部件字段同名，链与部件混在一起"
+    unified:
+      key:
+        id: "key.rime.selectCandidate"
+        class: "default"
+        note: "候选栏选项按 osfans/trime#732 抽象为「具有特殊 class 的按键」"
+        geometry: { row: 0, col: 0, span: 1 }
+      colors:
+        "color.candidate.surface": "0xFFE4E7E9"
+        "color.candidate.content": "0xFF5A676E"
+        "color.candidate.comment.content": "0xFF7B868C"
+        "color.candidate.label.content": "0xFF7B868C"
+        "color.candidate.outline": "0xFFC1C7CA"
+        "color.candidate.content.selected": "0xFF000000"
+        "color.candidate.surface.selected": "0xFFD3D7DA"
+        "color.candidate.comment.content.selected": "0xFF000000"
+      notes:
+        - "Rime 语义子树：comment / label 作为可选子域，归在 color.candidate.* 下"
+        - "selected 是 state 词表成员，复用同一修饰槽，不再造 hilited_ 前缀"
+        - "候选注释用 hint 语义，路径上以 comment 子域表达，与按键角标不同词"
+
+  # ─────────────────────────────────────────────────────────────
+  toolbar:
+    title: "工具栏 / 剪贴板 / 编辑面板（liquid_keyboard）"
+    current:
+      color_keyboard_back:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 165
+        text: "keyboard_back_color: 0xffffff #鍵盤背景"
+      color_liquid_alias:
+        file: "app/src/main/assets/shared/trime.yaml"
+        line: 136
+        text: "#  liquid_keyboard_background: keyboard_back_color # liquidKeyboard的背景图/色"
+      diagnosis:
+        - "只有一个 liquid_keyboard_background，且注释里直接别名到 keyboard_back_color"
+        - "工具栏 / 剪贴板 / 编辑面板没有独立配色，元书这类皮肤的 EditPanel / FunctionPanel 无处落脚"
+    unified:
+      key:
+        id: "key.trime.clipboard"
+        class: "system"
+        action:
+          name: "action.trime.showClipboard"
+        geometry: { row: 0, col: 8, span: 1 }
+      colors:
+        "color.toolbar.surface": "0xFFFFFFFF"
+        "color.toolbar.content": "0xFF37474F"
+        "color.toolbar.surface.pressed": "0xFFD3D7DA"
+        "color.key.surface.system": "0xFFECEFF1"
+        "color.key.content.system": "0xFF37474F"
+        "color.clipboard.surface": "0xFFECEFF1"
+        "color.clipboard.content.selected": "0xFF000000"
+        "color.smartbar.surface": "0xFFE4E7E9"
+      notes:
+        - "工具栏 / 剪贴板 / 智能栏各有自己的 color domain，互不借用"
+        - "按钮本身仍复用 color.key.*（一切皆按键），class: system 决定取哪个修饰段"
+
+# ───────────────────────────────────────────────────────────────
+# 二维布局：同一套键定义在 1D / 2D 下的几何差异
+layout_geometry:
+  title: "几何是独立第四轴：颜色路径不随布局变化"
+  current:
+    layout_1d:
+      file: "app/src/main/assets/shared/trime.yaml"
+      line: 1027
+      text: "- {click: space, width: 30}"
+    note: "width: 30 是相对基准宽度 10 的百分比；行由数组顺序决定，无显式行列坐标"
+  unified:
+    grid: { columns: 10, rows: 4 }
+    space_key_1d: { row: 3, col: 3, span: 3 }
+    space_key_split: { row: 3, col: 4, span: 2 }
+    note: "换行 / 分体 / 横竖屏只改 grid 与 geometry；color.key.surface.space.* 在两种几何下完全相同"

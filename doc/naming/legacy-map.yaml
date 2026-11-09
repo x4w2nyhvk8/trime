@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 兼容层映射：develop 旧名 → 统一命名路径
+# 四向：旧颜色名 / 自定义色标签 ↔ color 路径；旧键名 ↔ key ID。
+# 存量主题零改动：旧名全部作为别名保留，解析器按 resolve_order 归一化。
+version: 1
+
+meta:
+  source_enum: "app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt（52 项）"
+  source_keys: "app/src/main/assets/shared/trime.yaml preset_keys（860–973 行）"
+  note: "ambiguous: true 表示旧名一词多义，需作者确认后选主路径；不自动猜测"
+
+resolve_order:
+  - "新 token 路径（color.* / action.* / key.*）"
+  - "修饰段覆盖（长路径优先，短路径回退）"
+  - "旧名别名（本文件 colors / aliases / keys）"
+  - "fallback_colors 运行时字符串链（ColorTable.resolveRawSource，带环检测）"
+  - "内置兜底链"
+
+version_gate:
+  field: "trime_version"
+  legacy: 3
+  unified: 4
+  note: "未声明时按旧名解析；声明 4 时优先走 token 路径，旧名仍可读"
+
+# ── 旧颜色名（ColorKey 枚举的小写蛇形拼写）──
+colors:
+  - { legacy: key_back_color,             path: "color.key.surface" }
+  - { legacy: key_text_color,             path: "color.key.content" }
+  - { legacy: key_symbol_color,           path: "color.key.hint" }
+  - { legacy: key_border_color,           path: "color.key.outline" }
+  - { legacy: shadow_color,               path: "color.key.elevation", ambiguous: true, note: "文字阴影与下缘阴影同义" }
+  - { legacy: hilited_key_back_color,     path: "color.key.surface.pressed" }
+  - { legacy: hilited_key_text_color,     path: "color.key.content.pressed" }
+  - { legacy: hilited_key_symbol_color,   path: "color.key.hint.pressed" }
+  - { legacy: hilited_key_border_color,   path: "color.key.outline.pressed" }
+  - { legacy: off_key_back_color,         path: "color.key.surface.system" }
+  - { legacy: off_key_text_color,         path: "color.key.content.system" }
+  - { legacy: off_key_symbol_color,       path: "color.key.hint.system" }
+  - { legacy: off_key_border_color,       path: "color.key.outline.system" }
+  - { legacy: hilited_off_key_back_color, path: "color.key.surface.system.pressed" }
+  - { legacy: hilited_off_key_text_color, path: "color.key.content.system.pressed" }
+  - { legacy: hilited_off_key_symbol_color, path: "color.key.hint.system.pressed" }
+  - { legacy: hilited_off_key_border_color, path: "color.key.outline.system.pressed" }
+  - { legacy: on_key_back_color,          path: "color.key.surface.modifier" }
+  - { legacy: on_key_text_color,          path: "color.key.content.modifier" }
+  - { legacy: on_key_symbol_color,        path: "color.key.hint.modifier" }
+  - { legacy: hilited_on_key_back_color,  path: "color.key.surface.modifier.pressed" }
+  - { legacy: hilited_on_key_text_color,  path: "color.key.content.modifier.pressed" }
+  - { legacy: keyboard_back_color,        path: "color.root.surface" }
+  - { legacy: keyboard_background,        path: "color.root.surface" }
+  - { legacy: root_background,            path: "color.root.surface" }
+  - { legacy: back_color,                 path: "color.root.surface" }
+  - { legacy: border_color,               path: "color.key.outline" }
+  - { legacy: text_color,                 path: "color.preedit.content" }
+  - { legacy: hilited_text_color,         path: "color.preedit.content.selected" }
+  - { legacy: text_back_color,            path: "color.preedit.surface" }
+  - { legacy: hilited_back_color,         path: "color.preedit.surface.selected" }
+  - { legacy: candidate_text_color,       path: "color.candidate.content" }
+  - { legacy: comment_text_color,         path: "color.candidate.comment.content" }
+  - { legacy: label_color,                path: "color.candidate.label.content" }
+  - { legacy: candidate_background,       path: "color.candidate.surface" }
+  - { legacy: candidate_border_color,     path: "color.candidate.outline" }
+  - { legacy: candidate_separator_color,  path: "color.candidate.outline" }
+  - { legacy: hilited_candidate_text_color,   path: "color.candidate.content.selected" }
+  - { legacy: hilited_candidate_back_color,   path: "color.candidate.surface.selected" }
+  - { legacy: hilited_comment_text_color,     path: "color.candidate.comment.content.selected" }
+  - { legacy: hilited_label_color,            path: "color.candidate.label.content.selected" }
+  - { legacy: hilited_candidate_button_color, path: "color.candidate.surface.selected", ambiguous: true }
+  - { legacy: popup_back_color,           path: "color.popup.surface" }
+  - { legacy: popup_text_color,           path: "color.popup.content" }
+  - { legacy: hilited_popup_back_color,   path: "color.popup.surface.pressed" }
+  - { legacy: hilited_popup_text_color,   path: "color.popup.content.pressed" }
+  - { legacy: long_text_back_color,       path: "color.popup.surface", ambiguous: true }
+  - { legacy: long_text_color,            path: "color.popup.content", ambiguous: true }
+  - { legacy: liquid_keyboard_background, path: "color.root.surface", ambiguous: true, note: "新方案另开 toolbar / clipboard / smartbar 域" }
+
+# ── 第三方主题自定义色标签：全部降为别名，不再自立一套回退链 ──
+aliases:
+  - { label: bkg,    path: "color.key.surface.space" }
+  - { label: tkg,    path: "color.key.content.space" }
+  - { label: benter, path: "color.key.surface.action" }
+  - { label: tenter, path: "color.key.content.action" }
+  - { label: bgn,    path: "color.key.surface.system" }
+  - { label: tgn,    path: "color.key.content.system" }
+  - { label: bbs,    path: "color.key.surface.system" }
+  - { label: tbs,    path: "color.key.content.system" }
+  - { label: bh1,    path: "color.key.surface", note: "行号信息丢弃" }
+  - { label: bh2,    path: "color.key.surface", note: "行号信息丢弃" }
+  - { label: bh3,    path: "color.key.surface", note: "行号信息丢弃" }
+  - { label: bh4,    path: "color.key.surface", note: "行号信息丢弃" }
+
+# ── 旧键名 → 行为 ID（数字后缀替身键合并到同一 ID，差异降级为值）──
+keys:
+  - { legacy: [space, space1],                 id: "key.edit.space",       note: "space1 只是 label 不同，降级为 fixed_key_bar 就地覆盖" }
+  - { legacy: [Return, Return1, Return2],     id: "key.edit.enter",       note: "Return1 用于 composing 键面，Return2 用于固定条 label" }
+  - { legacy: [BackSpace, BackSpace2],        id: "key.edit.backspace",   note: "BackSpace2 多 slide_delete，降级为动作参数" }
+  - { legacy: [Shift_L, Shift_L3],            id: "key.modifier.shift",   note: "Shift_L3 多 shift_lock，降级为动作参数" }
+  - { legacy: [Mode_switch],                  id: "key.rime.asciiMode",   note: "状态写进旧键名，新方案由 toggle + states 表达" }
+  - { legacy: [Keyboard_number],              id: "key.layout.number" }
+  - { legacy: [Keyboard_symbols],             id: "key.layout.symbols" }
+  - { legacy: [Menu],                         id: "key.trime.settings" }
+  - { legacy: [Escape],                       id: "key.nav.escape" }
+  - { legacy: [Zdic, Zdic2],                  id: "key.text.webSearch",   note: "%1$s / %2$s 参数差异降级为 params" }
+  - { legacy: [Date],                         id: "key.text.date" }
+  - { legacy: [VOLUME_UP],                    id: "key.device.volumeUp" }
+  - { legacy: [BRIGHTNESS_DOWN],              id: "key.device.brightnessDown" }
+  - { legacy: [Page_Up],                      id: "key.nav.pageUp" }
+  - { legacy: [select_all],                   id: "key.edit.selectAll" }
+  - { legacy: [liquid_keyboard_switch],       id: "key.trime.clipboard" }
+  - { legacy: [updateConfig],                 id: "key.trime.deploy" }
+  - { legacy: [paste],                        id: "key.edit.paste" }
