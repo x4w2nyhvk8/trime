@@ -1,0 +1,445 @@
+{
+  "$description": "同文输入法主题颜色统一命名提案 · token 示例实现。palette/role/component 三层遵循 W3C DTCG 2025.10（组级 $type 继承、$value、{token.path} 引用）；themes/variants/meta/previewScene 作为 $extensions.org.trime 扩展。换主题只覆盖 role 层，component 层与键盘布局完全无关。本文件是设计提案数据，不参与 App 编译。  SPDX-License-Identifier: GPL-3.0-or-later.",
+  "$extensions": {
+    "org.trime": {
+      "specVersion": "1.0-draft",
+      "previewScene": "standard-26key@1.0",
+      "colorFormat": "#RRGGBBAA",
+      "meta": {
+        "yuanshu-light": {
+          "id": "yuanshu-light",
+          "name": "元书·浅色",
+          "author": "linzianxyz / 元书仓默认键盘 (Morse)",
+          "version": "1.0.0",
+          "appearance": "light",
+          "pair": {
+            "light": "yuanshu-light",
+            "dark": "yuanshu-dark"
+          },
+          "contrast": {
+            "standard": "wcag-aa",
+            "minimum": 4.5,
+            "checked": true
+          },
+          "tags": [
+            "ios",
+            "light",
+            "26key"
+          ]
+        },
+        "yuanshu-dark": {
+          "id": "yuanshu-dark",
+          "name": "元书·深色",
+          "author": "linzianxyz / 元书仓默认键盘 (Morse)",
+          "version": "1.0.0",
+          "appearance": "dark",
+          "pair": {
+            "light": "yuanshu-light",
+            "dark": "yuanshu-dark"
+          },
+          "contrast": {
+            "standard": "wcag-aa",
+            "minimum": 4.5,
+            "checked": true
+          },
+          "tags": [
+            "ios",
+            "dark",
+            "26key"
+          ]
+        }
+      },
+      "themes": {
+        "yuanshu-light": {
+          "role": {
+            "surface.base": "#D1D3DAFF",
+            "surface.raised": "#FFFFFFFF",
+            "surface.sunken": "#E6E6E6FF",
+            "surface.muted": "#E6E6E6FF",
+            "surface.overlay": "#FFFFFFFF",
+            "surface.selected": "#FFFFFFFF",
+            "surface.overlayAlt": "#E1E3E9FF",
+            "content.primary": "#000000FF",
+            "content.secondary": "#3C3C4399",
+            "content.tertiary": "#3C3C434D",
+            "content.onAccent": "#FFFFFFFF",
+            "accent.primary": "#007AFFFF",
+            "accent.pressed": "#FFFFFFFF",
+            "outline.subtle": "#C6C6C8FF",
+            "elevation.key": "#898A8D40",
+            "shadow.text": "#00000000"
+          }
+        },
+        "yuanshu-dark": {
+          "role": {
+            "surface.base": "#1C1C1EFF",
+            "surface.raised": "#707070FF",
+            "surface.sunken": "#4C4C4CFF",
+            "surface.muted": "#4C4C4CFF",
+            "surface.overlay": "#707070FF",
+            "surface.selected": "#707070FF",
+            "surface.overlayAlt": "#252527FF",
+            "content.primary": "#FFFFFFFF",
+            "content.secondary": "#EBEBF599",
+            "content.tertiary": "#EBEBF54D",
+            "content.onAccent": "#FFFFFFFF",
+            "accent.primary": "#0A84FFFF",
+            "accent.pressed": "#707070FF",
+            "outline.subtle": "#38383AFF",
+            "elevation.key": "#00000080",
+            "shadow.text": "#00000000"
+          }
+        }
+      },
+      "variants": [
+        {
+          "selector": "key:pressed",
+          "surface": "{role.surface.sunken}"
+        },
+        {
+          "selector": "key[role=system]",
+          "surface": "{role.surface.muted}"
+        },
+        {
+          "selector": "key:pressed[role=system]",
+          "surface": "{role.surface.raised}",
+          "note": "元书标志：功能键按下反而变白"
+        },
+        {
+          "selector": "key[role=action]",
+          "surface": "{role.accent.primary}",
+          "content": "{role.content.onAccent}"
+        },
+        {
+          "selector": "key:pressed[role=action]",
+          "surface": "{role.accent.pressed}",
+          "content": "{role.content.primary}"
+        },
+        {
+          "selector": "key[role=modifier][state=locked]",
+          "content": "{role.accent.primary}"
+        },
+        {
+          "selector": "candidate:selected",
+          "surface": "{role.surface.selected}"
+        },
+        {
+          "selector": "popup:selected",
+          "content": "{role.accent.primary}"
+        },
+        {
+          "selector": "keyArea[keyboardType=numeric] key",
+          "surface": "{role.surface.muted}"
+        },
+        {
+          "selector": "key[role=character]",
+          "surface": "{role.surface.raised}",
+          "content": "{role.content.primary}",
+          "note": "字符键取默认色；显式声明后 bh1~4/taoe 等位置标签可直接迁移"
+        },
+        {
+          "selector": "key[role=space]",
+          "surface": "{role.surface.raised}",
+          "content": "{role.content.primary}",
+          "note": "空格键在元书中是普通白键，显式声明替代 bkg/tkg"
+        },
+        {
+          "selector": "composing:active",
+          "surface": "{role.surface.selected}",
+          "content": "{role.content.primary}",
+          "note": "编码区高亮部分，对应 hilited_back_color / hilited_text_color"
+        }
+      ],
+      "layoutRoles": [
+        "character",
+        "system",
+        "modifier",
+        "action",
+        "space"
+      ],
+      "previewElements": [
+        {
+          "element": "root",
+          "token": "component.root.surface"
+        },
+        {
+          "element": "candidateBar",
+          "token": "component.candidateBar.surface"
+        },
+        {
+          "element": "candidate",
+          "token": "component.candidateBar.content"
+        },
+        {
+          "element": "candidate:selected",
+          "token": "component.candidateBar.selected.surface"
+        },
+        {
+          "element": "composing",
+          "token": "component.candidateBar.composing.content"
+        },
+        {
+          "element": "toolbar",
+          "token": "component.toolbar.content"
+        },
+        {
+          "element": "keyArea",
+          "token": "component.keyArea.surface"
+        },
+        {
+          "element": "key",
+          "token": "component.key.surface"
+        },
+        {
+          "element": "key.content",
+          "token": "component.key.content"
+        },
+        {
+          "element": "key.hint",
+          "token": "component.key.hint"
+        },
+        {
+          "element": "key.outline",
+          "token": "component.key.outline"
+        },
+        {
+          "element": "callout",
+          "token": "component.callout.surface"
+        },
+        {
+          "element": "popup",
+          "token": "component.popup.surface"
+        }
+      ]
+    }
+  },
+  "palette": {
+    "$type": "color",
+    "$description": "第一层：原始色板。不带业务语义，不被组件直接引用。",
+    "neutral": {
+      "0": {
+        "$value": "#FFFFFFFF"
+      },
+      "100": {
+        "$value": "#F2F2F7FF"
+      },
+      "200": {
+        "$value": "#E6E6E6FF"
+      },
+      "300": {
+        "$value": "#D1D3DAFF"
+      },
+      "700": {
+        "$value": "#707070FF"
+      },
+      "800": {
+        "$value": "#4C4C4CFF"
+      },
+      "900": {
+        "$value": "#1C1C1EFF"
+      }
+    },
+    "blue": {
+      "500": {
+        "$value": "#007AFFFF"
+      },
+      "600": {
+        "$value": "#0A84FFFF"
+      }
+    },
+    "ink": {
+      "primary": {
+        "$value": "#000000FF"
+      },
+      "secondary": {
+        "$value": "#3C3C4399"
+      }
+    }
+  },
+  "role": {
+    "$type": "color",
+    "$description": "第二层：语义角色。跨输入法通用，换主题时只覆盖这一层。默认指向 palette，实际值由 themes 覆盖。",
+    "surface": {
+      "base": {
+        "$value": "{palette.neutral.300}",
+        "$description": "键盘根背景"
+      },
+      "raised": {
+        "$value": "{palette.neutral.0}",
+        "$description": "普通键面 / 按下后的功能键"
+      },
+      "sunken": {
+        "$value": "{palette.neutral.200}",
+        "$description": "按下的普通键"
+      },
+      "muted": {
+        "$value": "{palette.neutral.200}",
+        "$description": "功能键面"
+      },
+      "overlay": {
+        "$value": "{palette.neutral.0}",
+        "$description": "气泡 / 弹层"
+      },
+      "selected": {
+        "$value": "{palette.neutral.0}",
+        "$description": "高亮候选 / 选中项"
+      },
+      "overlayAlt": {
+        "$value": "{palette.neutral.100}",
+        "$description": "liquid / 剪贴板区域"
+      }
+    },
+    "content": {
+      "primary": {
+        "$value": "{palette.ink.primary}",
+        "$description": "主文字"
+      },
+      "secondary": {
+        "$value": "{palette.ink.secondary}",
+        "$description": "次文字 / 注释"
+      },
+      "tertiary": {
+        "$value": "{palette.ink.secondary}",
+        "$description": "助记符号"
+      },
+      "onAccent": {
+        "$value": "{palette.neutral.0}",
+        "$description": "强调色上的文字"
+      }
+    },
+    "accent": {
+      "primary": {
+        "$value": "{palette.blue.500}",
+        "$description": "强调 / 主操作"
+      },
+      "pressed": {
+        "$value": "{palette.neutral.0}",
+        "$description": "强调键按下"
+      }
+    },
+    "outline": {
+      "subtle": {
+        "$value": "#C6C6C8FF",
+        "$description": "分隔线 / 边框"
+      }
+    },
+    "elevation": {
+      "key": {
+        "$value": "#898A8D40",
+        "$description": "按键下缘立体阴影"
+      }
+    },
+    "shadow": {
+      "text": {
+        "$value": "#00000000",
+        "$description": "文字阴影"
+      }
+    }
+  },
+  "component": {
+    "$type": "color",
+    "$description": "第三层：组件绑定。布局与渲染器只引用这一层；全部指向 role。",
+    "root": {
+      "surface": {
+        "$value": "{role.surface.base}"
+      }
+    },
+    "candidateBar": {
+      "surface": {
+        "$value": "{role.surface.base}"
+      },
+      "content": {
+        "$value": "{role.content.primary}"
+      },
+      "hint": {
+        "$value": "{role.content.secondary}"
+      },
+      "outline": {
+        "$value": "{role.outline.subtle}"
+      },
+      "composing": {
+        "content": {
+          "$value": "{role.content.secondary}"
+        }
+      },
+      "selected": {
+        "surface": {
+          "$value": "{role.surface.selected}"
+        },
+        "content": {
+          "$value": "{role.content.primary}"
+        }
+      },
+      "hintSelected": {
+        "content": {
+          "$value": "{role.content.secondary}"
+        }
+      }
+    },
+    "toolbar": {
+      "content": {
+        "$value": "{role.content.primary}"
+      },
+      "pressed": {
+        "surface": {
+          "$value": "{role.surface.selected}"
+        }
+      }
+    },
+    "keyArea": {
+      "surface": {
+        "$value": "{role.surface.base}"
+      }
+    },
+    "key": {
+      "surface": {
+        "$value": "{role.surface.raised}"
+      },
+      "content": {
+        "$value": "{role.content.primary}"
+      },
+      "hint": {
+        "$value": "{role.content.tertiary}"
+      },
+      "outline": {
+        "$value": "{role.outline.subtle}"
+      },
+      "elevation": {
+        "$value": "{role.elevation.key}"
+      },
+      "contentShadow": {
+        "$value": "{role.shadow.text}"
+      }
+    },
+    "callout": {
+      "surface": {
+        "$value": "{role.surface.overlay}"
+      },
+      "content": {
+        "$value": "{role.content.primary}"
+      },
+      "outline": {
+        "$value": "{role.outline.subtle}"
+      }
+    },
+    "popup": {
+      "surface": {
+        "$value": "{role.surface.overlay}"
+      },
+      "content": {
+        "$value": "{role.content.primary}"
+      },
+      "hint": {
+        "$value": "{role.content.secondary}"
+      }
+    },
+    "clipboard": {
+      "surface": {
+        "$value": "{role.surface.overlayAlt}"
+      },
+      "content": {
+        "$value": "{role.content.primary}"
+      }
+    }
+  }
+}

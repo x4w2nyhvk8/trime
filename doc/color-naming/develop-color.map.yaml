@@ -1,0 +1,172 @@
+# SPDX-FileCopyrightText: 2015 - 2026 Rime community
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# develop 全部配色字段 → 统一 token 迁移映射表
+# 规范见 ColorNaming.md，token 定义见 keyboard.color.tokens.json
+# 数据来源：ColorKey.kt(52) + doc/trime-schema.json(41) + 内置主题位置标签(18)，并集 72
+# 每条：legacy 旧名 / source 出处 / token 目标 / selector 状态(可选) / ambiguous 需人工确认(可选)
+
+version: 1.0-draft
+spec: ColorNaming.md
+target: W3C DTCG 2025.10 + $extensions.org.trime
+branch: develop @ 57edd25
+
+colorFormat:
+  legacy: "0xAARRGGBB（说明书三章）或 0xRRGGBB（schema maximum 16777215），实际混用"
+  new: "#RRGGBBAA（alpha 后置，与元书一致）"
+  convert: "0xAARRGGBB → #RRGGBBAA；0xRRGGBB → #RRGGBBFF"
+  deprecate: [color_format, "schema 的 maximum: 16777215 应改为 4294967295"]
+
+# 核心规则：旧字段 = 新 token + 状态选择器；selector 为空表示常态
+mappings:
+
+  # ── 背景 / 根 ──────────────────────────────
+  - { legacy: back_color, source: colorKey, token: component.candidateBar.surface, note: "候选区背景；旧皮肤里也是键盘底色的事实来源" }
+  - { legacy: keyboard_back_color, source: colorKey, token: component.keyArea.surface, note: "PDF 注明即将被 keyboard_background 取代" }
+  - { legacy: keyboard_background, source: colorKey, token: component.root.surface, note: "铺满候选栏与导航栏的整体背景" }
+  - { legacy: root_background, source: colorKey, token: component.root.surface }
+  - { legacy: text_back_color, source: colorKey, token: component.candidateBar.surface, note: "编码区背景，与候选区同底" }
+  - { legacy: candidate_background, source: colorKey, token: component.candidateBar.surface }
+  - { legacy: candidate_back_color, source: extension, token: component.candidateBar.surface }
+  - { legacy: liquid_keyboard_background, source: colorKey, token: component.clipboard.surface, note: "liquid / 剪贴板面板，同色系稍亮" }
+
+  # ── 候选 / 编码文字 ──────────────────────────────
+  - { legacy: text_color, source: colorKey, token: component.candidateBar.composing.content, note: "未高亮编码文字（不是按键文字）" }
+  - { legacy: hilited_text_color, source: colorKey, token: component.candidateBar.composing.content, selector: "composing:active" }
+  - { legacy: hilited_back_color, source: colorKey, token: component.candidateBar.selected.surface, selector: "composing:active" }
+  - { legacy: candidate_text_color, source: colorKey, token: component.candidateBar.content }
+  - { legacy: hilited_candidate_text_color, source: colorKey, token: component.candidateBar.selected.content, selector: "candidate:selected" }
+  - { legacy: hilited_candidate_back_color, source: colorKey, token: component.candidateBar.selected.surface, selector: "candidate:selected" }
+  - { legacy: hilited_candidate_button_color, source: colorKey, token: component.toolbar.pressed.surface, note: "工具栏按钮按下背景" }
+  - { legacy: comment_text_color, source: colorKey, token: component.candidateBar.hint }
+  - { legacy: hilited_comment_text_color, source: colorKey, token: component.candidateBar.selected.content, selector: "candidate:selected" }
+  - { legacy: label_color, source: colorKey, token: component.candidateBar.hint, note: "悬浮窗候选序号" }
+  - { legacy: hilited_label_color, source: colorKey, token: component.candidateBar.hint, selector: "candidate:selected" }
+  - { legacy: candidate_separator_color, source: colorKey, token: component.candidateBar.outline }
+  - { legacy: candidate_border_color, source: colorKey, token: component.candidateBar.outline }
+  - { legacy: border_color, source: colorKey, token: component.candidateBar.outline, note: "悬浮窗边框" }
+  - { legacy: candidate_shadow_color, source: extension, token: role.shadow.text }
+  - { legacy: hilited_candidate_shadow_color, source: extension, token: role.shadow.text }
+  - { legacy: hilited_shadow_color, source: extension, token: role.shadow.text }
+
+  # ── 普通按键（状态被拍平的典型） ──────────────────────────────
+  - { legacy: key_back_color, source: colorKey, token: component.key.surface }
+  - { legacy: hilited_key_back_color, source: colorKey, token: component.key.surface, selector: "key:pressed" }
+  - { legacy: key_text_color, source: colorKey, token: component.key.content }
+  - { legacy: hilited_key_text_color, source: colorKey, token: component.key.content, selector: "key:pressed" }
+  - { legacy: key_symbol_color, source: colorKey, token: component.key.hint }
+  - { legacy: hilited_key_symbol_color, source: colorKey, token: component.key.hint, selector: "key:pressed" }
+  - { legacy: key_border_color, source: colorKey, token: component.key.outline }
+  - { legacy: hilited_key_border_color, source: colorKey, token: component.key.outline, selector: "key:pressed" }
+  - { legacy: key_hint_color, source: extension, token: component.key.hint }
+  - { legacy: key_num_back_color, source: extension, token: component.key.surface, selector: "keyArea[keyboardType=numeric] key" }
+
+  # ── 功能键 / Shift 锁定 ──────────────────────────────
+  - { legacy: off_key_back_color, source: colorKey, token: component.key.surface, selector: "key[role=system]" }
+  - { legacy: hilited_off_key_back_color, source: colorKey, token: component.key.surface, selector: "key:pressed[role=system]", note: "元书此处取 raised（按下变白），与原默认反色不同" }
+  - { legacy: off_key_text_color, source: colorKey, token: component.key.content, selector: "key[role=system]" }
+  - { legacy: hilited_off_key_text_color, source: colorKey, token: component.key.content, selector: "key:pressed[role=system]" }
+  - { legacy: off_key_symbol_color, source: colorKey, token: component.key.hint, selector: "key[role=system]" }
+  - { legacy: off_key_border_color, source: colorKey, token: component.key.outline, selector: "key[role=system]" }
+  - { legacy: hilited_off_key_symbol_color, source: colorKey, token: component.key.hint, selector: "key:pressed[role=system]" }
+  - { legacy: hilited_off_key_border_color, source: colorKey, token: component.key.outline, selector: "key:pressed[role=system]" }
+  - { legacy: on_key_back_color, source: colorKey, token: component.key.surface, selector: "key[role=modifier][state=locked]" }
+  - { legacy: hilited_on_key_back_color, source: colorKey, token: component.key.surface, selector: "key:pressed[role=modifier][state=locked]" }
+  - { legacy: on_key_text_color, source: colorKey, token: component.key.content, selector: "key[role=modifier][state=locked]" }
+  - { legacy: hilited_on_key_text_color, source: colorKey, token: component.key.content, selector: "key:pressed[role=modifier][state=locked]" }
+  - { legacy: on_key_symbol_color, source: colorKey, token: component.key.hint, selector: "key[role=modifier][state=locked]" }
+  - { legacy: on_key_border_color, source: colorKey, token: component.key.outline, selector: "key[role=modifier][state=locked]" }
+  - { legacy: hilited_on_key_symbol_color, source: colorKey, token: component.key.hint, selector: "key:pressed[role=modifier][state=locked]" }
+  - { legacy: hilited_on_key_border_color, source: colorKey, token: component.key.outline, selector: "key:pressed[role=modifier][state=locked]" }
+
+  # ── 兼容别名（社区皮肤写法） ──────────────────────────────
+  - { legacy: functional_back_color, source: extension, token: component.key.surface, selector: "key[role=system]" }
+  - { legacy: functional_text_color, source: extension, token: component.key.content, selector: "key[role=system]" }
+  - { legacy: hilited_functional_back_color, source: extension, token: component.key.surface, selector: "key:pressed[role=system]" }
+  - { legacy: hilited_functional_text_color, source: extension, token: component.key.content, selector: "key:pressed[role=system]" }
+
+  # ── 气泡 / 弹层 / 长文本 ──────────────────────────────
+  - { legacy: preview_back_color, source: schema, token: component.callout.surface, note: "按键气泡" }
+  - { legacy: preview_text_color, source: schema, token: component.callout.content }
+  - { legacy: popup_back_color, source: colorKey, token: component.popup.surface, note: "长按符号列表 / 按键提示" }
+  - { legacy: popup_text_color, source: colorKey, token: component.popup.content }
+  - { legacy: hilited_popup_back_color, source: colorKey, token: component.popup.surface, selector: "popup:selected", note: "长按列表选中项背景" }
+  - { legacy: hilited_popup_text_color, source: colorKey, token: component.popup.content, selector: "popup:selected" }
+  - { legacy: long_text_back_color, source: colorKey, token: component.clipboard.surface, note: "含长文本的按键（剪贴板）" }
+  - { legacy: long_text_color, source: colorKey, token: component.clipboard.content, note: "含长文本按键（剪贴板）文字；旧名与 long_text_back_color 不对称" }
+
+  # ── 阴影（语义歧义，需人工确认） ──────────────────────────────
+  - { legacy: shadow_color, source: colorKey, token: component.key.contentShadow, ambiguous: true, alternatives: [component.key.elevation, component.key.contentShadow], note: "PDF 定义为『按键文字阴影』，但很多皮肤当作按键下缘阴影用。转换时需作者确认一次，默认落到 contentShadow" }
+
+  # ── 内置主题位置标签（tongwenfeng.trime.yaml） ──────────────────────────────
+  - { legacy: bgn, source: builtinLabel, token: component.key.surface, selector: "key[role=system]", note: "功能键背景色（引用 438 次）" }
+  - { legacy: tgn, source: builtinLabel, token: component.key.content, selector: "key[role=system]", note: "功能键文字颜色（引用 437 次）" }
+  - { legacy: bkg, source: builtinLabel, token: component.key.surface, selector: "key[role=space]", note: "空格键背景色" }
+  - { legacy: tkg, source: builtinLabel, token: component.key.content, selector: "key[role=space]", note: "空格键文字颜色" }
+  - { legacy: benter, source: builtinLabel, token: component.key.surface, selector: "key[role=action]", note: "回车键背景色（引用 174 次）" }
+  - { legacy: tenter, source: builtinLabel, token: component.key.content, selector: "key[role=action]", note: "回车键文字颜色（引用 172 次）" }
+  - { legacy: bbs, source: builtinLabel, token: component.key.surface, selector: "key[role=system]", note: "退格键背景色" }
+  - { legacy: tbs, source: builtinLabel, token: component.key.content, selector: "key[role=system]", note: "退格键文字颜色" }
+  - { legacy: baoe, source: builtinLabel, token: component.key.surface, selector: "key[role=character]", note: "aoeiu 元音键背景色" }
+  - { legacy: taoe, source: builtinLabel, token: component.key.content, selector: "key[role=character]", note: "aoeiu 元音键文字颜色" }
+  - { legacy: bh1, source: builtinLabel, token: component.key.surface, selector: "key[role=character]", note: "第 1 行背景色" }
+  - { legacy: th1, source: builtinLabel, token: component.key.content, selector: "key[role=character]", note: "第 1 行文字颜色" }
+  - { legacy: bh2, source: builtinLabel, token: component.key.surface, selector: "key[role=character]", note: "第 2 行背景色" }
+  - { legacy: th2, source: builtinLabel, token: component.key.content, selector: "key[role=character]", note: "第 2 行文字颜色" }
+  - { legacy: bh3, source: builtinLabel, token: component.key.surface, selector: "key[role=character]", note: "第 3 行背景色" }
+  - { legacy: th3, source: builtinLabel, token: component.key.content, selector: "key[role=character]", note: "第 3 行文字颜色" }
+  - { legacy: bh4, source: builtinLabel, token: component.key.surface, selector: "key[role=character]", note: "第 4 行背景色" }
+  - { legacy: th4, source: builtinLabel, token: component.key.content, selector: "key[role=character]", note: "第 4 行文字颜色" }
+
+  # ── 其它社区位置标签（ss.trime.yaml 等） ──────────────────────────────
+  - { legacy: bc1, source: extension, token: component.key.surface, selector: "key[role=modifier]", note: "第 1 组 = Shift；二维布局后改为 role 绑定" }
+  - { legacy: tc1, source: extension, token: component.key.content, selector: "key[role=modifier]" }
+  - { legacy: bc2, source: extension, token: component.key.surface, selector: "key[role=system]", note: "第 2 组 = 退格 / 123 / 逗号 / 句号等功能键" }
+  - { legacy: tc2, source: extension, token: component.key.content, selector: "key[role=system]" }
+  - { legacy: bc3, source: extension, token: component.key.surface, selector: "key[role=space]", note: "第 3 组 = 空格键" }
+  - { legacy: tc3, source: extension, token: component.key.content, selector: "key[role=space]" }
+  - { legacy: bc4, source: extension, token: component.key.surface, selector: "key[role=action]", note: "第 4 组 = 回车；元书为 iOS 蓝" }
+  - { legacy: tc4, source: extension, token: component.key.content, selector: "key[role=action]" }
+  - { legacy: bct0, source: extension, token: component.key.content, note: "原文件被 5 个按键引用却从未定义；新规范由 role 直接决定，无需兜底" }
+
+# ── 结构级迁移（不含布局改动）──────────────────
+structure:
+  schemeMeta:
+    legacy: [name, author, dark_scheme, light_scheme]
+    new: "$extensions.org.trime.meta.{id,name,author,version,appearance,pair,contrast,previewScene,tags}"
+    note: "pair 一处声明明暗配对，替代双向 dark_scheme/light_scheme，杜绝悬空引用"
+  fallbackColors:
+    legacy: "fallback_colors 隐式链式推导，缺字段会沿链落到意外颜色"
+    new: "未定义 token 走显式 defaults + 环检测；lint 可打印整条解析链"
+  keyColors:
+    legacy: "preset_keys / keys[] 里写 key_back_color: bgn 等位置标签"
+    new: "按键只写 role: character|system|modifier|action|space，颜色由 variants 决定"
+  layout:
+    note: "本提案不改动任何布局结构；role 只是让颜色不再依赖行列坐标"
+  preview:
+    legacy: "皮肤作者附静态 demo.png（易与实物不一致）"
+    new: "meta.previewScene 指定标准场景，设置页与真机共用渲染器现场生成"
+
+compatibility:
+  deprecatedAliasesKeepFor: "2 major versions"
+  resolveOrder: [newToken, variant, alias, fallbackDefault]
+  note: "在 ColorKey.from / ColorTable.resolveRawSource 查表前加一次别名归一化即可，无需改动现有解析语义"
+  lintRules:
+    - 悬空引用检测（token.path 必须存在）
+    - 循环引用检测
+    - 类型检测（$type: color，值必须 #RRGGBBAA）
+    - 明暗配对完整性（pair 指向的 id 必须存在）
+    - 对比度检测（content on surface ≥ meta.contrast.minimum）
+    - 废弃字段告警（命中 mappings 中任一 legacy 名时提示迁移）
+
+stats:
+  colorKeyEnums: 52
+  schemaFields: 41
+  builtinPositionLabels: 18
+  developUnionFields: 72
+  mappedLegacyFields: 91
+  extensionCompatFields: 19
+  newComponentTokens: 26
+  variantRules: 12
+  note: "mappedLegacyFields 覆盖 develop 全部 72 字段，另含 19 个社区/PDF 扩展字段作为兼容项"
