@@ -74,6 +74,7 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 - `<domain>`：`key / preedit / candidate / popup / toolbar / clipboard / root / smartbar`
 - `<sub>`（可选）：`comment / label / bar / item` —— 容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
 - `<part>`：固定五个 `background / foreground / hint / outline / elevation`
+- 修饰段来自共享词表，最多两个，且 `class` 必须排在 `state`/`context` 之前
 
 > **部件词定稿说明**：对照元书 `Foreground`/`Background`、foxy `Text`/`background`、同文 V3 `*_text_color`/`*_back_color`，三家都直说「前景 / 文字」「背景」；V5 早期自造的 `surface`/`content` 是唯一需要查映射表才能读懂的一对，故改为 `background`/`foreground` 并**不撤回**。`foreground` 覆盖主文字与图标 tint（`keyTextColor` 亦被 `TabUi`/`PaginationUi` 复用），比 `text` 更准；也曾评估 MD3 的 `onSurface`/`onSurfaceVariant`，但它们表达「画在哪个容器之上」的配对关系，配套 `surfaceContainerLow/High` 一整层容器层级，纯 YAML 扁平色表没有容器概念，引入 `on*` 反而多一层解释，故不采用。`hint`（辅助小字）、`outline`（描边）、`elevation`（阴影）保留。
 
@@ -82,7 +83,6 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 **域收口**：`key_domain`（8 词）全部并入 `action_domain`，后者按**语义类** `text/edit/modifier/nav/layout` 与**来源类** `rime/trime/device/system` 分组，对应 foxy 的 `rime.*` / `app` / `switch_layout`；`validate.py` 强制 `key_domain ⊆ action_domain`，杜绝两份词表各长各的。另设 `class_variant: {space: character, modifier: system}`（foxy 里空格的 `keyType` 是 `LETTER`、Shift 是 `FUNCTION`，本质是继承基类取色再覆盖差异段）与 `direction: up/down/left/right`（路径形如 `key.hint.up`，对齐 foxy `hintUp` 与元书 `keyHintTextTopColor`）。
 
 **三根正交轴**：动作 `action`（做什么，39 项封闭动词 + `params`）、属性 `attributes`（这键是什么性质，`sticky/repeatable/modifier`，对齐 AOSP `isSticky/isRepeatable/isModifier`）、事件 `when`（什么时候，13 个 `event.*`）。`attributes` 是从 `when` 提出的静态声明——`shift_lock` 不再是「双击切大写」这一事件的附属，而是「这键可锁定」的性质。三者互不越界，词表分别受控。
-- 修饰段来自共享词表，最多两个，且 `class` 必须排在 `state`/`context` 之前
 
 **特异性规则**：路径越长越优先，短路径是长路径的回退。`color.key.background.space.pressed` 未定义 → 退 `color.key.background.space` → 退 `color.key.background`。这与 `fallback_colors` 的字符串链、CSS 层叠是同一套规则，也与 `preset_key_style.default` 的样式回退一致——**一条规则，不是三套**。
 
