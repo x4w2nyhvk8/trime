@@ -1,4 +1,4 @@
-[PASS]  1 交付包文件齐全  — 12 个
+[PASS]  1 交付包文件齐全  — 14 个
 [PASS]  2 5 份 YAML + 反向产物均可解析
 [PASS]  3 config_version 5.0 / trime_version 5  — 5.0 / 5
 [PASS]  4 颜色值统一 0xAARRGGBB 字符串  — 86 个值
@@ -26,12 +26,18 @@
 [PASS] 26 反向产物 config_version 3.0 且结构完整  — 5 布局 / 161 键
 [PASS] 27 预览内嵌数据与 V5 方案一致  — day / night 路径数逐套核对
 [PASS] 28 方案文档中的计数与生成数据一致  — ID 23 / 路径 43 / 链 28 / 归档 1 / 别名 33
-[PASS] 29 部件词定稿 background / foreground，结构文件无旧词残留  — ['background', 'elevation', 'foreground', 'hint', 'outline']
-[PASS] 30 state 补 active，与 class / context 三表正交  — state 9 词，含 active；与 class/context 交集 0
+[PASS] 29 部件词定稿 background / foreground，新增 separator 有源码依据  — 定稿五词 + 源码补充 ['separator']
+[PASS] 30 state 补 active，与 class / context 三表正交  — state 10 词，含 active；与 class/context 交集 0
 [PASS] 31 attributes 只声明 sticky / repeatable / modifier  — 5 处声明，取值 ['modifier', 'repeatable', 'sticky']
 [PASS] 32 动作域分语义类/来源类，key_domain ⊆ action_domain 不再各自生长  — 语义类 5 + 来源类 4；key_domain 8 词全被覆盖
 [PASS] 33 class_variant 与 direction 四方位词表齐备  — 变体 {'space': 'character', 'modifier': 'system'} / 方位 ['down', 'left', 'right', 'up']
+[PASS] 34 规范色表以源码为锚：52 枚举全覆盖，49 链 / 58 style 字段自包含  — canonical 50 + synonyms 2 = 52；缺 []
+[PASS] 35 去歧义 R1/R2/R3/R6：路径唯一、同义有据、别名隔离、值域二元  — 唯一 True / 同义证据 True / 别名隔离 True / 值域 True
+[PASS] 36 49 条内置回退链路径化、无环、目标可达  — 显式 47 条 + 同义自环 2；悬空 []
+[PASS] 37 补充色码 10 条均附来源/理由且不撞规范路径  — 方位 hint / disabled / active / focused / selected / root.foreground
+[PASS] 38 样本翻译表与规范色表的差异全部登记，样本产物保持兼容  — 15 条差异待 V5 解析器接入时切换
+[PASS] 39 源码 sha256 与规范色表一致（枚举变更须重跑生成器）  — /root/trime-repo/app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt / d047a6db6df4
 
 ============================================================
-汇总: 33 PASS / 0 WARN / 0 FAIL
+汇总: 39 PASS / 0 WARN / 0 FAIL
 ============================================================

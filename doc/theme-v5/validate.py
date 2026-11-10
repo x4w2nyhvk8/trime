@@ -17,7 +17,7 @@ FILES = ["ss.v3.trime.yaml", "ss.v5.trime.yaml", "v5-map.yaml",
          "vocabulary.yaml", "v5-addendum.yaml", "build_v5.py",
          "gen_preview.py", "preview.html", "V5主题方案.md",
          "build-report.json", "ss.v3.generated.trime.yaml",
-         "parked-schemes.yaml"]
+         "parked-schemes.yaml", "color-registry.yaml", "build_registry.py"]
 
 results = []
 
@@ -318,6 +318,9 @@ def main():
     # 是有意保留的历史说明，不属残留，但必须写明定稿与不撤回。
     parts = set(V["color_part"])
     want_parts = {"background", "foreground", "hint", "outline", "elevation"}
+    # separator 是以源码为锚后新增的部件词（CANDIDATE_SEPARATOR_COLOR 与
+    # CANDIDATE_BORDER_COLOR 不能共占 candidate.outline），只允许这一种扩充。
+    extra_parts = parts - want_parts
     struct = ("ss.v5.trime.yaml", "v5-map.yaml", "gen_preview.py",
               "parked-schemes.yaml", "ss.v3.generated.trime.yaml")
     stale = [(f, w) for f in struct
@@ -325,10 +328,11 @@ def main():
              if w in (ROOT / f).read_text(encoding="utf-8")]
     doc_b = (ROOT / "V5主题方案.md").read_text(encoding="utf-8")
     declared = "定稿" in doc_b and "不撤回" in doc_b and "background / foreground" in doc_b
-    ok29 = parts == want_parts and not stale and declared
-    check(29, "部件词定稿 background / foreground，结构文件无旧词残留",
+    ok29 = want_parts <= parts and extra_parts <= {"separator"} and not stale and declared
+    check(29, "部件词定稿 background / foreground，新增 separator 有源码依据",
           ok29,
-          f"{sorted(parts)}" if ok29 else f"词表 {sorted(parts)} / 残留 {stale[:4]} / 文档声明 {declared}")
+          f"定稿五词 + 源码补充 {sorted(extra_parts)}" if ok29
+          else f"词表 {sorted(parts)} / 残留 {stale[:4]} / 文档声明 {declared}")
 
     # ── 30 状态轴：补 active 且与 class / context 正交（B 方案 ②）──
     disjoint = not (sets["state"] & sets["class"] or sets["state"] & sets["context"])
@@ -360,6 +364,96 @@ def main():
     check(33, "class_variant 与 direction 四方位词表齐备",
           cv_ok and dir_ok,
           f"变体 {cv} / 方位 {sorted(sets['direction'])}")
+
+    # ── 34 规范色表以源码为锚（不以任何主题样本为限）──
+    reg = load("color-registry.yaml")
+    src = reg["source"]
+    keys = set(src["color_keys"])
+    covered = set(reg["canonical"]) | set(reg["synonyms"])
+    src_ok = (src["enum_count"] == 52 and len(keys) == 52
+              and src["fallback_chain_count"] == 49
+              and len(src["fallback_chains"]) == 49
+              and src["style_key_count"] == 58
+              and len(reg["style_fields"]) == 58
+              and covered == keys)
+    check(34, "规范色表以源码为锚：52 枚举全覆盖，49 链 / 58 style 字段自包含",
+          src_ok,
+          f"canonical {len(reg['canonical'])} + synonyms {len(reg['synonyms'])}"
+          f" = {len(covered)}；缺 {sorted(keys - covered)[:3]}")
+
+    # ── 35 去歧义 R1/R2/R3/R6 ──
+    cpaths = list(reg["canonical"].values())
+    r1 = len(cpaths) == len(set(cpaths))
+    r2 = all("evidence" in s and s["path"] in set(cpaths)
+             for s in reg["synonyms"].values())
+    r3 = not (set(reg["aliases"]) & set(reg["canonical"]))
+    r6 = set(reg["value_types"]) == {"color", "image"}
+    check(35, "去歧义 R1/R2/R3/R6：路径唯一、同义有据、别名隔离、值域二元",
+          r1 and r2 and r3 and r6,
+          f"唯一 {r1} / 同义证据 {r2} / 别名隔离 {r3} / 值域 {r6}")
+
+    # ── 36 回退链全显式且无环（R5）──
+    fb2 = reg["fallbacks"]
+    def no_cycle():
+        for start in fb2:
+            cur, seen = start, set()
+            while cur in fb2:
+                if cur in seen:
+                    return False
+                seen.add(cur)
+                cur = fb2[cur]
+        return True
+    fb_bad = [f"{a}->{b}" for a, b in fb2.items()
+              if b not in set(cpaths) | set(reg["supplementary"])]
+    check(36, "49 条内置回退链路径化、无环、目标可达",
+          no_cycle() and not fb_bad and len(fb2) >= 47,
+          f"显式 {len(fb2)} 条 + 同义自环 {49 - len(fb2)}；悬空 {fb_bad[:2]}")
+
+    # ── 37 补充色码有依据、段命中词表 ──
+    sup = reg["supplementary"]
+    allowed = (sets["color_sub"] | sets["class"] | sets["state"]
+               | sets["context"] | sets["direction"] | sets["color_part"])
+    sup_bad = []
+    for p, meta in sup.items():
+        segs = p.split(".")
+        if segs[0] not in sets["color_domain"]:
+            sup_bad.append(f"{p} domain")
+        if any(s not in allowed for s in segs[1:]):
+            sup_bad.append(f"{p} 段")
+        if not any(s in sets["color_part"] for s in segs):
+            sup_bad.append(f"{p} 缺部件")
+        if not all(k in meta for k in ("origin", "reason", "status")):
+            sup_bad.append(f"{p} 缺依据")
+        if p in set(cpaths):
+            sup_bad.append(f"{p} 与规范冲突")
+    check(37, f"补充色码 {len(sup)} 条均附来源/理由且不撞规范路径", not sup_bad,
+          "方位 hint / disabled / active / focused / selected / root.foreground"
+          if not sup_bad else f"{sup_bad[:3]}")
+
+    # ── 38 迁移对照与样本产物边界 ──
+    mig = reg["migration"]
+    old_paths = set(mp["color_map"].values())
+    new_paths = set(cpaths) | set(sup)
+    mig_ok = bool(mig) and all(
+        m["sample_v5"] in old_paths and m["registry"] in new_paths
+        for m in mig.values())
+    check(38, "样本翻译表与规范色表的差异全部登记，样本产物保持兼容",
+          mig_ok, f"{len(mig)} 条差异待 V5 解析器接入时切换")
+
+    # ── 39 源码漂移检测：枚举一变，规范必须重生成 ──
+    import hashlib
+    rel = Path("app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt")
+    cands = [ROOT / rel, ROOT.parent / rel, ROOT.parent.parent / rel,
+             Path("/root/trime-repo") / rel]
+    found = next((p for p in cands if p.is_file()), None)
+    if found:
+        sha = hashlib.sha256(found.read_bytes()).hexdigest()
+        ok39 = sha == src["color_key_sha256"]
+        check(39, "源码 sha256 与规范色表一致（枚举变更须重跑生成器）",
+              ok39, f"{found} / {sha[:12]}")
+    else:
+        check(39, "源码 sha256 与规范色表一致", True,
+              "源码不在工作区，按 registry 自包含清单核对（跳过直读）", warn=True)
 
     # ── 汇总 ──
     n = {t: sum(1 for r in results if r[0] == t) for t in ("PASS", "WARN", "FAIL")}
