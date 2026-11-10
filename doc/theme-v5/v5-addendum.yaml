@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 本主题引入、需回灌 doc/naming/vocabulary.yaml 的新词表条目。
+# 交付包不修改仓库规范文件，而是在此显式提出补充，validate.py 合并两份词表后校验。
+version: 1
+note: "方块主题用到的 7 个 key_name 尚未进入 develop 的受控词表；建议随 V5 一并合入"
+vocabulary_addendum:
+  key_name:
+    - default      # 返回主键盘
+    - delimiter    # 分词符
+    - down         # 方向下
+    - left         # 方向左
+    - right        # 方向右
+    - tab          # 制表键
+    - up           # 方向上

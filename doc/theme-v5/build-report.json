@@ -1,0 +1,46 @@
+{
+  "baseline": {
+    "schemes": 3,
+    "color_fields_per_scheme": 61,
+    "preset_keys": 161,
+    "layouts": 5,
+    "fallback_chains": 34,
+    "placeholder_keys": 11
+  },
+  "v5": {
+    "color_paths_per_scheme": {
+      "default": 43,
+      "Spring": 43,
+      "night": 43
+    },
+    "fallback_chains": 28,
+    "pairs": 2,
+    "key_ids": 23,
+    "key_aliases": 33,
+    "layout_scenes": 5,
+    "rows_per_scene": {
+      "standard26.portrait": 4,
+      "editor": 4,
+      "standard26.landscape": 4,
+      "standard26.ascii": 0,
+      "number": 4
+    },
+    "legacy_color_fields": {
+      "default": 3,
+      "Spring": 4,
+      "night": 4
+    }
+  },
+  "color_stats": {
+    "merged": 43,
+    "conflicts": 11,
+    "labels": 30
+  },
+  "dropped_fallback_chains": [],
+  "equivalence_issues": [],
+  "bytes": {
+    "v3": 69163,
+    "v5": 58029,
+    "v3_generated": 64110
+  }
+}

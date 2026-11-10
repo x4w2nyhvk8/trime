@@ -1,0 +1,965 @@
+# Trime 自定义样式配置文件
+# 编码: utf-8
+# 界面风格与功能开关
+
+config_version: "3.0"
+name: 方块
+author: linzianxyz
+
+# 锚点定义
+height:
+  1: &key_height 30 # 按键高度
+  2: &keyboard_height_land 200 # 横屏键盘锁定高度
+  3: &keyboard_height 245 # 竖屏键盘锁定高度
+  4: &horizontal_gap 4 # 按键水平间距
+  5: &vertical_gap 9 # 键盘行距
+  6: &keyboard_padding 1 # 键盘左右边距
+
+round_corner:
+  1: &round_corner 8 # 按键圆角半径
+
+# style（界面样式及特色功能）
+style:
+  auto_caps: false                     # 自动句首大写（关闭）
+  candidate_corner_radius: 5           # 候选圆角
+  candidate_font: [pingfang.ttf]          # 候选词字体
+  candidate_padding: 3                 # 候选项内边距（减小避免截断）
+  candidate_spacing: 0.5               # 候选分割线
+  candidate_text_size: 20              # 候选词字号
+  candidate_text_vertical_bias: 1.0    # 候选文本垂直偏移（overlay模式）
+#  candidate_use_cursor: false          # 是否使用光标指示高亮候选
+  candidate_view_height: 28            # 候选区高度
+  comment_font: [pingfang.ttf]            # 编码提示字体
+  comment_height: 14                   # 编码提示区高度
+  comment_position: right              # 编码提示布局位置（右侧）
+  comment_text_size: 12                # 编码提示字号
+  comment_vertical_bias: 0.0           # 编码提示垂直偏移（overlay模式）
+  enter_label_mode: 0                  # 是否使用App提供的ActionLabel
+  enter_labels:
+    go: 发送
+    done: 完成
+    next: 下个
+    pre: 上个
+    search: 检索
+    send: 发送
+    default: 确认
+  hanb_font: [pingfang.ttf]
+#  horizontal: true                     # 候选词水平排列
+  horizontal_gap: *horizontal_gap      # 水平间距（引用锚点）
+  key_border: 1                        # 按键边框宽度
+  key_font: [pingfang.ttf, iconfont.ttf]  # 按键字体
+  key_height: *key_height              # 按键高度（引用锚点）
+  key_long_text_size: 15               # 长按提示符号字号
+  key_symbol_offset_x: -5              # 长按符号水平偏移
+  key_symbol_offset_y: 6               # 长按符号垂直偏移
+  key_text_size: 20                    # 按键主文本字号
+  key_width: 10.0                      # 按键宽度占屏幕宽的百分比
+  keyboard_height: *keyboard_height    # 锁竖屏高度（引用锚点）
+  keyboard_height_land: *keyboard_height_land  # 锁横屏高度（引用锚点）
+  keyboard_padding: *keyboard_padding         # 竖屏左右边距
+  keyboard_padding_bottom: 70          # 竖屏底部边距
+  keyboard_padding_land: 40            # 横屏左右边距
+  keyboard_padding_land_bottom: 8      # 横屏底部边距
+  keyboard_padding_left: 0             # 竖屏左手模式左侧边距
+  keyboard_padding_right: 0            # 竖屏右手模式右侧边
+  label_font: [pingfang.ttf, iconfont.ttf]         # 悬浮窗序号字体
+  label_text_size: 22                  # 标签文字大小
+  latin_font: [pingfang.ttf]              # 西文字体
+  popup_bottom_margin: 68              # 气泡底部边距
+  popup_font: [pingfang.ttf]              # 按键气泡字体
+  popup_height: 48                     # 气泡高度
+  popup_key_height: 48                 # 气泡内按键高度
+  popup_text_size: 23                  # 气泡文字字号
+  popup_width: 38                      # 气泡宽度
+  reset_ascii_mode_on_focus_change: true  # 焦点变化时重置为中文状态
+  round_corner: *round_corner          # 按键圆角半径（引用锚点）
+  shadow_radius: 8                     # 按键阴影
+  symbol_font: [pingfang.ttf, iconfont.ttf]  # 符号字体
+  symbol_text_size: 10                 # 符号字号
+  text_font: [pingfang.ttf]               # 编码区字体
+  vertical_gap: *vertical_gap          # 键盘行距（引用锚点）
+
+#  预编辑区（preedit）
+preedit:
+  foreground:
+    font_size: 16 # 预编辑区文字大小
+  horizontal_padding: 8 # 预编辑区水平内距
+  top_end_radius: 4 # 预编辑区上端圆角半径
+
+# 候选窗口
+window:
+  alpha: 1 # 候选窗口透明度（1=不透明）
+  border: 2 # 边框宽度
+  corner_radius: 3 # 圆角半径
+  foreground:
+    label_font_size: 14 # 候选词序号字体大小
+    text_font_size: 14 # 候选词文字字体大小
+    comment_font_size: 14 # 候选词注释字体大小
+  insets:
+    vertical: 3 # 纵向内距
+    horizontal: 3 # 横向内距
+  item_padding:
+    vertical: 2 # 候选词纵向内距
+    horizontal: 4 # 候选词横向内距
+  min_width: 5 # 最小宽度
+  shadow: 3.0 # 阴影
+
+# （toolbar） 
+tool_bar:
+  back_style: "ic@chevron-left" # 返回图标
+  button_font: [iconfont.ttf] # 工具栏按钮字体
+  button_spacing: 2 # 按钮水平间隙
+#工具栏图标依次从右到左
+  hide_button: &hide_button # 隐藏按钮锚点
+    foreground:
+      style: "ic@keyboard-close" # 图标样式（隐藏图标）
+      font_size: 18 # 图标大小
+      padding: 7 # 内距
+    action: Hide # 动作：隐藏键盘
+  edit_button: &edit_button # 编辑按钮锚点
+    foreground:
+      style: "ic@cursor-text" # 图标样式
+      font_size: 18
+      padding: 7
+    action: Keyboard_editor # 动作：切换到编辑键盘
+  clipboard_button: &clipboard_button # 剪贴板按钮锚点
+    foreground:
+      style: "ic@clipboard-outline" # 图标样式
+      font_size: 18
+      padding: 7
+    action: clipboard_window # 动作：打开剪贴板窗口
+  emoji_button: &emoji_button # 表情按钮锚点
+    foreground:
+      style: "ic@emoticon-outline" # 图标样式
+      font_size: 18
+      padding: 7
+    action: liquid_keyboard_emoji # 动作：打开表情liquid键盘
+  horizontal_inset: 2 # 工具栏水平内距
+  primary_button: # 主按钮（菜单键）
+    background:
+      type: rectangle # 形状：矩形
+      corner_radius: 0 # 圆角
+      bg_normal: "0x00" # 一般状态背景（完全透明）
+      bg_hightlight: "hilited_candidate_button_color" # 按下状态背景（引用高亮候选按钮颜色）
+      vertical_inset: 4 # 垂直内距
+      horizontal_inset: 0 # 水平内距
+    foreground:
+      style: "\ue261" # 图标样式
+      normal: candidate_text_color # 一般状态前景色（候选文字颜色）
+      padding: 3 # 内距
+    action: menu_keyboard # 动作：打开菜单键盘
+    long_press_action: Settings # 长按动作：打开设置
+  buttons: # 其他按钮
+    - *hide_button # 隐藏
+    - *edit_button # 编辑
+    - *clipboard_button # 剪贴板
+    - *emoji_button # 表情
+
+# （liquid_keyboard）
+liquid_keyboard:
+  author: "tumuyan"
+  candidate_corner_radius: 8
+  fixed_key_bar:
+    position: bottom
+    keys:
+      - liquid_keyboard_exit
+      - space1
+      - BackSpace1
+  keyboards: [history, ascii, cn, emoji, math, yanwenzi, clipboard, collection, draft, symbollist, list, ids, symbol, tabs, pinyin, script_symbols, jp, grease, rusa, korea, lation, yinbiao, unit, combing]
+  key_height: 40
+  key_height_land: 40
+  margin_x: 2
+  row: 6
+  row_land: 5
+  single_width: 60   
+  tabs:
+    name: 更多
+    type: TABS
+  vertical_gap: 8
+  history:
+    name: 常用
+    type: HISTORY
+  ascii:
+    type: SINGLE
+    name: 英文
+    keys: ["!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
+  emoji:
+    type: SINGLE
+    name: emoji
+    keys: ["😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃", "🫠", "😉", "😊", "😇", "🥰", "😍", "🤩", "😘", "😗", "☺", "😚", "😙", "🥲", "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🫢", "🫣", "🤫", "🤔", "🫡", "🤐", "🤨", "😐", "😑", "😶", "🫥", "😏", "😒", "🙄", "😬", "🤥", "😌", "😔", "😪", "🤤", "😴", "😷", "🤒", "🤕", "🤢", "🤮", "🤧", "🥵", "🥶", "🥴", "😵", "🤯", "🤠", "🥳", "🥸", "😎", "🤓", "🧐", "😕", "🫤", "😟", "🙁", "☹", "😮", "😯", "😲", "😳", "🥺", "🥹", "😦", "😧", "😨", "😰", "😥", "😢", "😭", "😱", "😖", "😣", "😞", "😓", "😩", "😫", "🥱", "😤", "😡", "😠", "🤬", "😈", "👿", "💀", "☠", "💩", "🤡", "👹", "👺", "👻", "👽", "👾", "🤖", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🙈", "🙉", "🙊", "💌", "💘", "💝", "💖", "💗", "💓", "💞", "💕", "💟", "❣", "💔", "❤", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤", "🤍", "💋", "💯", "💢", "💥", "💫", "💦", "💨", "🕳", "💬", "🗨", "🗯", "💭", "💤", "👋", "🤚", "🖐", "✋", "🖖", "🫱", "🫲", "🫳", "🫴", "👌", "🤌", "🤏", "✌", "🤞", "🫰", "🤟", "🤘", "🤙", "👈", "👉", "👆", "🖕", "👇", "☝", "🫵", "👍", "👎", "✊", "👊", "🤛", "🤜", "👏", "🙌", "🫶", "👐", "🤲", "🤝", "🙏", "✍", "💅", "🤳", "💪", "🦾", "🦿", "🦵", "🦶", "👂", "🦻", "👃", "🧠", "🫀", "🫁", "🦷", "🦴", "👀", "👁", "👅", "👄", "🫦", "👶", "🧒", "👦", "👧", "🧑", "👱", "👨", "🧔", "👩", "🧓", "👴", "👵", "🙍", "🙎", "🙅", "🙆", "💁", "🙋", "🧏", "🙇", "🤦", "🤷", "👮", "🕵", "💂", "🥷", "👷", "🫅", "🤴", "👸", "👳", "👲", "🧕", "🤵", "👰", "🤰", "🫃", "🫄", "🤱", "👼", "🎅", "🤶", "🦸", "🦹", "🧙", "🧚", "🧛", "🧜", "🧝", "🧞", "🧟", "🧌", "💆", "💇", "🚶", "🧍", "🧎", "🏃", "💃", "🕺", "🕴", "👯", "🧖", "🧗", "🤺", "🏇", "⛷", "🏂", "🏌", "🏄", "🚣", "🏊", "⛹", "🏋", "🚴", "🚵", "🤸", "🤼", "🤽", "🤾", "🤹", "🧘", "🛀", "🛌", "👭", "👫", "👬", "💏", "💑", "👪", "🗣", "👤", "👥", "🫂", "👣", "🏻", "🏼", "🏽", "🏾", "🏿", "🦰", "🦱", "🦳", "🦲", "🐵", "🐒", "🦍", "🦧", "🐶", "🐕", "🦮", "🐩", "🐺", "🦊", "🦝", "🐱", "🐈", "🦁", "🐯", "🐅", "🐆", "🐴", "🐎", "🦄", "🦓", "🦌", "🦬", "🐮", "🐂", "🐃", "🐄", "🐷", "🐖", "🐗", "🐽", "🐏", "🐑", "🐐", "🐪", "🐫", "🦙", "🦒", "🐘", "🦣", "🦏", "🦛", "🐭", "🐁", "🐀", "🐹", "🐰", "🐇", "🐿", "🦫", "🦔", "🦇", "🐻", "🐨", "🐼", "🦥", "🦦", "🦨", "🦘", "🦡", "🐾", "🦃", "🐔", "🐓", "🐣", "🐤", "🐥", "🐦", "🐧", "🕊", "🦅", "🦢", "🦉", "🦤", "🪶", "🦩", "🦚", "🦜", "🐸", "🐊", "🐢", "🦎", "🐍", "🐲", "🐉", "🦕", "🦖", "🐳", "🐋", "🐬", "🦭", "🐟", "🐠", "🐡", "🦈", "🐙", "🐚", "🪸", "🐌", "🦋", "🐛", "🐜", "🐝", "🪲", "🐞", "🦗", "🪳", "🕷", "🕸", "🦂", "🦟", "🪰", "🪱", "🦠", "💐", "🌸", "💮", "🪷", "🏵", "🌹", "🥀", "🌺", "🌻", "🌼", "🌷", "🌱", "🪴", "🌲", "🌳", "🌴", "🌵", "🌾", "🌿", "☘", "🍀", "🍁", "🍂", "🍃", "🪹", "🪺", "🍄", "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🥜", "🫘", "🌰", "🍞", "🥐", "🥖", "🫓", "🥨", "🥯", "🥞", "🧇", "🧀", "🍖", "🍗", "🥩", "🥓", "🍔", "🍟", "🍕", "🌭", "🥪", "🌮", "🌯", "🫔", "🥙", "🧆", "🥚", "🍳", "🥘", "🍲", "🫕", "🥣", "🥗", "🍿", "🧈", "🧂", "🥫", "🍱", "🍘", "🍙", "🍚", "🍛", "🍜", "🍝", "🍠", "🍢", "🍣", "🍤", "🍥", "🥮", "🍡", "🥟", "🥠", "🥡", "🦀", "🦞", "🦐", "🦑", "🦪", "🍦", "🍧", "🍨", "🍩", "🍪", "🎂", "🍰", "🧁", "🥧", "🍫", "🍬", "🍭", "🍮", "🍯", "🍼", "🥛", "☕", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹", "🍺", "🍻", "🥂", "🥃", "🫗", "🥤", "🧋", "🧃", "🧉", "🧊", "🥢", "🍽", "🍴", "🥄", "🔪", "🫙", "🏺", "🌍", "🌎", "🌏", "🌐", "🗺", "🗾", "🧭", "🏔", "⛰", "🌋", "🗻", "🏕", "🏖", "🏜", "🏝", "🏞", "🏟", "🏛", "🏗", "🧱", "🪨", "🪵", "🛖", "🏘", "🏚", "🏠", "🏡", "🏢", "🏣", "🏤", "🏥", "🏦", "🏨", "🏩", "🏪", "🏫", "🏬", "🏭", "🏯", "🏰", "💒", "🗼", "🗽", "⛪", "🕌", "🛕", "🕍", "⛩", "🕋", "⛲", "⛺", "🌁", "🌃", "🏙", "🌄", "🌅", "🌆", "🌇", "🌉", "♨", "🎠", "🛝", "🎡", "🎢", "💈", "🎪", "🚂", "🚃", "🚄", "🚅", "🚆", "🚇", "🚈", "🚉", "🚊", "🚝", "🚞", "🚋", "🚌", "🚍", "🚎", "🚐", "🚑", "🚒", "🚓", "🚔", "🚕", "🚖", "🚗", "🚘", "🚙", "🛻", "🚚", "🚛", "🚜", "🏎", "🏍", "🛵", "🦽", "🦼", "🛺", "🚲", "🛴", "🛹", "🛼", "🚏", "🛣", "🛤", "🛢", "⛽", "🛞", "🚨", "🚥", "🚦", "🛑", "🚧", "⚓", "🛟", "⛵", "🛶", "🚤", "🛳", "⛴", "🛥", "🚢", "✈", "🛩", "🛫", "🛬", "🪂", "💺", "🚁", "🚟", "🚠", "🚡", "🛰", "🚀", "🛸", "🛎", "🧳", "⌛", "⏳", "⌚", "⏰", "⏱", "⏲", "🕰", "🕛", "🕧", "🕐", "🕜", "🕑", "🕝", "🕒", "🕞", "🕓", "🕟", "🕔", "🕠", "🕕", "🕡", "🕖", "🕢", "🕗", "🕣", "🕘", "🕤", "🕙", "🕥", "🕚", "🕦", "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌙", "🌚", "🌛", "🌜", "🌡", "☀", "🌝", "🌞", "🪐", "⭐", "🌟", "🌠", "🌌", "☁", "⛅", "⛈", "🌤", "🌥", "🌦", "🌧", "🌨", "🌩", "🌪", "🌫", "🌬", "🌀", "🌈", "🌂", "☂", "☔", "⛱", "⚡", "❄", "☃", "⛄", "☄", "🔥", "💧", "🌊", "🎃", "🎄", "🎆", "🎇", "🧨", "✨", "🎈", "🎉", "🎊", "🎋", "🎍", "🎎", "🎏", "🎐", "🎑", "🧧", "🎀", "🎁", "🎗", "🎟", "🎫", "🎖", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "⚾", "🥎", "🏀", "🏐", "🏈", "🏉", "🎾", "🥏", "🎳", "🏏", "🏑", "🏒", "🥍", "🏓", "🏸", "🥊", "🥋", "🥅", "⛳", "⛸", "🎣", "🤿", "🎽", "🎿", "🛷", "🥌", "🎯", "🪀", "🪁", "🎱", "🔮", "🪄", "🎮", "🕹", "🎰", "🎲", "🧩", "🧸", "🪅", "🪩", "🪆", "♠", "♥", "♦", "♣", "♟", "🃏", "🀄", "🎴", "🔫", "🎭", "🖼", "🎨", "🧵", "🪡", "🧶", "🪢", "👓", "🕶", "🥽", "🥼", "🦺", "👔", "👕", "👖", "🧣", "🧤", "🧥", "🧦", "👗", "👘", "🥻", "🩱", "🩲", "🩳", "👙", "👚", "👛", "👜", "👝", "🛍", "🎒", "🩴", "👞", "👟", "🥾", "🥿", "👠", "👡", "🩰", "👢", "👑", "👒", "🎩", "🎓", "🧢", "🪖", "⛑", "📿", "💄", "💍", "💎", "🔇", "🔈", "🔉", "🔊", "📢", "📣", "📯", "🔔", "🔕", "🎼", "🎵", "🎶", "🎙", "🎚", "🎛", "🎤", "🎧", "📻", "🎷", "🪗", "🎸", "🎹", "🎺", "🎻", "🪕", "🥁", "🪘", "📱", "📲", "☎", "📞", "📟", "📠", "🔋", "🪫", "🔌", "💻", "🖥", "🖨", "⌨", "🖱", "🖲", "💽", "💾", "💿", "📀", "🧮", "🎥", "🎞", "📽", "🎬", "📺", "📷", "📸", "📹", "📼", "🔍", "🔎", "🕯", "💡", "🔦", "🏮", "🪔", "📔", "📕", "📖", "📗", "📘", "📙", "📚", "📓", "📒", "📃", "📜", "📄", "📰", "🗞", "📑", "🔖", "🏷", "💰", "🪙", "💴", "💵", "💶", "💷", "💸", "💳", "🧾", "💹", "✉", "📧", "📨", "📩", "📤", "📥", "📦", "📫", "📪", "📬", "📭", "📮", "🗳", "✏", "✒", "🖋", "🖊", "🖌", "🖍", "📝", "💼", "📁", "📂", "🗂", "📅", "📆", "🗒", "🗓", "📇", "📈", "📉", "📊", "📋", "📌", "📍", "📎", "🖇", "📏", "📐", "✂", "🗃", "🗄", "🗑", "🔒", "🔓", "🔏", "🔐", "🔑", "🗝", "💣", "🔨", "🪓", "⛏", "⚒", "🛠", "🗡", "⚔", "🪃", "🏹", "🛡", "🪚", "🔧", "🪛", "🔩", "⚙", "🗜", "⚖", "🦯", "🔗", "⛓", "🪝", "🧰", "🧲", "🪜", "⚗", "🧪", "🧫", "🧬", "🔬", "🔭", "📡", "💉", "🩸", "💊", "🩹", "🩼", "🩺", "🩻", "🚪", "🛗", "🪞", "🪟", "🛏", "🛋", "🪑", "🚽", "🪠", "🚿", "🛁", "🪤", "🪒", "🧴", "🧷", "🧹", "🧺", "🧻", "🪣", "🧼", "🫧", "🧥", "🧽", "🧯", "🛒", "🧿", "🪬", "🚬", "⚰", "🪦", "⚱", "🗿", "🪧", "🪪", "🏧", "🚮", "🚰", "♿", "🚹", "🚺", "🚻", "🚼", "🚾", "🛂", "🛃", "🛄", "🛅", "⚠", "🚸", "⛔", "🚫", "🚳", "🚭", "🚯", "🚱", "🚷", "📵", "🔞", "☢", "☣", "⬆", "↗", "➡", "↘", "⬇", "↙", "⬅", "↖", "↕", "↔", "↩", "↪", "⤴", "⤵", "🔃", "🔄", "🔙", "🔚", "🔛", "🔜", "🔝", "🛐", "⚛", "🕉", "✡", "☸", "☯", "✝", "☦", "☪", "☮", "🕎", "🔯", "♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓", "⛎", "🔀", "🔁", "🔂", "▶", "⏩", "⏭", "⏯", "◀", "⏪", "⏮", "🔼", "⏫", "🔽", "⏬", "⏸", "⏹", "⏺", "⏏", "🎦", "🔅", "🔆", "📶", "📳", "📴", "♀", "♂", "⚧", "✖", "➕", "➖", "➗", "🟰", "♾", "‼", "⁉", "❓", "❔", "❕", "❗", "〰", "💱", "💲", "⚕", "♻", "⚜", "🔱", "📛", "🔰", "⭕", "✅", "☑", "✔", "❌", "❎", "➰", "➿", "〽", "✳", "✴", "❇", "©", "®", "™", "🔟", "🔠", "🔡", "🔢", "🔣", "🔤", "🅰", "🆎", "🅱", "🆑", "🆒", "🆓", "ℹ", "🆔", "Ⓜ", "🆕", "🆖", "🅾", "🆗", "🅿", "🆘", "🆙", "🆚", "🈁", "🈂", "🈷", "🈶", "🈯", "🉐", "🈹", "🈚", "🈲", "🉑", "🈸", "🈴", "🈳", "㊗", "㊙", "🈺", "🈵", "🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "⚪", "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "◼", "◻", "◾", "◽", "▪", "▫", "🔶", "🔷", "🔸", "🔹", "🔺", "🔻", "💠", "🔘", "🔳", "🔲", "🏁", "🚩", "🎌", "🏴", "🏳"]
+  cn:    #中文符号
+    type: SINGLE
+    name: 中文
+    keys: ["。", "，", "、", "；", "：", "！", "？", "“", "”", "‘", "’", "（", "）", "〈", "〉", "《", "》", "「", "」", "『", "』", "【", "】", "〖", "〗", "〔", "〕", "｛", "｝", "［", "］", "——", "……", "·", "～", "‐", "‑", "‒", "–", "—", "‖", "¯", "￣", "｀", "ˉ", "ˇ", "ˆ", "＋", "－", "＝", "＜", "＞", "≈", "≠", "≤", "≥", "￥", "€", "￡", "々", "〃", "‹", "›"]
+  math:
+    type: SINGLE
+    name: 数学
+    keys: ["+", "-", "±", "×", "÷", "*", "/", "=", "≠", "≈", "≡", "<", ">", "≤", "≥", "(", ")", "[", "]", "{", "}", "½", "⅓", "⅔", "¼", "¾", "⅕", "⅖", "⅗", "⅘", "%", "‰", "‱", "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹", "ⁿ", "⁺", "⁻", "⁼", "⁽", "⁾", "₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉", "₊", "₋", "₌", "₍", "₎", "°", "′", "″", "∠", "⊥", "∥", "∟", "⌒", "⊙", "∈", "∉", "∋", "∌", "⊂", "⊃", "⊆", "⊇", "∪", "∩", "∅", "∀", "∃", "∄", "¬", "∧", "∨", "⊕", "⊿", "∂", "∆", "∇", "∫", "∬", "∭", "∮", "∯", "∰", "∞", "ℵ", "∝", "∽", "≌", "≐", "≑", "√", "∛", "∜", "∑", "∏", "∐", "ℕ", "ℤ", "ℚ", "ℝ", "ℂ", "ℙ", "ℍ", "⇒", "⇐", "⇔", "→", "←", "↔", "↦", "↩", "&", "•", "〒", "†", "‡", "¶", "§", "ℓ", "℘", "ℑ", "ℜ", "℧"]
+  unit:
+    type: SINGLE
+    name: 单位
+    keys: ["m", "cm", "mm", "μm", "nm", "km", "dm", "Å", "in", "ft", "㎡", "m³", "cm³", "L", "mL", "g", "kg", "mg", "t", "lb", "oz", "s", "min", "h", "d", "ms", "μs", "ns", "℃", "℉", "K", "A", "mA", "μA", "V", "mV", "kV", "Ω", "kΩ", "MΩ", "W", "kW", "mW", "Hz", "kHz", "MHz", "GHz", "THz", "Pa", "kPa", "MPa", "GPa", "atm", "bar", "mmHg", "J", "kJ", "cal", "kcal", "eV", "keV", "MeV", "N", "kN", "dyn", "°", "′", "″", "rad", "m/s", "km/h", "kn", "mph", "b", "B", "KB", "MB", "GB", "TB", "PB", "mol", "M", "mM", "μM", "ppm", "ppb", "¥", "$", "€", "£", "￡", "¢", "₠", "฿", "₩", "₽", "₹", "‰", "‱", "℅", "§", "ℓ"]
+  list:
+    type: SINGLE
+    name: 列表
+    keys: ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳", "⑴", "⑵", "⑶", "⑷", "⑸", "⑹", "⑺", "⑻", "⑼", "⑽", "⑾", "⑿", "⒀", "⒁", "⒂", "⒃", "⒄", "⒅", "⒆", "⒇", "⒈", "⒉", "⒊", "⒋", "⒌", "⒍", "⒎", "⒏", "⒐", "⒑", "⒒", "⒓", "⒔", "⒕", "⒖", "⒗", "⒘", "⒙", "⒚", "⒛", "㈠", "㈡", "㈢", "㈣", "㈤", "㈥", "㈦", "㈧", "㈨", "㈩", "㊀", "㊁", "㊂", "㊃", "㊄", "㊅", "㊆", "㊇", "㊈", "㊉", "➊", "➋", "➌", "➍", "➎", "➏", "➐", "➑", "➒", "➓", "ⅰ", "ⅱ", "ⅲ", "ⅳ", "ⅴ", "ⅵ", "ⅶ", "ⅷ", "ⅸ", "ⅹ", "ⅺ", "ⅻ", "ⅼ", "ⅽ", "ⅾ", "ⅿ", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ", "Ⅼ", "Ⅽ", "Ⅾ", "Ⅿ"]
+  pinyin:
+    type: SINGLE
+    name: 拼音
+    keys: ["ā", "á", "ǎ", "à", "ō", "ó", "ǒ", "ò", "ē", "é", "ě", "è", "ī", "í", "ǐ", "ì", "ū", "ú", "ǔ", "ù", "ǖ", "ǘ", "ǚ", "ǜ", "ü", "ê", "", "āi", "ái", "ǎi", "ài", "ēi", "éi", "ěi", "èi", "āo", "áo", "ǎo", "ào", "ōu", "óu", "ǒu", "òu", "ān", "án", "ǎn", "àn", "ēn", "én", "ěn", "èn", "āng", "áng", "ǎng", "àng", "ēng", "éng", "ěng", "èng", "ōng", "óng", "ǒng", "òng", "ēr", "b", "p", "m", "f", "d", "t", "n", "l", "g", "k", "h", "j", "q", "x", "zh", "ch", "sh", "r", "z", "c", "s", "y", "w", "ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ", "ㄐ", "ㄑ", "ㄒ", "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ", "ㄚ", "ㄛ", "ㄜ", "ㄝ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄣ", "ㄤ", "ㄥ", "ㄦ", "ㄧ", "ㄨ", "ㄩ", "ㄪ", "ㄫ", "ㄬ"]
+  jp:
+    type: SINGLE
+    name: 假名
+    keys: ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ", "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん", "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど", "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ", "ー", "゛", "゜", "ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "ケ", "コ", "サ", "シ", "ス", "セ", "ソ", "タ", "チ", "ツ", "テ", "ト", "ナ", "ニ", "ヌ", "ネ", "ノ", "ハ", "ヒ", "フ", "ヘ", "ホ", "マ", "ミ", "ム", "メ", "モ", "ヤ", "ユ", "ヨ", "ラ", "リ", "ル", "レ", "ロ", "ワ", "ヲ", "ン", "ガ", "ギ", "グ", "ゲ", "ゴ", "ザ", "ジ", "ズ", "ゼ", "ゾ", "ダ", "ヂ", "ヅ", "デ", "ド", "バ", "ビ", "ブ", "ベ", "ボ", "パ", "ピ", "プ", "ペ", "ポ", "ャ", "ュ", "ョ", "ッ", "ー", "ヴ", "ヰ", "ヱ", "ヵ", "ヶ"]
+  grease:
+    type: SINGLE
+    name: 希腊
+    keys: ["Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π", "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω", "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ", "χ", "ψ", "ω", "ϐ", "ϑ", "ϒ", "ϕ", "ϖ", "ϗ", "ϰ", "ϱ", "ϲ", "ϳ", "ϴ", "ϵ", "϶"]
+  rusa:
+    type: SINGLE
+    name: 俄语
+    keys: ["А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я", "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
+  korea:
+    type: SINGLE
+    name: 韩文
+    keys: ["ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ", "ㅣ", "ㅐ", "ㅒ", "ㅔ", "ㅖ", "ㅘ", "ㅙ", "ㅚ", "ㅝ", "ㅞ", "ㅟ", "ㅢ", "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ", "ㆁ", "ㆄ", "ㆅ", "ㆆ", "ㆇ", "ㆈ", "ㆉ", "ㆊ", "ㆋ", "ㆌ", "ㆍ", "ㆎ", "㉠", "㉡", "㉢", "㉣", "㉤", "㉥", "㉦", "㉧", "㉨", "㉩", "㉪", "㉫", "㉬", "㉭", "㉮", "㉯", "㉰", "㉱", "㉲", "㉳", "㉴", "㉵", "㉶", "㉷", "㉸", "㉹", "㉺", "㉻", "㈀", "㈁", "㈂", "㈃", "㈄", "㈅", "㈆", "㈇", "㈈", "㈉", "㈊", "㈋", "㈌", "㈍", "㈎", "㈏", "㈐", "㈑", "㈒", "㈓", "㈔", "㈕", "㈖", "㈗", "㈘", "㈙", "㈚", "㈛"]
+  lation:
+    type: SINGLE
+    name: 拉丁
+    keys: ["À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "à", "á", "â", "ã", "ä", "å", "æ", "Ç", "ç", "È", "É", "Ê", "Ë", "è", "é", "ê", "ë", "Ì", "Í", "Î", "Ï", "ì", "í", "î", "ï", "Ð", "ð", "Ñ", "ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "ò", "ó", "ô", "õ", "ö", "ø", "Ù", "Ú", "Û", "Ü", "ù", "ú", "û", "ü", "Ý", "ý", "Þ", "þ", "ß", "Š", "š", "Ÿ", "Œ", "œ"]
+  yinbiao:
+    type: SINGLE
+    name: 音标
+    keys: ["i:", "ɪ", "e", "æ", "ɜː", "ə", "ʌ", "u:", "ʊ", "ɔ:", "ɒ", "ɑ:", "eɪ", "aɪ", "ɔɪ", "aʊ", "əʊ", "ɪə", "eə", "ʊə", "p", "t", "k", "f", "θ", "s", "ʃ", "h", "ts", "tʃ", "tr", "b", "d", "g", "v", "ð", "z", "ʒ", "r", "dz", "dʒ", "dr", "m", "n", "ŋ", "l", "w", "j"]
+  script_symbols:
+    type: SINGLE
+    name: 𝒶𝒜
+    keys: ["𝒶", "𝒷", "𝒸", "𝒹", "ℯ", "𝒻", "ℊ", "𝒽", "𝒾", "𝒿", "𝓀", "𝓁", "𝓂", "𝓃", "ℴ", "𝓅", "𝓆", "𝓇", "𝓈", "𝓉", "𝓊", "𝓋", "𝓌", "𝓍", "𝓎", "𝓏", "𝒜", "ℬ", "𝒞", "𝒟", "ℰ", "ℱ", "𝒢", "ℋ", "ℐ", "𝒥", "𝒦", "ℒ", "ℳ", "𝒩", "𝒪", "𝒫", "𝒬", "ℛ", "𝒮", "𝒯", "𝒰", "𝒱", "𝒲", "𝒳", "𝒴", "𝒵"]
+  symbol:
+    type: SINGLE
+    name: 特殊
+    keys: ["△", "▲", "▽", "▼", "○", "●", "◇", "◆", "□", "■", "☆", "★", "←", "↑", "→", "↓", "↖", "↗", "↙", "↘", "↔", "↕", "↩", "↪", "↶", "↷", "⇄", "⇅", "⇆", "⇤", "⇥", "⇦", "⇧", "⇨", "⇩", "⇪", "▸", "◂", "▴", "▾", "◤", "◥", "◣", "◢", "▪", "▫", "◾", "◽", "◼", "◻", "▢", "▣", "❏", "❐", "◲", "〼", "☀", "☼", "☽", "☾", "☁", "☂", "◑", "◐", "㏂", "㏘", "☹", "☻", "☠", "☜", "☝", "☞", "☚", "☟", "☛", "☭", "♀", "♂", "⚧", "♻", "♲", "⚝", "†", "✡", "⚹", "✦", "✸", "✹", "•", "‥", "…", "∷", "※", "♩", "♪", "♫", "♬", "♭", "♯", "♮", "¶", "№", "§", "‖", "◎", "¤", "۞", "℗", "®", "©", "™", "卍", "卐", "℡", "㏇", "Φ", "✁", "✍", "✎", "✆", "📝", "☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷", "⚿", "⛮", "⚙", "☩", "☐", "💬", "🗨", "⟲", "ღ", "✈", "🎤", "🌐", "🔍"]
+  ids:
+    type: SINGLE
+    name: IDS
+    keys: ["⿰", "⿱", "⿲", "⿳", "⿴", "⿵", "⿶", "⿷", "⿸", "⿹", "⿺", "⿻", "↷", "↔"]
+  combing:
+    type: SINGLE
+    name: 组合
+    keys: ["⃢", "꯭", "̣", "̲"]
+  symbollist:
+    type: SYMBOL
+    name: 符号表
+    keys:
+      - {click: "一", label: "/1"}
+      - {click: "二", label: "/2"}
+      - {click: "三", label: "/3"}
+      - {click: "四", label: "/4"}
+      - {click: "五", label: "/5"}
+      - {click: "六", label: "/6"}
+      - {click: "七", label: "/7"}
+      - {click: "八", label: "/8"}
+      - {click: "九", label: "/9"}
+      - {click: "零", label: "/0"}
+      - {click: "十", label: "/10"}
+      - {click: "八卦", label: "/bg"}
+      - {click: "表情", label: "/bq"}
+      - {click: "标点", label: "/bd"}
+      - {click: "电脑", label: "/dn"}
+      - {click: "单位", label: "/dw"}
+      - {click: "分数", label: "/fs"}
+      - {click: "方块", label: "/fk"}
+      - {click: "钢琴", label: "/yy"}
+      - {click: "韩文", label: "/hw"}
+      - {click: "几何", label: "/jh"}
+      - {click: "箭头", label: "/jt"}
+      - {click: "假名", label: "/jm"}
+      - {click: "片假", label: "/pjm"}
+      - {click: "罗马", label: "/lm"}
+      - {click: "罗大", label: "/lmd"}
+      - {click: "麻将", label: "/mj"}
+      - {click: "偏旁", label: "/pp"}
+      - {click: "拼音", label: "/py"}
+      - {click: "扑克", label: "/pk"}
+      - {click: "气象", label: "/tq"}
+      - {click: "上标", label: "/sb"}
+      - {click: "骰子", label: "/sz"}
+      - {click: "天体", label: "/tt"}
+      - {click: "希腊", label: "/xl"}
+      - {click: "希大", label: "/xld"}
+      - {click: "星号", label: "/xh"}
+      - {click: "象棋", label: "/xq"}
+      - {click: "星座", label: "/xz"}
+      - {click: "易经", label: "/yj"}
+      - {click: "音乐", label: "/yy"}
+      - {click: "俄语", label: "/ey"}
+      - {click: "俄大", label: "/eyd"}
+      - {click: "注音", label: "/zy"}
+      - {click: "竖标", label: "/bdz"}
+      - {click: "货币", label: "/hb"}
+  yanwenzi:
+    type: SINGLE
+    name: "颜文字"
+    keys: ["⎛⎝≥⏝⏝≤⎠⎞", "^_^", "^ω^", "^o^", "~\\(≧▽≦)/~", "*^_^*", "↖(^ω^)↗", "(^o^)／", "(=^▽^=)", "=^_^=", "(*^ω^*)", "٩(๑^o^๑)۶", "o(￣▽￣)o", "Y(^_^)Y", "٩( 'ω' )و", "╰(*´︶`*)╯", "*罒▽罒*", "ヾ ^_^♪", "=￣ω￣=", "︿(￣︶￣)︿", "(´▽｀)ノ♪", "乁( ˙ ω˙乁)", "✧*｡٩(ˊωˋ*)و✧*｡", "～(￣▽￣～)(～￣▽￣)～", "QwQ", "(●—●)", "(๑• . •๑)", "ヾ(≧O≦)〃嗷~", "罒ω罒", "(｡ì _ í｡)", "(๑•ี_เ•ี๑)", "ㄟ(≧◇≦)ㄏ", "(*/ω＼*)", "●▽●", "٩(๑òωó๑)۶", "✺◟(∗❛ัᴗ❛ั∗)◞✺", "( σ'ω')σ", "♡＾▽＾♡", "(๑•̀ㅂ•́)و✧", "(ง •̀_•́)ง", "(｡･ω･｡)ﾉ♡", "(☆_☆)", "(๑°3°๑)", "_(•̀ω•́ 」∠)_", "♪～(´ε｀　)", "～(^з^)-☆", "(´∀｀)♡", "ლ(´ڡ`ლ)", "(＞﹏＜)", "T_T", "⊙︿⊙", "〒▽〒", "⊙﹏⊙", "π_π", "(｡•́︿•̀｡)", "(ToT)/~~~", "╯﹏╰", "ಥ_ಥ", "(╥╯^╰╥)", "(〃′o`)", "●﹏●", "( •̥́ ˍ •̀ू )", "(つд⊂)", "心塞(´-ωก`)", "(╥﹏╥)", "┭┮﹏┭┮", "（；´д｀）ゞ", "(´;︵;`)", "(。﹏。)", "┗( T﹏T )┛", "QAQ", "ヘ(_ _ヘ)", "╰（‵□′）╯", "(*￣︿￣)", ">o<", "(-`ェ´-怒)", "ヽ(‘⌒´メ)ノ", "(*｀Ω´*)v", "(｡•ˇ‸ˇ•｡)", "(怒｀Д´怒)", "٩(๑`^´๑)۶", "(;｀O´)o", "╰_╯", "(#｀皿´)<怒怒怒!!!", "<(｀^´)>", "（｀Δ´）！", "ψ(｀∇´)ψ", "(；′⌒`)", "s(・｀ヘ´・;)ゞ", "(▼皿▼#)", "￣へ￣", "←_←", "（╯‵□′）╯︵┴─┴", "（▼へ▼メ）", "☄ฺ(◣д◢)☄ฺ", "→_→", "⊙_⊙", "d(ŐдŐ๑)", "Σ( ° △ °|||)︴", "(((φ(◎ロ◎;)φ)))", "⊙▽⊙", "(๑ŐдŐ)b", "╭(°A°`)╮", "(๑òᆺó๑)", "⊙ω⊙", "Σ(っ °Д °;)っ", " (ﾟДﾟ≡ﾟдﾟ)!?", "( *・ω・)✄╰ひ╯", "(⊙x⊙;)", "┌(。Д。)┐", "(°ー°〃)", "︽⊙_⊙︽", "!!!∑(°Д°ノ)ノ", "(๑ŐдŐ)b☆d(ŐдŐ๑)", "Σ⊙▃⊙川", "ヽ(*。>Д<)o゜", "━((*′д｀)爻(′д｀*))━!!!!", "=_=", "╮(╯_╰)╭", "（︶︿︶）", "_(:з」∠)_", "@_@", "╮(╯▽╰)╭", "(＠￣ー￣＠)", "_(:3」∠❀)_", "눈_눈", "╭(╯ε╰)╮", "(ー_ー)!!", "_(:D)∠)_", "o_O", "╭(╯^╰)╮", "(；一_一)", "´_>`", "-_-#", "┑(￣Д ￣)┍", "≡￣﹏￣≡", "○|￣|_", "-_-||", "ㄟ( ▔, ▔ )ㄏ", "( ＿ ＿)ノ｜壁", "▄█▀█●"]
+
+
+# 颜色回退变量（fallback_colors） 
+# 颜色回退变量（fallback_colors）
+# 颜色回退变量（fallback_colors）
+fallback_colors:
+  candidate_text_color: text_color
+  comment_text_color: candidate_text_color
+  border_color: back_color
+  candidate_separator_color: border_color
+  hilited_text_color: text_color
+  hilited_back_color: back_color
+  hilited_candidate_text_color: hilited_text_color
+  hilited_candidate_back_color: hilited_back_color
+  hilited_comment_text_color: comment_text_color
+  text_back_color: back_color
+  hilited_key_back_color: hilited_candidate_back_color
+  hilited_key_text_color: hilited_candidate_text_color
+  hilited_key_symbol_color: hilited_comment_text_color
+  hilited_functional_back_color: hilited_back_color
+  hilited_functional_text_color: hilited_text_color
+  hilited_off_key_back_color: hilited_functional_back_color
+  hilited_on_key_back_color: hilited_functional_back_color
+  hilited_off_key_text_color: hilited_functional_text_color
+  hilited_on_key_text_color: hilited_functional_text_color
+  key_back_color: back_color
+  key_border_color: border_color
+  key_text_color: candidate_text_color
+  key_symbol_color: comment_text_color
+  keyboard_back_color: border_color
+  label_color: candidate_text_color
+  functional_back_color: back_color
+  functional_text_color: candidate_text_color
+  off_key_back_color: functional_back_color
+  off_key_text_color: functional_text_color
+  on_key_back_color: functional_back_color
+  on_key_text_color: functional_text_color
+  preview_back_color: key_back_color
+  preview_text_color: key_text_color
+  shadow_color: border_color
+
+# 配色方案
+preset_color_schemes:
+  default:
+    name: "默认"
+    author: "linzianxyz"
+    dark_scheme: night
+    color_format: rgb
+    root_background: 0xFFE8EAEF           # 浅灰蓝
+    keyboard_background: 0xFFE8EAEF       # 浅灰蓝
+    candidate_background: 0xFFE8EAEF      # [保留] 与键盘背景一致，不区分
+    keyboard_back_color: 0xFFE8EAEF       # 浅灰蓝
+    liquid_keyboard_background: 0xFFF0F2F7  # 更浅灰蓝
+    back_color: 0xFFE8EAEF                # 浅灰蓝
+    text_back_color: 0xFFE8EAEF           # 浅灰蓝
+    text_color: 0xFF8E8E93                # 中灰
+    hilited_text_color: 0xFF000000        # 纯黑
+    hilited_back_color: 0xFFDCE0E8        # 稍深灰蓝
+    hilited_shadow_color: 0x00000000      # 透明   
+    candidate_text_color: 0xFF000000      # 纯黑
+    candidate_back_color: 0xFFE8EAEF      # 浅灰蓝
+    candidate_shadow_color: 0x00000000    # 透明
+    candidate_separator_color: 0x33D0D4DC  # [改进] 半透明浅灰（20%透明度）
+    candidate_border_color: 0x00000000    # [保留] 透明，不添加边框
+    hilited_candidate_text_color: 0xFF000000    # 纯黑
+    hilited_candidate_back_color: 0xFFE8EAEF   # [改进] 柔和高亮背景（非纯白）
+    hilited_candidate_shadow_color: 0x00000000  # 透明
+    hilited_candidate_button_color: 0xFFFFFFFF  # 纯白    
+    comment_text_color: 0xFF6C6C70        # [改进] 加深注释文字（原0xFF8E8E93）
+    hilited_comment_text_color: 0xFF6C6C70  # [改进] 同上
+    label_color: 0xFF6C6C70               # [改进] 加深标签文字
+    key_back_color: 0xFFFDFDFD            # 近白
+    key_border_color: 0x00000000           # 按键边界
+    key_text_color: 0xFF000000            # 纯黑
+    key_symbol_color: 0xFF6B7280          # 深灰
+    key_hint_color: 0xFF6B7280            # 深灰
+    hilited_key_text_color: 0xFF000000    # 纯黑
+    hilited_key_symbol_color: 0xFF6B7280  # 深灰
+    hilited_key_back_color: 0xFFC8CCD4    # 中浅灰
+    functional_back_color: 0xFFCBCED5     # 淡灰蓝
+    functional_text_color: 0xFF000000     # 纯黑
+    off_key_back_color: 0xFFD5D9E0        # 淡灰蓝
+    off_key_text_color: 0xFF000000        # 纯黑
+    hilited_functional_back_color: 0xFFC5CAD4  # 稍深淡灰蓝
+    hilited_functional_text_color: 0xFF000000   # 纯黑
+    hilited_off_key_back_color: 0xFFC5CAD4      # 稍深淡灰蓝
+    hilited_off_key_text_color: 0xFF000000      # 纯黑
+    on_key_back_color: 0xFFE8F0FE         # 极浅蓝
+    on_key_text_color: 0xFF1A73E9         # 品牌蓝
+    on_key_symbol_color: 0xFF1A73E9       # 品牌蓝
+    hilited_on_key_back_color: 0xFF1A73E9 # 品牌蓝（按压态保持不变）
+    hilited_on_key_text_color: 0xFFFFFFFF # 纯白
+    preview_back_color: 0xFFFDFDFD        # 近白
+    preview_text_color: 0xFF000000        # 纯黑
+    popup_back_color: 0xFFFDFDFD          # 近白
+    popup_text_color: 0xFF000000          # 纯黑
+    hilited_popup_text_color: 0xFF1A73E9  # 品牌蓝
+    shadow_color: 0x0A000000              # [改进] 整体极淡阴影（原完全透明）
+    border_color: 0x00000000              # 透明
+    bc1: 0xFFD5D9E0                       # 淡灰蓝（Shift键）
+    tc1: 0xFF000000                       # 纯黑
+    bc2: 0xFFD5D9E0                       # 淡灰蓝（功能键）
+    tc2: 0xFF000000                       # 纯黑
+    bc3: 0xFFF5F6F8                       # 极浅灰（空格键）
+    tc3: 0xFF000000                       # 纯黑
+    bc4: 0xFF1A73E9                       # 品牌蓝（回车键）
+    tc4: 0xFFFFFFFF                       # 纯白
+    baoe: 0xFFD5D9E0                      # 淡灰蓝（其他辅助键）
+    taoe: 0xFF000000                      # 纯黑
+
+
+  Spring:
+    name: "春日／Spring"
+    author: "iniNight"
+    dark_scheme: night
+    color_format: rgb
+    root_background: 0xFFeaf6f5           # 极浅青绿
+    keyboard_background: 0xFFeaf6f5       # 极浅青绿
+    candidate_background: 0xFFeaf6f5      # 极浅青绿
+    keyboard_back_color: 0xFFeaf6f5       # 极浅青绿
+    liquid_keyboard_background: 0xFFF0FAF8  # 更浅青绿
+    back_color: 0xFFeaf6f5                # 极浅青绿
+    text_back_color: 0xFFeaf6f5           # 极浅青绿
+    text_color: 0xFF1F1F1F                # 近黑
+    hilited_text_color: 0xFF000000        # 纯黑
+    hilited_back_color: 0xFFc7f2ee        # 亮青绿
+    hilited_shadow_color: 0xFF8A9499      # 浅灰蓝    
+    candidate_text_color: 0xFF313743      # 深蓝灰
+    candidate_back_color: 0xFFeaf6f5      # 极浅青绿
+    candidate_shadow_color: 0xFF686868    # 中灰
+    candidate_separator_color: 0xFFD9D9D9  # 浅灰
+    candidate_border_color: 0xFFE0E0E0    # 浅灰   
+    hilited_candidate_text_color: 0xFF2C5E58    # 深绿
+    hilited_candidate_back_color: 0xFFeaf6f5    # 极浅青绿
+    hilited_candidate_shadow_color: 0xFF686868  # 中灰
+    hilited_candidate_button_color: 0xFFeaf6f5  # 极浅青绿    
+    comment_text_color: 0xFF8A9499        # 浅灰蓝
+    hilited_comment_text_color: 0xFFB8B0AA  # 暖灰
+    label_color: 0xFF5A6B6B               # 深青灰   
+    key_back_color: 0xFFF7FCFA            # 极浅绿白
+    key_border_color: 0xFFB5C8C5          # 浅青绿
+    key_text_color: 0xFF313743            # 深蓝灰
+    key_symbol_color: 0xFF8A9499          # 浅灰蓝
+    key_hint_color: 0xFF6A9088            # 青绿
+    hilited_key_text_color: 0xFF1F1F1F    # 近黑
+    hilited_key_symbol_color: 0xFF2C5E58  # 深绿
+    hilited_key_back_color: 0xFFc7f2ee    # 亮青绿
+    functional_back_color: 0xFFd5ebe8     # 浅青绿
+    functional_text_color: 0xFF313743     # 深蓝灰
+    off_key_back_color: 0xFFd5ebe8        # 浅青绿
+    off_key_text_color: 0xFF313743        # 深蓝灰
+    hilited_functional_back_color: 0xFFc5ddd9  # 稍深浅青绿
+    hilited_functional_text_color: 0xFF313743   # 深蓝灰
+    hilited_off_key_back_color: 0xFFc5ddd9      # 稍深浅青绿
+    hilited_off_key_text_color: 0xFF313743      # 深蓝灰
+    on_key_back_color: 0xFFE8F5F3         # 浅青绿
+    on_key_text_color: 0xFF4A9E92         # 青绿
+    on_key_symbol_color: 0xFF4A9E92       # 青绿
+    hilited_on_key_back_color: 0xFFc7f2ee # 亮青绿
+    hilited_on_key_text_color: 0xFF1F1F1F # 近黑
+    preview_back_color: 0xFFF7FCFA        # 极浅绿白
+    preview_text_color: 0xFF313743        # 深蓝灰
+    popup_back_color: 0xFFF7FCFA          # 极浅绿白
+    popup_text_color: 0xFF313743          # 深蓝灰
+    hilited_popup_text_color: 0xFF4A9E92  # 青绿
+    shadow_color: 0xFF686868              # 中灰
+    border_color: 0x00000000              # 透明
+    bc1: 0xFFd5ebe8                       # 浅青绿（Shift键）
+    tc1: 0xFF313743                       # 深蓝灰
+    bc2: 0xFFd5ebe8                       # 浅青绿（功能键）
+    tc2: 0xFF313743                       # 深蓝灰
+    bc3: 0xFFE8F5F3                       # 浅青绿（空格键）
+    tc3: 0xFF2C5E58                       # 深绿
+    bc4: 0xFF5D7B74                       # 暗青（回车键）
+    tc4: 0xFFFFFFFF                       # 纯白
+    baoe: 0xFFfbdfe3                      # 浅粉（其他辅助键）
+    taoe: 0xFF313743                      # 深蓝灰
+
+  night:
+    name: "深色"
+    author: "linzianxyz"
+    color_format: rgb
+    light_scheme: default
+    root_background: 0xFF222222            # 深灰
+    keyboard_background: 0xFF222222        # 深灰
+    candidate_background: 0xFF222222       # 深灰
+    keyboard_back_color: 0xFF222222        # 深灰
+    liquid_keyboard_background: 0xFF252525  # 更深灰
+    back_color: 0xFF222222                 # 深灰
+    text_back_color: 0xFF222222            # 深灰
+    text_color: 0xFFFFFFFF                # 纯白
+    hilited_text_color: 0xFFA6A6A6        # 浅灰
+    hilited_back_color: 0xFF3A3A3A        # 较深灰
+    hilited_shadow_color: 0xFF4A4A4A      # 中深灰    
+    candidate_text_color: 0xFFFFFFFF      # 纯白
+    candidate_back_color: 0xFF3A3A3A      # 较深灰
+    candidate_shadow_color: 0xFF1A1A1A    # 深黑
+    candidate_separator_color: 0xFF4A4A4A  # 中深灰
+    candidate_border_color: 0xFF4A4A4A    # 中深灰   
+    hilited_candidate_text_color: 0xFFFFFFFF    # 纯白（首项候选高亮文字，修改：原 0xFF57DD9D 亮绿）
+    hilited_candidate_back_color: 0x00000000    # 品牌蓝（首项候选高亮背景，修改：原 0xFF222222  深灰，带圆角效果）
+    hilited_candidate_shadow_color: 0xFF1A1A1A  # 深黑
+    hilited_candidate_button_color: 0xFF5A5A5A  # 较深灰    
+    comment_text_color: 0xFF8A8E91        # 浅灰
+    hilited_comment_text_color: 0xFF57DD9D  # 亮绿
+    label_color: 0xFFFFFFFF               # 纯白
+    key_back_color: 0xFF4A4A4A            # 中灰
+    key_border_color: 0xFF3A3A3A          # 较深灰
+    key_text_color: 0xFFFFFFFF            # 纯白
+    key_symbol_color: 0xFFB0B4B8          # 浅灰
+    key_hint_color: 0xFF8A8E91            # 浅灰
+    hilited_key_text_color: 0xFFFFFFFF    # 纯白
+    hilited_key_symbol_color: 0xFFFFFFFF  # 纯白
+    hilited_key_back_color: 0xFF5A5A5A    # 较深灰
+    functional_back_color: 0xFF3A3A3A     # 较深灰
+    functional_text_color: 0xFFFFFFFF     # 纯白
+    off_key_back_color: 0xFF3A3A3A        # 较深灰
+    off_key_text_color: 0xFFFFFFFF        # 纯白
+    hilited_functional_back_color: 0xFF4A4A4A  # 中灰
+    hilited_functional_text_color: 0xFFFFFFFF   # 纯白
+    hilited_off_key_back_color: 0xFF4A4A4A      # 中灰
+    hilited_off_key_text_color: 0xFFFFFFFF      # 纯白
+    on_key_back_color: 0xFF3A3A3A         # 较深灰
+    on_key_text_color: 0xFF57DD9D         # 亮绿
+    on_key_symbol_color: 0xFF57DD9D       # 亮绿
+    hilited_on_key_back_color: 0xFF5A5A5A # 较深灰
+    hilited_on_key_text_color: 0xFFFFFFFF # 纯白
+    preview_back_color: 0xFF4A4A4A        # 中灰
+    preview_text_color: 0xFFFFFFFF        # 纯白
+    popup_back_color: 0xFF4A4A4A          # 中灰
+    popup_text_color: 0xFFFFFFFF          # 纯白
+    hilited_popup_text_color: 0xFF57DD9D  # 亮绿
+    shadow_color: 0xFF1A1A1A              # 深黑
+    border_color: 0x00000000              # 透明
+    bc1: 0xFF3A3A3A                       # 较深灰（Shift键）
+    tc1: 0xFFFFFFFF                       # 纯白
+    bc2: 0xFF3A3A3A                       # 较深灰（功能键）
+    tc2: 0xFFFFFFFF                       # 纯白
+    bc3: 0xFF4A4A4A                       # 中灰（空格键）
+    tc3: 0xFFFFFFFF                       # 纯白
+    bc4: 0xFF1A73E9                       # 品牌蓝（回车键，修改：原 0xFF3D8B82 暗青）
+    tc4: 0xFFFFFFFF                       # 纯白
+    baoe: 0xFF3A3A3A                      # 较深灰（其他辅助键）
+    taoe: 0xFF8A8E91                      # 浅灰
+
+# 预设键盘布局（preset_keyboards） 
+preset_keyboards:
+  default:
+    author: "暖暖"
+    name: 26键默认布局
+    reset_ascii_mode: true
+    ascii_mode: 0 # 默认中文状态
+    label_transform: uppercase # 中⽂模式下按键字⺟标签⾃动⼤写（ uppercase ：⾃动⼤写，none ：⽆，可省略不写）
+    lock: true # 锁住键盘不自动切换
+    columns: 10 # 最大列数
+    width: 10 # 默认按键宽度
+    height: 50 # 默认按键高度
+    key_hint_offset_x: 0 # 助记符号水平偏移
+    key_hint_offset_y: 0 # 助记符号垂直偏移
+    key_symbol_offset_x: 10 # 长按符号水平偏移
+    key_symbol_offset_y: 3 # 长按符号垂直偏移
+    key_text_offset_x: 0 # 按键文本水平偏移
+    key_text_offset_y: 3 # 按键文本垂直偏移
+    key_press_offset_x: 1 # 按下时文本水平偏移
+    key_press_offset_y: -1 # 按下时文本垂直偏移
+    landscape_keyboard: landscape_default # 横屏关联布局
+    keys:
+      - { click: q, long_click: 1, swipe_up: "!" }
+      - { click: w, long_click: 2, swipe_up: "@" }
+      - { click: e, long_click: 3, swipe_up: "#" }
+      - { click: r, long_click: 4, swipe_up: "$" }
+      - { click: t, long_click: 5, swipe_up: "%" }
+      - { click: y, long_click: 6, swipe_up: "^" }
+      - { click: u, long_click: 7, swipe_up: "&" }
+      - { click: i, long_click: 8, swipe_up: "*" }
+      - { click: o, long_click: 9, swipe_up: "(" }
+      - { click: p, long_click: 0, swipe_up: ")" }
+      - { width: 5 } # 空白间隙
+      - { click: a, long_click: "@", swipe_up: select_all } # 上滑全选
+      - { click: s, long_click: "*", swipe_up: "`" }
+      - { click: d, long_click: "+", swipe_up: "-" }
+      - { click: f, long_click: "-", swipe_up: "_" }
+      - { click: g, long_click: "=", swipe_up: "@" }
+      - { click: h, long_click: "/", swipe_up: "(" }
+# 修改后（直接告知 Trime 发送这些字符，跳过“查找按键名”的步骤）
+      - { click: j, long_click: "#", swipe_up: { send: ")" } }
+      - { click: k, long_click: "(", swipe_up: { send: "'" } }
+      - { click: l, long_click: ")", swipe_up: { send: '"' } }
+      - { click: Shift_L_Lock, composing: delimiter, width: 14, key_back_color: bc1, key_text_color: tc1, key_text_offset_y: -1 }
+      - { width: 1 }
+      - { click: z, long_click: "`", label_symbol: '`', swipe_up: "~" }
+      - { click: x, long_click: ":", swipe_up: cut } 
+      - { click: c, long_click: '"', swipe_up: '"' }
+      - { click: v, long_click: ";", swipe_up: paste, key_symbol_offset_y: 2 }
+      - { click: b, long_click: "?", swipe_up: ":" }
+      - { click: n, long_click: "!", swipe_up: "," }
+      - { click: m, long_click: '^', swipe_up: "." }
+      - { width: 1 }
+      - { click: BackSpace, width: 14, swipe_up: Escape, key_back_color: bc2, key_text_color: tc2, key_text_offset_y: -1 }
+      - {
+          click: Keyboard_number,
+          long_click: liquid_keyboard_cn,
+          label_symbol: "符",
+          key_long_text_size: 15,                                                                   
+          key_symbol_offset_y: 6,
+          key_symbol_offset_x: -1,
+          swipe_up: Color_switch, # 上滑切换配色
+          width: 15,
+          key_back_color: bc2,
+        }
+      - { click: ',', label: '️ ，️', key_back_color: bc2, key_text_color: tc2, width: 12.5 } # 逗号
+      - {
+          click: space, # 空格
+          long_click: Mode_switch2, # 长按切换中英文
+          key_symbol_offset_x: -0.5,
+          key_symbol_offset_y: 10,
+          functional: true,
+          key_text_size: 20,
+          key_text_offset_y: -1,
+          hint: "T-RIME", # 助记显示
+          key_hint_offset_x: -60,
+          key_hint_offset_y: -3,
+          width: 45,
+          key_back_color: bc3, # 背景色=自定义分组3
+          key_text_color: tc3,
+        }
+      - { click: '.', label: ' 。', width: 12.5, swipe_up: "?", key_back_color: bc2, key_text_color: tc2 } # 句号
+      - { click: Return, composing: Return1, key_text_offset_y: -1, width: 15, key_back_color: bc4, key_text_color: tc4 }
+
+  editor:
+    author: flypy.com
+    name: "编辑键盘"
+    reset_ascii_mode: true
+    ascii_mode: 1 # 默认中文
+    width: 20
+    height: 40
+    keys:
+      - { click: cut } 
+      - { click: Left1 } 
+      - { click: Up } 
+      - { click: Right1 } 
+      - { click: space, width: 19 } 
+      - { click: copy } 
+      - { click: Left } 
+      - { click: Shift_L2 }
+      - { click: Right } 
+      - { click: Keyboard_number, width: 19 } 
+      - { click: paste, key_back_color: bc2 } 
+      - { click: Home } 
+      - { click: Down } 
+      - { click: End } 
+      - { click: BackSpace, width: 19, key_back_color: bc2 } 
+      - { click: Keyboard_default }           # ← 返回键移到左下角
+      - { click: select_all,key_back_color: bc2 }
+      - { click: Tab1 } 
+      - { click: redo, key_back_color: bc2 } 
+      - { click: Return, width: 19, key_back_color: bc4, key_text_color: tc4 }
+
+  landscape_default:     #横屏键盘
+    author: ""
+    name: ""
+    ascii_keyboard: letter # 英文时切换到letter布局
+    ascii_mode: 0
+    reset_ascii_mode: true
+    label_transform: uppercase
+    lock: false # 不锁定
+    columns: 20
+    width: 10
+    height: 52
+    key_hint_offset_x: 0
+    key_hint_offset_y: 0
+    key_symbol_offset_x: 6
+    key_symbol_offset_y: 1
+    key_text_offset_x: 0
+    key_text_offset_y: 3
+    key_press_offset_x: 0
+    key_press_offset_y: 0
+    landscape_split_percent: 0 # 横屏分割比例（0为不分）
+    keys:
+      - { click: q, swipe_up: "1", width: 7.3 }
+      - { click: w, swipe_up: "2", width: 7.3 }
+      - { click: e, swipe_up: "3", width: 7.3 }
+      - { click: r, swipe_up: "4", width: 7.3 }
+      - { click: t, swipe_up: "5", width: 7.3 }
+      - { width: 3.0 }
+      - { click: "1", width: 7 }
+      - { click: "2", width: 7 }
+      - { click: "3", width: 7 }
+      - { width: 3.0 }
+      - { click: y, swipe_up: "6", width: 7.3 }
+      - { click: u, swipe_up: "7", width: 7.3 }
+      - { click: i, swipe_up: "8", width: 7.3 }
+      - { click: o, swipe_up: "9", width: 7.3 }
+      - { click: p, swipe_up: "0", width: 7.3 }
+      - { click: a, long_click: "@", swipe_up: select_all, width: 7.3 }
+      - { click: s, long_click: "*", swipe_up: "`", width: 7.3 }
+      - { click: d, long_click: "+", swipe_up: "-", width: 7.3 }
+      - { click: f, long_click: "-", swipe_up: "_", width: 7.3 }
+      - { click: g, long_click: "=", swipe_up: "@", width: 7.3 }
+      - { width: 3.0 }
+      - { click: "4", width: 7 }
+      - { click: "5", width: 7 }
+      - { click: "6", width: 7 }
+      - { width: 3.0 }
+      - { click: g, long_click: "=", swipe_up: "@", width: 7.3 }
+      - { click: h, long_click: "/", swipe_up: "(", width: 7.3 }
+      - { click: j, long_click: "#", swipe_up: ")", width: 7.3 }
+      - { click: k, long_click: "(", swipe_up: "'", width: 7.3 }
+      - { click: l, long_click: ")", swipe_up: '"', width: 7.3 }
+      - { click: Shift_L, label_symbol: " ", composing: delimiter, long_click: Shift_L, width: 7.375, key_back_color: bc1, key_text_color: tc1 }
+      - { click: z, popup: ["`", "Z"], label_symbol: '`', swipe_up: "~", width: 7.375 } # popup弹出选择
+      - { click: x, long_click: ":", swipe_up: cut, width: 7.375 }
+      - { click: c, long_click: '"', swipe_up: '"', width: 7.375 }
+      - { click: v, long_click: ';', swipe_up: paste, width: 7.375 }
+      - { width: 3.0 }
+      - { click: "7", width: 7 }
+      - { click: "8", width: 7 }
+      - { click: "9", width: 7 }
+      - { width: 3.0 }
+      - { click: b, long_click: "!", swipe_up: ":", width: 7.375 }
+      - { click: n, long_click: "?", swipe_up: ",", width: 7.375 }
+      - { click: m, long_click: '^', swipe_up: ".", width: 7.375 }
+      - { click: BackSpace, width: 14, key_back_color: bc2, key_text_color: tc2 }
+      - { click: liquid_keyboard_switch, label: "符", swipe_up: Color_switch, width: 7 }
+      - { click: ',', label: '️ ，️', swipe_up: Theme_settings, width: 7 }
+      - { click: '?', label: '？', width: 7 }
+      - { click: space, functional: true, long_click: Mode_switch2, key_text_size: 15, width: 24.375, key_back_color: bc3, key_text_color: tc3 }
+      - { width: 1.5 }
+      - { click: '0', width: 7 }
+      - { width: 1.5 }
+      - { click: space, functional: true, long_click: Mode_switch2, key_text_size: 15, width: 23.625, key_back_color: bc3, key_text_color: tc3 }
+      - { click: '.', label: ' 。', swipe_up: "?", width: 7 }
+      - { click: Return, composing: Return1, swipe_up: Escape, width: 14, key_back_color: bc4, key_text_color: tc4 }
+
+  letter:
+    __include: /preset_keyboards/default
+    ascii_mode: 1
+    reset_ascii_mode: true
+    lock: true
+    name: "letter26键"
+
+  number:        #数字键盘
+    author: "暖暖"
+    name: "数字键盘"
+    reset_ascii_mode: true
+    lock: false
+    ascii_mode: 1
+    width: 22
+    height: 52
+    vertical_gap: *vertical_gap
+    horizontal_gap: *horizontal_gap
+    key_text_offset_y: 0
+    keys:
+      - { width: 17, click: '+', long_click: '-', key_text_size: 20, key_back_color: bc2, key_text_color: tc2 }
+      - { click: '1' }
+      - { click: '2' }
+      - { click: '3' }
+      - { width: 17, click: BackSpace3, repeatable: true, key_text_size: 21, key_back_color: bc2, key_text_color: tc2 } # 可重复退格
+      - { width: 17, click: '%', long_click: '/', key_text_size: 17, key_back_color: bc2, key_text_color: tc2 }
+      - { click: '4' }
+      - { click: '5' }
+      - { click: '6' }
+      - { width: 17, click: space, key_text_size: 18, key_back_color: bc2, key_text_color: tc2 }
+      - { width: 17, click: '=', long_click: '(){Left}', key_text_size: 20, key_back_color: bc2, key_text_color: tc2 } # 长按输出()并左移光标
+      - { click: '7' }
+      - { click: '8' }
+      - { click: '9' }
+      - { width: 17, click: liquid_keyboard_math, key_text_size: 23, key_back_color: bc2, key_text_color: tc2 }
+      - { width: 17, height: 50, click: Keyboard_default, key_text_size: 17, key_back_color: bc2, key_text_color: tc2 }
+      - { click: ',', label: '️ ，️', key_text_size: 20 }
+      - { click: '0' }
+      - { click: '.', label: ' 。', key_text_size: 20 }
+      - { width: 17, height: 50, click: Return2, key_text_size: 17, key_back_color: bc4, key_text_color: tc4 }
+# 预定义按键（preset_keys）
+preset_keys:
+  # 系统/设备控制 
+  BRIGHTNESS_DOWN: { label: 亮度-, send: BRIGHTNESS_DOWN }
+  BRIGHTNESS_UP:   { label: 亮度+, send: BRIGHTNESS_UP }
+  CALCULATOR:      { label: 计算机, send: CALCULATOR }
+  CALENDAR:        { label: 日历, send: CALENDAR }
+  CONTACTS:        { label: 電話簿, send: CONTACTS }
+  ENVELOPE:        { label: 信箱, send: ENVELOPE }
+  EXPLORER:        { label: 浏览器, send: EXPLORER }
+  MUSIC:           { label: 音乐, send: MUSIC }
+  POWER:           { label: 电源, send: POWER }
+  SEARCH:          { label: 搜尋, send: SEARCH }          # 修改 send: Find → send: SEARCH
+  SLEEP:           { label: 休眠, send: SLEEP }
+  VOICE_ASSIST:    { label: 语音, functional: true, send: VOICE_ASSIST }
+  VOLUME_DOWN:     { label: 音量-, send: VOLUME_DOWN }
+  VOLUME_UP:       { label: 音量+, send: VOLUME_UP }
+  VOLUME_MUTE:     { label: 靜音, send: VOLUME_MUTE }
+
+  # 基本编辑
+  Shift_L:         { label: "▲", functional: false, send: Shift_L }
+  Shift_L1:        { label: "\ue1b6", functional: false, send: Shift_L }
+  Shift_L2:        { label: 选择, preview: "⇪", functional: false, send: Shift_L }
+  Shift_L3:        { label: "▲", preview: '', functional: false, send: Shift_L, shift_lock: click }
+  Shift_L_Lock:    { label: "▲", functional: false, send: Shift_L, shift_lock: long, long_click: Shift_L }
+
+  Return:          { label: enter_labels, key_text_offset_y: 5, preview: "↩", functional: false, send: Return }
+  Return1:         { label: "确认", preview: "↩", functional: false, send: Return }
+  Return2:         { label: "\ue032", preview: "↩", functional: true, send: Return }
+
+  BackSpace:       { label: "⌫", repeatable: true, functional: true, send: BackSpace }
+  BackSpace1:      { label: "删除", repeatable: true, functional: true, send: BackSpace }
+  BackSpace2:      { label: "ic@backspace_outline", repeatable: true, functional: true, send: BackSpace }
+  BackSpace3:      { label: "\ue040", repeatable: true, functional: true, send: BackSpace }
+
+  space:           { repeatable: false, preview: "", functional: false, label: "\ue182", send: space }
+  space1:          { repeatable: true, label: "满船清梦压星河", functional: false, send: space }
+  Space2:          { label: ' 空格 ', send: space }
+  Search:           {label: 搜寻, send: SEARCH}           # 修改 send: Find → send: SEARCH（重复定义？此处保留）
+  Clear:            {label: 全清, send: CLEAR}             # 键名改为 CLEAR
+  Clear:           { label: 清除, text: "{Control+a}{BackSpace}" }  # 第二个 Clear 保持不变（避免冲突）
+  Escape:          { label: 取消, functional: false, send: Escape }
+  Home:            { label: 行首, send: Home, functional: false }
+  Insert:          { label: 插入, send: Insert }
+  Delete:          { label: 删除, send: Delete, functional: false }
+  End:             { label: 行尾, send: End, functional: false }
+  Page_Up:         { label: 上页, send: Page_Up, functional: false }
+  Page_Down:       { label: 下页, send: Page_Down, functional: false }
+  Left:            { label: "←", send: Left, repeatable: true, functional: false }
+  Left1:           { label: "⇦", send: Control+Left, repeatable: true, functional: false }
+  Right:           { label: "→", send: Right, repeatable: true, functional: false }
+  Right1:          { label: "⇨", send: Control+Right, repeatable: true, functional: false }
+  Up:              { label: "↑", send: Up, functional: false }
+  Down:            { label: "↓", send: Down, functional: false }
+
+  select_all:      { label: 全选, functional: false, send: Control+a }
+  cut:             { label: 剪切, functional: false, send: Control+x }
+  copy:            { label: 复制, functional: false, send: Control+c }
+  paste:           { label: 粘贴, functional: false, send: Control+v }
+  paste_clip:      { label: 粘贴, send: FUNCTION, command: clipboard }
+  paste_text:      { label: 貼上文本, send: Control+Shift+Alt+v }
+  share_text:      { label: 分享文本, send: Control+Alt+s }
+  undo:            { label: 撤銷, functional: false, send: Control+z }
+  redo:            { label: 重做, functional: false, send: Control+Shift+z }
+  redo1:           { label: 重输, functional: true, send: Control+Shift+z }
+
+  delimiter:       { label: 分词, text: "'" }
+  x1:              { text: "{Home}{Right}{Right}", label: 單字, functional: false }
+  x2:              { text: "{Home}{Right}{Right}{Right}{Right}", label: 二字, functional: false }
+  x3:              { text: "{Home}{Right}{Right}{Right}{Right}{Right}{Right}", label: 三字, functional: false }
+  x4:              { text: "{Home}{Right}{Right}{Right}{Right}{Right}{Right}{Right}{Right}", label: 四字, functional: false }
+  Zcj:             { label: 單字, functional: false, text: "{Home}{Right}{Right}" }
+  Tab:             { label: 字詞, send: Tab }
+  Tab1:            { label: Tab, functional: false, send: Tab }
+
+  #  Rime 组合键 
+  F4:                     { label: 方案菜单, send: F4 }
+  BackToPreviousSyllable: { label: 删音节, send: Control+BackSpace }
+  CommitRawInput:         { label: 编码, send: Control+Return }
+  CommitScriptText:       { label: 编码, send: Shift+Return }
+  CommitComment:          { label: 编码, send: Control+Shift+Return }
+  DeleteCandidate:        { label: 删词, send: Control+Delete, functional: false }
+  RepeatCommit:           { label: 重复, command: commit, option: "%1$s" }
+
+  # 键盘切换 
+  Keyboard_default:       { label: 返回, functional: false, send: Eisu_toggle, select: .default }
+  Keyboard_default1:      { label: "\ue061", functional: false, send: Eisu_toggle, select: .default }
+  Keyboard_defaulten:     { label: EN, functional: false, send: Eisu_toggle, select: letter }
+  Keyboard_editor:        { label: 编辑, functional: false, send: Eisu_toggle, select: editor }
+  Keyboard_number:        { label: 123, functional: false, send: Eisu_toggle, select: number }
+  Keyboard_number1:       { label: "\ue011", functional: false, send: Eisu_toggle, select: number }
+  Keyboard_number2:       { label: "123", functional: false, send: Eisu_toggle, select: number }
+  Keyboard_letter:        { label: ABC, functional: false, send: Eisu_toggle, select: letter }
+  Keyboard_letter_t9:     { label: "En", functional: false, send: Eisu_toggle, select: letter_t9 }
+  Keyboard_t9:            { label: "\ue076", functional: false, send: Eisu_toggle, select: t9 }
+  Keyboard_symbols:       { label: 更多, functional: false, send: Eisu_toggle, select: symbols }
+  Keyboard_move:          { label: ❖, functional: true, send: Eisu_toggle, select: move }
+  Keyboard_next:          { label: 后退, functional: false, send: Eisu_toggle, select: .next }
+  Keyboard_last:          { label: 后退, functional: false, send: Eisu_toggle, select: .last }
+  Keyboard_last_lock:     { label: 返回, send: Eisu_toggle, select: .last_lock }
+
+  # Liquid 键盘
+  liquid_keyboard_cn:     { label: 符, send: FUNCTION, command: liquid_keyboard, option: "中文" }
+  liquid_keyboard_cn1:    { label: "\ue018", send: FUNCTION, command: liquid_keyboard, option: "中文" }
+  liquid_keyboard_emoji:  { label: 🙂, send: FUNCTION, command: liquid_keyboard, option: "emoji" }
+  liquid_keyboard_en:     { label: "\ue071", send: FUNCTION, command: liquid_keyboard, option: "英文" }
+  liquid_keyboard_math:   { label: "\ue018", send: FUNCTION, command: liquid_keyboard, option: "数学" }
+  liquid_keyboard_exit:   { label: 返回, send: FUNCTION, command: liquid_keyboard, option: "-1" }
+  liquid_keyboard_exit1:  { label: 返回, send: Eisu_toggle, select: default }
+  liquid_keyboard_switch: { label: ···, send: FUNCTION, command: liquid_keyboard, option: "特殊" }
+  liquid_keyboard_tabs:   { label: 更多, send: FUNCTION, command: liquid_keyboard, option: "更多" }
+
+  menu_keyboard:          { label: 菜单, send: FUNCTION, command: menu_keyboard }
+  clipboard_window:       { label: "剪贴", send: FUNCTION, command: "clipboard_window" }
+
+  #  Rime 状态
+  Mode_switch:          { toggle: ascii_mode, functional: false, send: SWITCH_CHARSET, states: [中文, 西文] }
+  Mode_switch1:         { toggle: ascii_mode, functional: false, send: SWITCH_CHARSET, states: [中/En, En/中] }
+  Mode_switch2:         { toggle: ascii_mode, functional: false, send: SWITCH_CHARSET, states: [中, En] }
+  Mode_switch3:         { toggle: ascii_mode, send: SWITCH_CHARSET, states: ["\ue077", "\ue076"] }
+  Zenkaku_Hankaku:      { toggle: full_shape, send: SWITCH_CHARSET, states: [半角, 全角] }
+  Henkan:               { toggle: simplification, send: SWITCH_CHARSET, states: [漢字, 汉字] }
+  Charset_switch:       { toggle: extended_charset, send: SWITCH_CHARSET, states: [常用, 增廣] }
+  Punct_switch:         { toggle: ascii_punct, send: SWITCH_CHARSET, states: [。。，, ．，] }
+  Comment_switch:       { toggle: _hide_comment, send: SWITCH_CHARSET, states: [有註釋, 無註釋] }   # 修改 send: Mode_switch → send: SWITCH_CHARSET
+  Hint_switch:          { label: 助记, toggle: _hide_key_hint, send: SWITCH_CHARSET, states: [有助記, 無助記] }
+  Candidate_switch:     { toggle: _hide_candidate, send: SWITCH_CHARSET, states: [有候選, 無候選] }
+  one_hand_switch_1:    { toggle: _one_hand_mode_1, send: SWITCH_CHARSET, states: [左手, 普通] }
+  one_hand_switch_2:    { toggle: _one_hand_mode_2, send: SWITCH_CHARSET, states: [右手, 普通] }
+  one_hand_switch_3:    { toggle: _one_hand_mode_3, send: SWITCH_CHARSET, states: [左手, 右手] }
+
+  #  Trime 设置与信息
+  IME_switch:           { label: 🌐, send: LANGUAGE_SWITCH }
+  IME_last:             { label: 上一輸入法, send: LANGUAGE_SWITCH, select: .last }
+  IME_next:             { label: 下一輸入法, send: LANGUAGE_SWITCH, select: .next }
+  Schema_switch:        { label: 下一方案, send: Control+Shift+1 }
+  Schema_switchcn:      { label: 中文, send: Control+Shift+6, functional: false }
+  Schema_switchen:      { label: EN, send: Control+Shift+5, functional: false }
+  Schema_switchen1:     { label: EN, send: Control+Shift+5, functional: true }
+  Theme_settings:       { label: 主题, send: SETTINGS, option: "theme" }
+  Color_switch:         { label: 配色, send: PROG_RED }
+  Help:                 { label: 説明, send: HELP }         # 键名改为 HELP
+  Info:                 { label: 關於, send: INFO }
+  MENU:                 { label: 方案, send: MENU }         # 键名改为 MENU
+  Settings:             { label: 設定, send: SETTINGS }
+  Schema_settings:      { label: 方案, send: SETTINGS, option: "schema" }
+  Color_settings:       { label: 配色, send: SETTINGS, option: "color" }
+  set_theme:            { label: 主题, send: SETTINGS, option: "theme" }
+
+  #  Trime 命令
+  Date:               { label: 日期, command: date, option: "yyyy-MM-dd" }
+  Time:               { label: 時間, command: date, option: "HH:mm:ss" }
+  TrimeApp:           { label: 同文, command: run, option: "com.osfans.trime" }
+  TrimeCmp:           { label: 同文组件, command: run, option: "com.osfans.trime/.ui.main.MainActivity" }
+  Homepage:           { label: 同文主頁, command: run, option: "https://github.com/osfans/trime" }
+  TrimeWiki:          { label: 同文維基, command: run, option: "https://github.com/osfans/trime/wiki/trime.yaml-詳解" }
+  Wiki:               { label: 維基, command: run, option: "https://zh.wikipedia.org/wiki/%s" }
+  Google:             { label: 谷歌, command: run, option: "https://www.google.com/search?q=%s" }
+  MoeDict:            { label: 萌典, command: run, option: "https://www.moedict.tw/%3$s" }
+  Baidu:              { label: 百度搜索, command: run, option: "https://www.baidu.com/s?wd=%4$s" }
+  Zdic:               { label: 漢典, command: run, option: "http://www.zdic.net/sousuo/?q=%1$s" }
+  Zdic2:              { label: 漢典, command: run, option: "http://www.zdic.net/sousuo/?q=%2$s" }
+  WebSearch:          { label: 搜索網頁, command: web_search, option: "%4$s" }
+  Search:             { label: 搜索, command: search, option: "%1$s" }
+  ChineseDate:        { label: 農曆, command: date, option: "zh_CN@calendar=chinese" }
+  Sync:               { label: 同步, send: FUNCTION, command: apply, option: "SYNC_USER_DATA" }
+  Deploy:             { label: 部署, send: FUNCTION, command: apply, option: "DEPLOY" }
+  updateConfig:       { label: 更新配置, send: FUNCTION, command: apply, option: "UPDATE_CONFIG" }
+
+  # 其他杂项
+  hide_key_symbol:   {label: 隐藏符号, send: FUNCTION, command: switch_hide_key_symbol}
+  hide_key_hint:      {label: 隐藏注解, send: FUNCTION, command: switch_hide_key_hint}
+  CommitHomepage:     { label: 同文網址, commit: "https://github.com/osfans/trime" }
+  Hide:               { label: 隱藏, send: BACK }
+  Control_L:          { label: "退格", send: Control_L, functional: false }
+  DelH:               { label: 删行, functional: false, text: "{Home}{Shift+End}{Delete}" }
+  Share:              { label: 分享, command: send, option: "%s" }
+  RepeatCommit:       { label: 重复, command: commit, option: "%1$s" }
+  space_R1:           { label: "EN", functional: false, send: Eisu_toggle, select: letter }
+  space_R2:           { label: "中", functional: false, send: Eisu_toggle, select: fbj }
+  Keyboard_a:         { label: "A", functional: false, send: asciicircum, key_text_color: bct0 }
+  Keyboard_a3:        { label: "  ", functional: false, send: asciicircum }
+  Keyboard_e:         { label: "E", functional: false, send: period, key_text_color: bct0 }
+  Keyboard_fc:        { label: "'分词", send: apostrophe, functional: false }
+  Keyboard_i:         { label: "I", functional: false, send: question, key_text_color: bct0 }
+  Keyboard_o:         { label: "O", functional: false, send: comma, key_text_color: bct0 }
+  Keyboard_r2:        { label: "❀", functional: false, send: r }
+  Keyboard_u:         { label: "U", functional: false, send: exclam, key_text_color: bct0 }
+  Keyboard_v2:        { label: "✾", functional: false, send: v }

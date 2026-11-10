@@ -1,0 +1,227 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 同文输入法「颜色 / 按键动作」统一命名 —— 受控词表（唯一事实来源）
+# 命名方案 B1：token 值段内 lowerCamel；YAML 结构字段名与 event 名保留 snake_case。
+# Naming.md 中的计数由 validate.py 反向核对，请勿手改数字。
+version: 1
+
+syntax:
+  pattern: "<ns>.<domain>[.<sub>].<subject>[.<modifier>...]"
+  separator: "."
+  # token 字符串值的「段内」一律 lowerCamel：禁下划线、允大写、首字母小写
+  segment_regex: "^[a-z][a-zA-Z0-9]*$"
+  # 唯一例外：event 名同时是 when: 下的 YAML 字段名，须保持 snake_case
+  event_segment_regex: "^[a-z][a-z0-9_]*$"
+  # 所有 YAML 结构字段名（preset_color_schemes / long_click / key_back_color ...）
+  yaml_field_regex: "^[a-z][a-z0-9_]*$"
+  # 缩写词按普通词处理：showIme / capsLock / keyUrl，禁止连续大写
+  forbidden_regex: "[A-Z]{2,}"
+  abbreviation_examples: ["showIme", "capsLock", "keyUrl", "colSpan"]
+  max_depth: 6
+  color_value_format: "0xAARRGGBB"
+  color_value_regex: "^0x[0-9A-Fa-f]{8}$"
+  specificity: "路径越长越优先，短路径是长路径的回退"
+
+camel_case:
+  decision: "B1"
+  scope: "token 字符串值的段内（color.* / action.* / key.* / class / state / context）"
+  excluded:
+    - "YAML 结构字段名：ThemeYaml.kt 使用 YamlNamingStrategy.SnakeCase 且 strictMode=false，写成驼峰会被静默丢弃"
+    - "event 名：when: 映射的键既是词表成员又是字段名，保留 snake_case"
+  rationale: "零解析器改动即可交付；彻底驼峰（B2）需把 when 从 map 改成数组并改 KeyBehavior 绑定代码，超出纯文档范围"
+  hard_validation: "段必须逐字命中词表；decodeEnumCaseInsensitive=true 只兜枚举值，不兜字符串 token，capsLock 写成 capslock 会静默失配"
+
+namespaces:
+  color: 视觉外观
+  action: 动作动词
+  event: 触发时机（字段名形式，保留 snake_case）
+  key: 行为 ID
+
+# geometry（位置）不设命名空间前缀，是独立第四轴；同样路径式 patch 寻址，值为数值。
+axes:
+  - when
+  - action
+  - class_and_state
+  - geometry
+
+vocabulary:
+
+  # color 路径：color.<domain>[.<sub>].<part>[.<class>][.<state|context>]
+  color_domain:
+    - key
+    - preedit
+    - candidate
+    - popup
+    - toolbar
+    - clipboard
+    - root
+    - smartbar
+
+  # 可选子域：容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
+  color_sub:
+    - comment
+    - label
+    - bar
+    - item
+
+  color_part:
+    - surface
+    - content
+    - hint
+    - outline
+    - elevation
+
+  # 共享词表 ①：class —— 按键的 class 值 == 颜色路径的修饰段
+  class:
+    - default
+    - character
+    - system
+    - modifier
+    - action
+    - space
+
+  # 共享词表 ②：state —— 动作产生的视觉状态 == 颜色路径的末段
+  state:
+    - normal
+    - pressed
+    - selected
+    - focused
+    - disabled
+    - capsLock
+    - popup
+    - trail
+
+  # 共享词表 ③：context —— Rime 会话状态（同文特有），与 state 共占修饰槽
+  # preedit 是「编码区」这一 UI 域；composing 是「输入中」这一上下文态，二者不可混用。
+  context:
+    - composing
+    - ascii
+    - paging
+    - menu
+
+  # event 词表：对应 KeyBehavior 现有 13 项（Key.kt 逐一 bind，非注释表）
+  # 保留 snake_case，因为它们直接作为 when: 下的 YAML 字段名。
+  event:
+    - click
+    - double_click
+    - lazy_double_click
+    - long_click
+    - swipe_up
+    - swipe_down
+    - swipe_left
+    - swipe_right
+    - combo
+    - composing
+    - has_menu
+    - paging
+    - ascii
+
+  # action 路径：action.<domain>.<verb>
+  action_domain:
+    - text
+    - edit
+    - modifier
+    - nav
+    - layout
+    - rime
+    - trime
+    - device
+    - system
+
+  # 封闭动词枚举（39 项）。新增动词必须同时改本表与解析器，不得靠造新键名扩展。
+  action:
+    - commit
+    - insertText
+    - repeatCommit
+    - backspace
+    - delete
+    - deleteWord
+    - selectAll
+    - selectText
+    - cut
+    - copy
+    - paste
+    - undo
+    - redo
+    - moveCursor
+    - moveCursorLineStart
+    - moveCursorLineEnd
+    - moveCursorPageStart
+    - moveCursorPageEnd
+    - shift
+    - toggleCapsLock
+    - toggleOption
+    - cycleKeyboard
+    - switchKeyboard
+    - showClipboard
+    - showEmoji
+    - showLiquidKeyboard
+    - showImePicker
+    - showSettings
+    - hideKeyboard
+    - deploy
+    - sync
+    - run
+    - webSearch
+    - share
+    - date
+    - glideType
+    - expandPopup
+    - repeat
+    - none
+
+  # key ID：key.<domain>.<name>
+  key_domain:
+    - edit
+    - modifier
+    - nav
+    - layout
+    - rime
+    - trime
+    - text
+    - device
+
+  key_name:
+    - space
+    - backspace
+    - enter
+    - shift
+    - symbols
+    - number
+    - asciiMode
+    - settings
+    - clipboard
+    - deploy
+    - paste
+    - commitComment
+    - selectCandidate
+    - escape
+    - webSearch
+    - date
+    - brightnessDown
+    - volumeUp
+    - pageUp
+    - home
+    - end
+    - selectAll
+    - cut
+    - copy
+    - undo
+    - redo
+
+  # geometry 属性：均为 YAML 结构字段名，刻意只用单字词，避开 snake_case 约束
+  geometry:
+    - row
+    - col
+    - span
+    - width
+    - height
+    - gap
+
+# color 路径修饰段规则（part 之后）
+modifier_rules:
+  pool: "class ∪ state ∪ context"
+  max_class: 1
+  max_state_or_context: 1
+  order: "class 必须排在 state/context 之前"
+  class_state_context_mutually_exclusive: true
+  subdomain_optional: true

@@ -1,0 +1,222 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Trime V5 主题方案 —— V3→V5 映射规则（唯一事实来源）
+# 基准：ss.v3.trime.yaml（方块 / linzianxyz / config_version 3.0）
+# 词表来源：doc/naming/vocabulary.yaml；命名方案 B1（段内 lowerCamel，YAML 字段名 snake_case）
+version: 1
+
+meta:
+  baseline: "ss.v3.trime.yaml"
+  vocabulary: "doc/naming/vocabulary.yaml"
+  color_value_format: "0xAARRGGBB"
+  color_value_regex: "^0x[0-9A-Fa-f]{8}$"
+  note: "多个旧名映射到同一路径时，值相同则合并，值不同则进 legacy_colors 保留，绝不丢信息"
+
+# ── ① 配色字段 → color 短路径（路径写在 schemes.<name>.color 下）──
+# 状态一律放末段；部件词固定 surface/content/hint/outline/elevation
+color_map:
+  # 根背景 / 候选栏底 / 工具栏底
+  root_background:                "root.surface"
+  keyboard_background:            "root.surface"
+  keyboard_back_color:            "root.surface"
+  back_color:                     "root.surface"
+  text_back_color:                "root.surface"
+  candidate_background:           "candidate.surface"
+  liquid_keyboard_background:     "toolbar.surface"
+  # 编码区（preedit）
+  text_color:                     "preedit.content"
+  hilited_text_color:             "preedit.content.selected"
+  hilited_back_color:             "preedit.surface.selected"
+  hilited_shadow_color:           "preedit.elevation"
+  # 候选栏
+  candidate_text_color:           "candidate.content"
+  candidate_back_color:           "candidate.surface"
+  candidate_shadow_color:         "candidate.elevation"
+  candidate_separator_color:      "candidate.outline"
+  candidate_border_color:         "candidate.outline"
+  hilited_candidate_text_color:   "candidate.content.selected"
+  hilited_candidate_back_color:   "candidate.surface.selected"
+  hilited_candidate_shadow_color: "candidate.elevation.selected"
+  hilited_candidate_button_color: "candidate.bar.surface"
+  comment_text_color:             "candidate.comment.content"
+  hilited_comment_text_color:     "candidate.comment.content.selected"
+  label_color:                    "candidate.label.content"
+  # 按键（常态）
+  key_back_color:                 "key.surface"
+  key_border_color:               "key.outline"
+  key_text_color:                 "key.content"
+  key_symbol_color:               "key.hint"
+  key_hint_color:                 "key.hint"
+  shadow_color:                   "key.elevation"
+  border_color:                   "key.outline"
+  # 按键（按下态 pressed）
+  hilited_key_text_color:         "key.content.pressed"
+  hilited_key_symbol_color:       "key.hint.pressed"
+  hilited_key_back_color:         "key.surface.pressed"
+  # 按键（角色 class：system / modifier）
+  functional_back_color:          "key.surface.system"
+  functional_text_color:          "key.content.system"
+  off_key_back_color:             "key.surface.system"
+  off_key_text_color:             "key.content.system"
+  hilited_functional_back_color:  "key.surface.system.pressed"
+  hilited_functional_text_color:  "key.content.system.pressed"
+  hilited_off_key_back_color:     "key.surface.system.pressed"
+  hilited_off_key_text_color:     "key.content.system.pressed"
+  # on_key_* 是锁定/激活态，归到 capsLock 末段，避免与 bc1（Shift 常态）撞路径
+  on_key_back_color:              "key.surface.modifier.capsLock"
+  on_key_text_color:              "key.content.modifier.capsLock"
+  on_key_symbol_color:            "key.hint.modifier.capsLock"
+  hilited_on_key_back_color:      "key.surface.modifier.pressed"
+  hilited_on_key_text_color:      "key.content.modifier.pressed"
+  # 悬浮预览 / 长按气泡
+  preview_back_color:             "popup.surface"
+  preview_text_color:             "popup.content"
+  popup_back_color:               "popup.surface"
+  popup_text_color:               "popup.content"
+  hilited_popup_text_color:       "popup.content.pressed"
+
+# ── ② 第三方自定义色标签 → class 修饰段 ──
+# 方块主题用 bc1~bc4 / baoe 给不同位置的键上色，本质是「按角色分组」，
+# V5 里由布局条目的 class 决定取哪个修饰段，标签本身降为别名。
+label_map:
+  bc1: "key.surface.modifier"      # 第 3 行 Shift 键
+  tc1: "key.content.modifier"
+  bc2: "key.surface.system"        # 退格 / 符号 / 标点
+  tc2: "key.content.system"
+  bc3: "key.surface.space"         # 空格
+  tc3: "key.content.space"
+  bc4: "key.surface.action"        # 回车
+  tc4: "key.content.action"
+  baoe: "key.surface.modifier"
+  taoe: "key.content.modifier"
+
+# ── ③ 旧键名 → 行为 ID key.<domain>.<name> ──
+# 数字后缀替身键合并到同一 ID，差异降级为 label / params / when 覆盖
+key_map:
+  "space":                     "key.edit.space"
+  "space1":                    "key.edit.space"
+  "Space2":                    "key.edit.space"
+  "space_R1":                  "key.edit.space"
+  "space_R2":                  "key.edit.space"
+  "Return":                    "key.edit.enter"
+  "Return1":                   "key.edit.enter"
+  "Return2":                   "key.edit.enter"
+  "BackSpace":                 "key.edit.backspace"
+  "BackSpace1":                "key.edit.backspace"
+  "BackSpace2":                "key.edit.backspace"
+  "BackSpace3":                "key.edit.backspace"
+  "Shift_L":                   "key.modifier.shift"
+  "Shift_L1":                  "key.modifier.shift"
+  "Shift_L2":                  "key.modifier.shift"
+  "Shift_L3":                  "key.modifier.shift"
+  "Shift_L_Lock":              "key.modifier.shift"
+  "Mode_switch":               "key.rime.asciiMode"
+  "Mode_switch1":              "key.rime.asciiMode"
+  "Mode_switch2":              "key.rime.asciiMode"
+  "Mode_switch3":              "key.rime.asciiMode"
+  "Keyboard_number":           "key.layout.number"
+  "Keyboard_number1":          "key.layout.number"
+  "Keyboard_number2":          "key.layout.number"
+  "Keyboard_default":          "key.layout.default"
+  "Keyboard_default1":         "key.layout.default"
+  "Keyboard_defaulten":        "key.layout.letter"
+  "Keyboard_editor":           "key.layout.editor"
+  "Keyboard_letter":           "key.layout.letter"
+  "Keyboard_symbols":          "key.layout.symbols"
+  "liquid_keyboard_cn":        "key.trime.clipboard"
+  "liquid_keyboard_cn1":       "key.trime.clipboard"
+  "liquid_keyboard_math":      "key.trime.clipboard"
+  "liquid_keyboard_switch":    "key.trime.clipboard"
+  "liquid_keyboard_exit":      "key.layout.default"
+  "Color_switch":              "key.trime.settings"
+  "Theme_settings":            "key.trime.settings"
+  "Settings":                  "key.trime.settings"
+  "Escape":                    "key.nav.escape"
+  "Home":                      "key.nav.home"
+  "End":                       "key.nav.end"
+  "Left":                      "key.nav.left"
+  "Left1":                     "key.nav.left"
+  "Right":                     "key.nav.right"
+  "Right1":                    "key.nav.right"
+  "Up":                        "key.nav.up"
+  "Down":                      "key.nav.down"
+  "Page_Up":                   "key.nav.pageUp"
+  "Page_Down":                 "key.nav.pageDown"
+  "Tab":                       "key.nav.tab"
+  "Tab1":                      "key.nav.tab"
+  "select_all":                "key.edit.selectAll"
+  "cut":                       "key.edit.cut"
+  "copy":                      "key.edit.copy"
+  "paste":                     "key.edit.paste"
+  "paste_clip":                "key.edit.paste"
+  "undo":                      "key.edit.undo"
+  "redo":                      "key.edit.redo"
+  "redo1":                     "key.edit.redo"
+  "delimiter":                 "key.rime.delimiter"
+  "CommitComment":             "key.text.commitComment"
+  "Date":                      "key.text.date"
+  "Time":                      "key.text.date"
+  "Zdic":                      "key.text.webSearch"
+  "Zdic2":                     "key.text.webSearch"
+  "WebSearch":                 "key.text.webSearch"
+  "Deploy":                    "key.trime.deploy"
+  "Sync":                      "key.trime.deploy"
+  "updateConfig":              "key.trime.deploy"
+  "VOLUME_UP":                 "key.device.volumeUp"
+  "VOLUME_DOWN":               "key.device.volumeDown"
+  "BRIGHTNESS_UP":             "key.device.brightnessDown"
+  "BRIGHTNESS_DOWN":           "key.device.brightnessDown"
+
+# ── ④ 旧行为字段 → action 动词（封闭枚举，见 doc/naming/ActionCatalog.yaml）──
+action_map:
+  "select:*":                  "action.layout.switchKeyboard"
+  "toggle:*":                  "action.rime.toggleOption"
+  "command:commit":            "action.text.repeatCommit"
+  "command:date":              "action.text.date"
+  "command:run":               "action.trime.run"
+  "command:web_search":        "action.text.webSearch"
+  "command:clipboard":         "action.trime.showClipboard"
+  "command:liquid_keyboard":   "action.trime.showLiquidKeyboard"
+  "command:apply":             "action.trime.deploy"
+  "command:search":            "action.text.webSearch"
+  "send:BackSpace":            "action.edit.backspace"
+  "send:Return":               "action.text.commit"
+  "send:space":                "action.text.commit"
+  "send:Eisu_toggle":          "action.layout.switchKeyboard"
+  "send:SWITCH_CHARSET":       "action.rime.toggleOption"
+  "send:FUNCTION":             "action.trime.run"
+  "send:Delete":               "action.edit.delete"
+  "send:ESCAPE":               "action.nav.escape"
+  # 组合键 / 方向键 / 功能键：动词来自封闭枚举，方向等差异降级为 params
+  "send:Control+a":            "action.edit.selectAll"
+  "send:Control+x":            "action.edit.cut"
+  "send:Control+c":            "action.edit.copy"
+  "send:Control+v":            "action.edit.paste"
+  "send:Control+z":            "action.edit.undo"
+  "send:Control+Shift+z":      "action.edit.redo"
+  "send:Left":                 "action.edit.moveCursor"
+  "send:Right":                "action.edit.moveCursor"
+  "send:Up":                   "action.edit.moveCursor"
+  "send:Down":                 "action.edit.moveCursor"
+  "send:Home":                 "action.edit.moveCursorLineStart"
+  "send:End":                  "action.edit.moveCursorLineEnd"
+  "send:Shift_L":              "action.modifier.shift"
+  "send:Tab":                  "action.text.insertText"
+  "send:PROG_RED":             "action.trime.showSettings"
+  "send:SETTINGS":             "action.trime.showSettings"
+  "text:*":                    "action.text.insertText"
+
+# ── ⑤ 布局 → 场景（V3 的 5 套布局按场景归位，横竖屏不再各写一份键定义）──
+layout_scenes:
+  default:            { scene: "standard26.portrait",  unit: 10 }
+  landscape_default:  { scene: "standard26.landscape", unit: 5  }
+  editor:             { scene: "editor",               unit: 20 }
+  number:             { scene: "number",               unit: 22 }
+  letter:             { scene: "standard26.ascii",     unit: 10, include_of: "standard26.portrait" }
+
+# ── ⑥ 与命名无关的区块：V5 逐字保留，不参与迁移 ──
+passthrough:
+  - style
+  - preedit
+  - window
+  - tool_bar
+  - liquid_keyboard

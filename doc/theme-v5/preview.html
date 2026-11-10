@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trime V5 主题方案 · 方块</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --panel:#fff; --line:#e2e6ed; --text:#1d2430; --muted:#6b7280;
+    --accent:#1a73e9; --code:#f6f7f9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px;background:var(--bg);color:var(--text);
+       font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+  .bar{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .group{display:flex;align-items:center;gap:6px}
+  .group>span{font-size:12px;color:var(--muted);margin-right:2px}
+  button{border:1px solid var(--line);background:var(--panel);color:var(--text);
+         padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12.5px}
+  button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}
+  @media(max-width:860px){.cols{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .kv{font:12px/1.7 "SFMono-Regular",Consolas,monospace}
+  .kv b{font-weight:600;color:var(--accent)}
+  .chip{display:inline-block;padding:1px 7px;border-radius:5px;background:var(--code);
+        border:1px solid var(--line);font:11.5px "SFMono-Regular",Consolas,monospace;margin:2px 3px 2px 0}
+  hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+  h3{font-size:13px;margin:0 0 8px}
+  .hint{color:var(--muted);font-size:12px}
+
+  /* 键盘 */
+  .kb{border-radius:10px;padding:8px 6px 10px;transition:background .2s}
+  .cand{display:flex;gap:6px;padding:6px 4px 8px;align-items:center;min-height:38px}
+  .cand .item{padding:4px 12px;border-radius:6px;font-size:14px;cursor:pointer}
+  .cand .cm{font-size:11px;opacity:.8;margin-left:5px}
+  .pre{padding:2px 8px 8px;font-size:13px;font-family:"SFMono-Regular",Consolas,monospace}
+  .row{display:flex;gap:3px;margin-bottom:3px}
+  .key{flex:1;min-width:0;height:46px;border-radius:7px;display:flex;align-items:center;
+       justify-content:center;font-size:15px;cursor:pointer;user-select:none;
+       border:1px solid rgba(0,0,0,.06);transition:filter .12s,transform .08s;
+       white-space:nowrap;overflow:hidden;padding:0 3px}
+  .key:hover{filter:brightness(.94)}
+  .key:active{transform:translateY(1px)}
+  .key.sel{outline:2px solid var(--accent);outline-offset:1px}
+  .key.gap{background:transparent!important;border:0!important;cursor:default}
+  .key.gap:hover{filter:none}
+  .foot{margin-top:12px;display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .foot b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Trime V5 主题方案 · 方块</h1>
+  <div class="sub">数据直接内嵌自 <code>ss.v5.trime.yaml</code>；点任意按键可反查 token 路径、色值与 V3 旧名对照。</div>
+
+  <div class="bar">
+    <div class="group"><span>配色</span><div id="schBtns"></div></div>
+    <div class="group"><span>状态</span><div id="stBtns"></div></div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <div class="kb" id="kb">
+        <div class="cand" id="cand"></div>
+        <div class="pre" id="pre"></div>
+        <div id="rows"></div>
+      </div>
+      <div class="foot" id="foot"></div>
+    </div>
+
+    <div class="card">
+      <h3>按键反查</h3>
+      <div id="info" class="kv">点击左侧任意按键。</div>
+      <hr>
+      <h3>状态与回退</h3>
+      <div class="hint" id="resolveNote"></div>
+      <hr>
+      <h3>路径 → V3 旧名</h3>
+      <div id="legacy" class="hint">点键后显示。</div>
+    </div>
+  </div>
+</div>
+
+<script id="v5-data" type="application/json">{"schemes":{"default":{"candidate.bar.surface":"0xFFFFFFFF","candidate.comment.content":"0xFF6C6C70","candidate.comment.content.selected":"0xFF6C6C70","candidate.content":"0xFF000000","candidate.content.selected":"0xFF000000","candidate.elevation":"0x00000000","candidate.elevation.selected":"0x00000000","candidate.label.content":"0xFF6C6C70","candidate.outline":"0x33D0D4DC","candidate.surface":"0xFFE8EAEF","candidate.surface.selected":"0xFFE8EAEF","key.content":"0xFF000000","key.content.action":"0xFFFFFFFF","key.content.modifier":"0xFF000000","key.content.modifier.capsLock":"0xFF1A73E9","key.content.modifier.pressed":"0xFFFFFFFF","key.content.pressed":"0xFF000000","key.content.space":"0xFF000000","key.content.system":"0xFF000000","key.content.system.pressed":"0xFF000000","key.elevation":"0x0A000000","key.hint":"0xFF6B7280","key.hint.modifier.capsLock":"0xFF1A73E9","key.hint.pressed":"0xFF6B7280","key.outline":"0x00000000","key.surface":"0xFFFDFDFD","key.surface.action":"0xFF1A73E9","key.surface.modifier":"0xFFD5D9E0","key.surface.modifier.capsLock":"0xFFE8F0FE","key.surface.modifier.pressed":"0xFF1A73E9","key.surface.pressed":"0xFFC8CCD4","key.surface.space":"0xFFF5F6F8","key.surface.system":"0xFFD5D9E0","key.surface.system.pressed":"0xFFC5CAD4","popup.content":"0xFF000000","popup.content.pressed":"0xFF1A73E9","popup.surface":"0xFFFDFDFD","preedit.content":"0xFF8E8E93","preedit.content.selected":"0xFF000000","preedit.elevation":"0x00000000","preedit.surface.selected":"0xFFDCE0E8","root.surface":"0xFFE8EAEF","toolbar.surface":"0xFFF0F2F7"},"Spring":{"candidate.bar.surface":"0xFFEAF6F5","candidate.comment.content":"0xFF8A9499","candidate.comment.content.selected":"0xFFB8B0AA","candidate.content":"0xFF313743","candidate.content.selected":"0xFF2C5E58","candidate.elevation":"0xFF686868","candidate.elevation.selected":"0xFF686868","candidate.label.content":"0xFF5A6B6B","candidate.outline":"0xFFD9D9D9","candidate.surface":"0xFFEAF6F5","candidate.surface.selected":"0xFFEAF6F5","key.content":"0xFF313743","key.content.action":"0xFFFFFFFF","key.content.modifier":"0xFF313743","key.content.modifier.capsLock":"0xFF4A9E92","key.content.modifier.pressed":"0xFF1F1F1F","key.content.pressed":"0xFF1F1F1F","key.content.space":"0xFF2C5E58","key.content.system":"0xFF313743","key.content.system.pressed":"0xFF313743","key.elevation":"0xFF686868","key.hint":"0xFF8A9499","key.hint.modifier.capsLock":"0xFF4A9E92","key.hint.pressed":"0xFF2C5E58","key.outline":"0xFFB5C8C5","key.surface":"0xFFF7FCFA","key.surface.action":"0xFF5D7B74","key.surface.modifier":"0xFFD5EBE8","key.surface.modifier.capsLock":"0xFFE8F5F3","key.surface.modifier.pressed":"0xFFC7F2EE","key.surface.pressed":"0xFFC7F2EE","key.surface.space":"0xFFE8F5F3","key.surface.system":"0xFFD5EBE8","key.surface.system.pressed":"0xFFC5DDD9","popup.content":"0xFF313743","popup.content.pressed":"0xFF4A9E92","popup.surface":"0xFFF7FCFA","preedit.content":"0xFF1F1F1F","preedit.content.selected":"0xFF000000","preedit.elevation":"0xFF8A9499","preedit.surface.selected":"0xFFC7F2EE","root.surface":"0xFFEAF6F5","toolbar.surface":"0xFFF0FAF8"},"night":{"candidate.bar.surface":"0xFF5A5A5A","candidate.comment.content":"0xFF8A8E91","candidate.comment.content.selected":"0xFF57DD9D","candidate.content":"0xFFFFFFFF","candidate.content.selected":"0xFFFFFFFF","candidate.elevation":"0xFF1A1A1A","candidate.elevation.selected":"0xFF1A1A1A","candidate.label.content":"0xFFFFFFFF","candidate.outline":"0xFF4A4A4A","candidate.surface":"0xFF222222","candidate.surface.selected":"0x00000000","key.content":"0xFFFFFFFF","key.content.action":"0xFFFFFFFF","key.content.modifier":"0xFFFFFFFF","key.content.modifier.capsLock":"0xFF57DD9D","key.content.modifier.pressed":"0xFFFFFFFF","key.content.pressed":"0xFFFFFFFF","key.content.space":"0xFFFFFFFF","key.content.system":"0xFFFFFFFF","key.content.system.pressed":"0xFFFFFFFF","key.elevation":"0xFF1A1A1A","key.hint":"0xFFB0B4B8","key.hint.modifier.capsLock":"0xFF57DD9D","key.hint.pressed":"0xFFFFFFFF","key.outline":"0xFF3A3A3A","key.surface":"0xFF4A4A4A","key.surface.action":"0xFF1A73E9","key.surface.modifier":"0xFF3A3A3A","key.surface.modifier.capsLock":"0xFF3A3A3A","key.surface.modifier.pressed":"0xFF5A5A5A","key.surface.pressed":"0xFF5A5A5A","key.surface.space":"0xFF4A4A4A","key.surface.system":"0xFF3A3A3A","key.surface.system.pressed":"0xFF4A4A4A","popup.content":"0xFFFFFFFF","popup.content.pressed":"0xFF57DD9D","popup.surface":"0xFF4A4A4A","preedit.content":"0xFFFFFFFF","preedit.content.selected":"0xFFA6A6A6","preedit.elevation":"0xFF4A4A4A","preedit.surface.selected":"0xFF3A3A3A","root.surface":"0xFF222222","toolbar.surface":"0xFF252525"}},"pairs":[{"light":"default","dark":"night","default":true},{"light":"Spring","dark":"night","default":false}],"rows":[[{"k":"q","c":null,"s":1,"id":"q"},{"k":"w","c":null,"s":1,"id":"w"},{"k":"e","c":null,"s":1,"id":"e"},{"k":"r","c":null,"s":1,"id":"r"},{"k":"t","c":null,"s":1,"id":"t"},{"k":"y","c":null,"s":1,"id":"y"},{"k":"u","c":null,"s":1,"id":"u"},{"k":"i","c":null,"s":1,"id":"i"},{"k":"o","c":null,"s":1,"id":"o"},{"k":"p","c":null,"s":1,"id":"p"}],[{"k":null,"gap":0.5,"s":0.5},{"k":"a","c":null,"s":1,"id":"a"},{"k":"s","c":null,"s":1,"id":"s"},{"k":"d","c":null,"s":1,"id":"d"},{"k":"f","c":null,"s":1,"id":"f"},{"k":"g","c":null,"s":1,"id":"g"},{"k":"h","c":null,"s":1,"id":"h"},{"k":"j","c":null,"s":1,"id":"j"},{"k":"k","c":null,"s":1,"id":"k"},{"k":"l","c":null,"s":1,"id":"l"}],[{"k":"Shift","c":"modifier","s":1.4,"id":"key.modifier.shift"},{"k":null,"gap":0.1,"s":0.1},{"k":"z","c":null,"s":1,"id":"z"},{"k":"x","c":null,"s":1,"id":"x"},{"k":"c","c":null,"s":1,"id":"c"},{"k":"v","c":null,"s":1,"id":"v"},{"k":"b","c":null,"s":1,"id":"b"},{"k":"n","c":null,"s":1,"id":"n"},{"k":"m","c":null,"s":1,"id":"m"},{"k":null,"gap":0.1,"s":0.1},{"k":"⌫","c":"system","s":1.4,"id":"key.edit.backspace"}],[{"k":"123","c":"system","s":1.5,"id":"key.layout.number"},{"k":",","c":"system","s":1.25,"id":","},{"k":"空格","c":"space","s":4.5,"id":"key.edit.space"},{"k":".","c":"system","s":1.25,"id":"."},{"k":"回车","c":"action","s":1.5,"id":"key.edit.enter"}]],"legacy":{"root.surface":["root_background","keyboard_background","keyboard_back_color","back_color","text_back_color"],"candidate.surface":["candidate_background","candidate_back_color"],"toolbar.surface":["liquid_keyboard_background"],"preedit.content":["text_color"],"preedit.content.selected":["hilited_text_color"],"preedit.surface.selected":["hilited_back_color"],"preedit.elevation":["hilited_shadow_color"],"candidate.content":["candidate_text_color"],"candidate.elevation":["candidate_shadow_color"],"candidate.outline":["candidate_separator_color","candidate_border_color"],"candidate.content.selected":["hilited_candidate_text_color"],"candidate.surface.selected":["hilited_candidate_back_color"],"candidate.elevation.selected":["hilited_candidate_shadow_color"],"candidate.bar.surface":["hilited_candidate_button_color"],"candidate.comment.content":["comment_text_color"],"candidate.comment.content.selected":["hilited_comment_text_color"],"candidate.label.content":["label_color"],"key.surface":["key_back_color"],"key.outline":["key_border_color","border_color"],"key.content":["key_text_color"],"key.hint":["key_symbol_color","key_hint_color"],"key.elevation":["shadow_color"],"key.content.pressed":["hilited_key_text_color"],"key.hint.pressed":["hilited_key_symbol_color"],"key.surface.pressed":["hilited_key_back_color"],"key.surface.system":["functional_back_color","off_key_back_color","bc2"],"key.content.system":["functional_text_color","off_key_text_color","tc2"],"key.surface.system.pressed":["hilited_functional_back_color","hilited_off_key_back_color"],"key.content.system.pressed":["hilited_functional_text_color","hilited_off_key_text_color"],"key.surface.modifier.capsLock":["on_key_back_color"],"key.content.modifier.capsLock":["on_key_text_color"],"key.hint.modifier.capsLock":["on_key_symbol_color"],"key.surface.modifier.pressed":["hilited_on_key_back_color"],"key.content.modifier.pressed":["hilited_on_key_text_color"],"popup.surface":["preview_back_color","popup_back_color"],"popup.content":["preview_text_color","popup_text_color"],"popup.content.pressed":["hilited_popup_text_color"],"key.surface.modifier":["bc1","baoe"],"key.content.modifier":["tc1","taoe"],"key.surface.space":["bc3"],"key.content.space":["tc3"],"key.surface.action":["bc4"],"key.content.action":["tc4"]},"fallback":{"candidate.comment.content":"candidate.content","candidate.comment.content.selected":"candidate.comment.content","candidate.content":"preedit.content","candidate.content.selected":"preedit.content.selected","candidate.label.content":"candidate.content","candidate.outline":"key.outline","candidate.surface.selected":"preedit.surface.selected","key.content":"candidate.content","key.content.modifier.capsLock":"key.content.system","key.content.modifier.pressed":"key.content.system.pressed","key.content.pressed":"candidate.content.selected","key.content.system":"key.content.system","key.content.system.pressed":"key.content.system.pressed","key.elevation":"key.outline","key.hint":"candidate.comment.content","key.hint.pressed":"candidate.comment.content.selected","key.outline":"key.outline","key.surface":"root.surface","key.surface.modifier.capsLock":"key.surface.system","key.surface.modifier.pressed":"key.surface.system.pressed","key.surface.pressed":"candidate.surface.selected","key.surface.system":"key.surface.system","key.surface.system.pressed":"key.surface.system.pressed","popup.content":"key.content","popup.surface":"key.surface","preedit.content.selected":"preedit.content","preedit.surface.selected":"root.surface","root.surface":"key.outline"},"stats":{"paths":43,"ids":23,"aliases":33,"scenes":5}}</script>
+<script>
+const D = JSON.parse(document.getElementById('v5-data').textContent);
+const SID = Object.keys(D.schemes);
+const QS = new URLSearchParams(location.search);
+const STATES = ['normal','pressed','selected','capsLock'];
+let scheme = D.schemes[QS.get('scheme')] ? QS.get('scheme') : SID[0];
+let state = STATES.includes(QS.get('state')) ? QS.get('state') : 'normal';
+let picked = null;
+
+function css(v){
+  const s = String(v).replace(/^0x/,'');
+  const a = parseInt(s.slice(0,2),16)/255;
+  const r = parseInt(s.slice(2,4),16), g = parseInt(s.slice(4,6),16), b = parseInt(s.slice(6,8),16);
+  return `rgba(${r},${g},${b},${a.toFixed(3)})`;
+}
+function resolve(domain, part, cls, st){
+  const s = D.schemes[scheme], c = [];
+  if(cls && st) c.push(`${domain}.${part}.${cls}.${st}`);
+  if(cls) c.push(`${domain}.${part}.${cls}`);
+  if(st) c.push(`${domain}.${part}.${st}`);
+  c.push(`${domain}.${part}`);
+  for(const p of c) if(s[p] !== undefined) return {path:p, val:s[p]};
+  return {path:c[c.length-1], val:'0x00000000'};
+}
+function lum(v){
+  const s=String(v).replace(/^0x/,'');
+  const ch=[2,4,6].map(i=>parseInt(s.slice(i,i+2),16)/255)
+    .map(x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4));
+  return .2126*ch[0]+.7152*ch[1]+.0722*ch[2];
+}
+function contrast(a,b){
+  const x=lum(a), y=lum(b), hi=Math.max(x,y), lo=Math.min(x,y);
+  return ((hi+.05)/(lo+.05)).toFixed(2);
+}
+function stOf(cls){ return state === 'normal' ? null : state; }
+
+function render(){
+  const s = D.schemes[scheme], st = stOf();
+  const root = resolve('root','surface',null,null);
+  const kb = document.getElementById('kb');
+  kb.style.background = css(root.val);
+
+  // 候选栏
+  const cs = resolve('candidate','surface',null,st==='selected'?null:st);
+  const ct = resolve('candidate','content',null,st);
+  const cc = resolve('candidate','comment','content',st==='selected'?'selected':null);
+  const cl = resolve('candidate','label','content',null);
+  const selS = resolve('candidate','surface',null,'selected');
+  const selT = resolve('candidate','content',null,'selected');
+  const cand = document.getElementById('cand');
+  cand.style.background = css(cs.val);
+  cand.innerHTML = [
+    `<div class="item" style="color:${css(selT.val)};background:${css(selS.val)}">同文<span class="cm" style="color:${css(cc.val)}">tóng wén</span></div>`,
+    `<div class="item" style="color:${css(ct.val)}">同闻<span class="cm" style="color:${css(cc.val)}">tóng wén</span></div>`,
+    `<div class="item" style="color:${css(ct.val)}">铜<span class="cm" style="color:${css(cl.val)}">2</span></div>`
+  ].join('');
+
+  // 编码区
+  const pt = resolve('preedit','content',null,st==='selected'?'selected':null);
+  const pre = document.getElementById('pre');
+  pre.style.color = css(pt.val);
+  pre.textContent = "tong'wen │ 同文输入法";
+
+  // 键盘
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  D.rows.forEach((r,ri)=>{
+    const div = document.createElement('div'); div.className='row';
+    const total = r.reduce((a,e)=>a+(e.s||1),0);
+    r.forEach((e,ci)=>{
+      const k = document.createElement('div');
+      k.className = 'key' + (e.k===null?' gap':'') + (picked===`${ri}:${ci}`?' sel':'');
+      k.style.flex = String(e.s||1);
+      if(e.k===null){ div.appendChild(k); return; }
+      const cls = e.c || 'character';
+      const surf = resolve('key','surface',cls,st);
+      const cont = resolve('key','content',cls,st);
+      const hint = resolve('key','hint',cls,st);
+      k.style.background = css(surf.val);
+      k.style.color = css(cont.val);
+      k.style.borderColor = css(resolve('key','outline',cls,st).val);
+      k.textContent = e.k;
+      k.title = `${e.id||e.k} · ${surf.path}`;
+      k.onclick = ()=>{ picked = `${ri}:${ci}`; showInfo(e, cls, surf, cont, hint, st); render(); };
+      div.appendChild(k);
+    });
+    rows.appendChild(div);
+  });
+
+  document.getElementById('foot').innerHTML =
+    `<span>方案 <b>${scheme}</b></span><span>状态 <b>${state}</b></span>`+
+    `<span>路径 <b>${D.stats.paths}</b>/套</span><span>行为 ID <b>${D.stats.ids}</b></span>`+
+    `<span>别名 <b>${D.stats.aliases}</b></span><span>场景 <b>${D.stats.scenes}</b></span>`+
+    `<span>根背景 <b>${root.val}</b></span>`;
+  document.getElementById('resolveNote').textContent =
+    `查找顺序：${st?`${'key'}.surface.<class>.${st} → `:''}key.surface.<class> → ${st?`key.surface.${st} → `:''}key.surface（长路径优先，短路径回退）。`+
+    `共 ${Object.keys(D.fallback).length} 条 fallback 链可在运行时继续回退。`;
+}
+
+function showInfo(e, cls, surf, cont, hint, st){
+  const ratio = contrast(cont.val, surf.val);
+  const dom = (id)=>id.startsWith('key.')?id:'字面字符 '+id;
+  document.getElementById('info').innerHTML =
+    `<div>按键 <b>${e.k}</b></div>`+
+    `<div>身份 <b>${dom(e.id)}</b></div>`+
+    `<div>class <b>${cls}</b>　state <b>${state}</b></div><hr>`+
+    `<div>surface <b>${surf.path}</b></div><div>　${surf.val}</div>`+
+    `<div>content <b>${cont.path}</b></div><div>　${cont.val}</div>`+
+    `<div>hint　　<b>${hint.path}</b></div><div>　${hint.val}</div><hr>`+
+    `<div>对比度 <b>${ratio}:1</b> ${ratio>=4.5?'✓ AA':(ratio>=3?'△ AA Large':'✗ 不足')}</div>`+
+    `<div>span <b>${e.s}</b>（行内相对权重）</div>`;
+  const paths = [surf.path, cont.path, hint.path];
+  document.getElementById('legacy').innerHTML = paths.map(p=>{
+    const olds = D.legacy[p] || [];
+    return `<div style="margin-bottom:6px"><span class="chip">${p}</span><br>`+
+      (olds.length?olds.map(o=>`<span class="chip">${o}</span>`).join(''):'<i>（无对应旧名，V5 新增语义）</i>')+`</div>`;
+  }).join('');
+}
+
+// 控件
+const sb = document.getElementById('schBtns');
+SID.forEach(s=>{
+  const b=document.createElement('button'); b.textContent=s; b.dataset.s=s;
+  b.onclick=()=>{scheme=s;picked=null;document.getElementById('info').textContent='点击左侧任意按键。';
+    document.getElementById('legacy').textContent='点键后显示。';
+    [...sb.children].forEach(x=>x.classList.toggle('on',x.dataset.s===s)); render();};
+  sb.appendChild(b);
+});
+const stList=[['normal','常态'],['pressed','按下'],['selected','选中'],['capsLock','大写锁定']];
+const tb=document.getElementById('stBtns');
+stList.forEach(([v,label])=>{
+  const b=document.createElement('button'); b.textContent=label; b.dataset.v=v;
+  b.onclick=()=>{state=v;[...tb.children].forEach(x=>x.classList.toggle('on',x.dataset.v===v)); render();};
+  tb.appendChild(b);
+});
+[...sb.children].forEach(x=>x.classList.toggle('on', x.dataset.s===scheme));
+[...tb.children].forEach(x=>x.classList.toggle('on', x.dataset.v===state));
+render();
+</script>
+</body>
+</html>

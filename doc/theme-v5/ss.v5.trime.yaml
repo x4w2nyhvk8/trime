@@ -1,0 +1,697 @@
+# Trime V5 主题方案 —— 方块（由 build_v5.py 自 ss.v3.trime.yaml 生成）
+# 命名规范：doc/naming/Naming.md；受控词表：doc/naming/vocabulary.yaml
+# 映射规则：v5-map.yaml；本文件不直接参与当前 Trime 运行时解析，
+# 可导入版本见 ss.v3.generated.trime.yaml（由本文件反向降级）。
+
+config_version: "5.0"
+trime_version: 5
+name: "方块"
+author: "linzianxyz"
+vocabulary: "doc/naming/vocabulary.yaml"
+preview_scene: "standard26.portrait@1.0"
+
+# ── A. 未迁移区：与命名无关的视觉 / 几何参数，逐字保留自 V3 ──────────
+# 锚点定义
+height:
+  1: &key_height 30 # 按键高度
+  2: &keyboard_height_land 200 # 横屏键盘锁定高度
+  3: &keyboard_height 245 # 竖屏键盘锁定高度
+  4: &horizontal_gap 4 # 按键水平间距
+  5: &vertical_gap 9 # 键盘行距
+  6: &keyboard_padding 1 # 键盘左右边距
+
+round_corner:
+  1: &round_corner 8 # 按键圆角半径
+
+# style（界面样式及特色功能）
+style:
+  auto_caps: false                     # 自动句首大写（关闭）
+  candidate_corner_radius: 5           # 候选圆角
+  candidate_font: [pingfang.ttf]          # 候选词字体
+  candidate_padding: 3                 # 候选项内边距（减小避免截断）
+  candidate_spacing: 0.5               # 候选分割线
+  candidate_text_size: 20              # 候选词字号
+  candidate_text_vertical_bias: 1.0    # 候选文本垂直偏移（overlay模式）
+#  candidate_use_cursor: false          # 是否使用光标指示高亮候选
+  candidate_view_height: 28            # 候选区高度
+  comment_font: [pingfang.ttf]            # 编码提示字体
+  comment_height: 14                   # 编码提示区高度
+  comment_position: right              # 编码提示布局位置（右侧）
+  comment_text_size: 12                # 编码提示字号
+  comment_vertical_bias: 0.0           # 编码提示垂直偏移（overlay模式）
+  enter_label_mode: 0                  # 是否使用App提供的ActionLabel
+  enter_labels:
+    go: 发送
+    done: 完成
+    next: 下个
+    pre: 上个
+    search: 检索
+    send: 发送
+    default: 确认
+  hanb_font: [pingfang.ttf]
+#  horizontal: true                     # 候选词水平排列
+  horizontal_gap: *horizontal_gap      # 水平间距（引用锚点）
+  key_border: 1                        # 按键边框宽度
+  key_font: [pingfang.ttf, iconfont.ttf]  # 按键字体
+  key_height: *key_height              # 按键高度（引用锚点）
+  key_long_text_size: 15               # 长按提示符号字号
+  key_symbol_offset_x: -5              # 长按符号水平偏移
+  key_symbol_offset_y: 6               # 长按符号垂直偏移
+  key_text_size: 20                    # 按键主文本字号
+  key_width: 10.0                      # 按键宽度占屏幕宽的百分比
+  keyboard_height: *keyboard_height    # 锁竖屏高度（引用锚点）
+  keyboard_height_land: *keyboard_height_land  # 锁横屏高度（引用锚点）
+  keyboard_padding: *keyboard_padding         # 竖屏左右边距
+  keyboard_padding_bottom: 70          # 竖屏底部边距
+  keyboard_padding_land: 40            # 横屏左右边距
+  keyboard_padding_land_bottom: 8      # 横屏底部边距
+  keyboard_padding_left: 0             # 竖屏左手模式左侧边距
+  keyboard_padding_right: 0            # 竖屏右手模式右侧边
+  label_font: [pingfang.ttf, iconfont.ttf]         # 悬浮窗序号字体
+  label_text_size: 22                  # 标签文字大小
+  latin_font: [pingfang.ttf]              # 西文字体
+  popup_bottom_margin: 68              # 气泡底部边距
+  popup_font: [pingfang.ttf]              # 按键气泡字体
+  popup_height: 48                     # 气泡高度
+  popup_key_height: 48                 # 气泡内按键高度
+  popup_text_size: 23                  # 气泡文字字号
+  popup_width: 38                      # 气泡宽度
+  reset_ascii_mode_on_focus_change: true  # 焦点变化时重置为中文状态
+  round_corner: *round_corner          # 按键圆角半径（引用锚点）
+  shadow_radius: 8                     # 按键阴影
+  symbol_font: [pingfang.ttf, iconfont.ttf]  # 符号字体
+  symbol_text_size: 10                 # 符号字号
+  text_font: [pingfang.ttf]               # 编码区字体
+  vertical_gap: *vertical_gap          # 键盘行距（引用锚点）
+
+#  预编辑区（preedit）
+preedit:
+  foreground:
+    font_size: 16 # 预编辑区文字大小
+  horizontal_padding: 8 # 预编辑区水平内距
+  top_end_radius: 4 # 预编辑区上端圆角半径
+
+# 候选窗口
+window:
+  alpha: 1 # 候选窗口透明度（1=不透明）
+  border: 2 # 边框宽度
+  corner_radius: 3 # 圆角半径
+  foreground:
+    label_font_size: 14 # 候选词序号字体大小
+    text_font_size: 14 # 候选词文字字体大小
+    comment_font_size: 14 # 候选词注释字体大小
+  insets:
+    vertical: 3 # 纵向内距
+    horizontal: 3 # 横向内距
+  item_padding:
+    vertical: 2 # 候选词纵向内距
+    horizontal: 4 # 候选词横向内距
+  min_width: 5 # 最小宽度
+  shadow: 3.0 # 阴影
+
+# （toolbar） 
+tool_bar:
+  back_style: "ic@chevron-left" # 返回图标
+  button_font: [iconfont.ttf] # 工具栏按钮字体
+  button_spacing: 2 # 按钮水平间隙
+#工具栏图标依次从右到左
+  hide_button: &hide_button # 隐藏按钮锚点
+    foreground:
+      style: "ic@keyboard-close" # 图标样式（隐藏图标）
+      font_size: 18 # 图标大小
+      padding: 7 # 内距
+    action: Hide # 动作：隐藏键盘
+  edit_button: &edit_button # 编辑按钮锚点
+    foreground:
+      style: "ic@cursor-text" # 图标样式
+      font_size: 18
+      padding: 7
+    action: Keyboard_editor # 动作：切换到编辑键盘
+  clipboard_button: &clipboard_button # 剪贴板按钮锚点
+    foreground:
+      style: "ic@clipboard-outline" # 图标样式
+      font_size: 18
+      padding: 7
+    action: clipboard_window # 动作：打开剪贴板窗口
+  emoji_button: &emoji_button # 表情按钮锚点
+    foreground:
+      style: "ic@emoticon-outline" # 图标样式
+      font_size: 18
+      padding: 7
+    action: liquid_keyboard_emoji # 动作：打开表情liquid键盘
+  horizontal_inset: 2 # 工具栏水平内距
+  primary_button: # 主按钮（菜单键）
+    background:
+      type: rectangle # 形状：矩形
+      corner_radius: 0 # 圆角
+      bg_normal: "0x00" # 一般状态背景（完全透明）
+      bg_hightlight: "hilited_candidate_button_color" # 按下状态背景（引用高亮候选按钮颜色）
+      vertical_inset: 4 # 垂直内距
+      horizontal_inset: 0 # 水平内距
+    foreground:
+      style: "\ue261" # 图标样式
+      normal: candidate_text_color # 一般状态前景色（候选文字颜色）
+      padding: 3 # 内距
+    action: menu_keyboard # 动作：打开菜单键盘
+    long_press_action: Settings # 长按动作：打开设置
+  buttons: # 其他按钮
+    - *hide_button # 隐藏
+    - *edit_button # 编辑
+    - *clipboard_button # 剪贴板
+    - *emoji_button # 表情
+
+# （liquid_keyboard）
+liquid_keyboard:
+  author: "tumuyan"
+  candidate_corner_radius: 8
+  fixed_key_bar:
+    position: bottom
+    keys:
+      - liquid_keyboard_exit
+      - space1
+      - BackSpace1
+  keyboards: [history, ascii, cn, emoji, math, yanwenzi, clipboard, collection, draft, symbollist, list, ids, symbol, tabs, pinyin, script_symbols, jp, grease, rusa, korea, lation, yinbiao, unit, combing]
+  key_height: 40
+  key_height_land: 40
+  margin_x: 2
+  row: 6
+  row_land: 5
+  single_width: 60   
+  tabs:
+    name: 更多
+    type: TABS
+  vertical_gap: 8
+  history:
+    name: 常用
+    type: HISTORY
+  ascii:
+    type: SINGLE
+    name: 英文
+    keys: ["!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
+  emoji:
+    type: SINGLE
+    name: emoji
+    keys: ["😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃", "🫠", "😉", "😊", "😇", "🥰", "😍", "🤩", "😘", "😗", "☺", "😚", "😙", "🥲", "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🫢", "🫣", "🤫", "🤔", "🫡", "🤐", "🤨", "😐", "😑", "😶", "🫥", "😏", "😒", "🙄", "😬", "🤥", "😌", "😔", "😪", "🤤", "😴", "😷", "🤒", "🤕", "🤢", "🤮", "🤧", "🥵", "🥶", "🥴", "😵", "🤯", "🤠", "🥳", "🥸", "😎", "🤓", "🧐", "😕", "🫤", "😟", "🙁", "☹", "😮", "😯", "😲", "😳", "🥺", "🥹", "😦", "😧", "😨", "😰", "😥", "😢", "😭", "😱", "😖", "😣", "😞", "😓", "😩", "😫", "🥱", "😤", "😡", "😠", "🤬", "😈", "👿", "💀", "☠", "💩", "🤡", "👹", "👺", "👻", "👽", "👾", "🤖", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🙈", "🙉", "🙊", "💌", "💘", "💝", "💖", "💗", "💓", "💞", "💕", "💟", "❣", "💔", "❤", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤", "🤍", "💋", "💯", "💢", "💥", "💫", "💦", "💨", "🕳", "💬", "🗨", "🗯", "💭", "💤", "👋", "🤚", "🖐", "✋", "🖖", "🫱", "🫲", "🫳", "🫴", "👌", "🤌", "🤏", "✌", "🤞", "🫰", "🤟", "🤘", "🤙", "👈", "👉", "👆", "🖕", "👇", "☝", "🫵", "👍", "👎", "✊", "👊", "🤛", "🤜", "👏", "🙌", "🫶", "👐", "🤲", "🤝", "🙏", "✍", "💅", "🤳", "💪", "🦾", "🦿", "🦵", "🦶", "👂", "🦻", "👃", "🧠", "🫀", "🫁", "🦷", "🦴", "👀", "👁", "👅", "👄", "🫦", "👶", "🧒", "👦", "👧", "🧑", "👱", "👨", "🧔", "👩", "🧓", "👴", "👵", "🙍", "🙎", "🙅", "🙆", "💁", "🙋", "🧏", "🙇", "🤦", "🤷", "👮", "🕵", "💂", "🥷", "👷", "🫅", "🤴", "👸", "👳", "👲", "🧕", "🤵", "👰", "🤰", "🫃", "🫄", "🤱", "👼", "🎅", "🤶", "🦸", "🦹", "🧙", "🧚", "🧛", "🧜", "🧝", "🧞", "🧟", "🧌", "💆", "💇", "🚶", "🧍", "🧎", "🏃", "💃", "🕺", "🕴", "👯", "🧖", "🧗", "🤺", "🏇", "⛷", "🏂", "🏌", "🏄", "🚣", "🏊", "⛹", "🏋", "🚴", "🚵", "🤸", "🤼", "🤽", "🤾", "🤹", "🧘", "🛀", "🛌", "👭", "👫", "👬", "💏", "💑", "👪", "🗣", "👤", "👥", "🫂", "👣", "🏻", "🏼", "🏽", "🏾", "🏿", "🦰", "🦱", "🦳", "🦲", "🐵", "🐒", "🦍", "🦧", "🐶", "🐕", "🦮", "🐩", "🐺", "🦊", "🦝", "🐱", "🐈", "🦁", "🐯", "🐅", "🐆", "🐴", "🐎", "🦄", "🦓", "🦌", "🦬", "🐮", "🐂", "🐃", "🐄", "🐷", "🐖", "🐗", "🐽", "🐏", "🐑", "🐐", "🐪", "🐫", "🦙", "🦒", "🐘", "🦣", "🦏", "🦛", "🐭", "🐁", "🐀", "🐹", "🐰", "🐇", "🐿", "🦫", "🦔", "🦇", "🐻", "🐨", "🐼", "🦥", "🦦", "🦨", "🦘", "🦡", "🐾", "🦃", "🐔", "🐓", "🐣", "🐤", "🐥", "🐦", "🐧", "🕊", "🦅", "🦢", "🦉", "🦤", "🪶", "🦩", "🦚", "🦜", "🐸", "🐊", "🐢", "🦎", "🐍", "🐲", "🐉", "🦕", "🦖", "🐳", "🐋", "🐬", "🦭", "🐟", "🐠", "🐡", "🦈", "🐙", "🐚", "🪸", "🐌", "🦋", "🐛", "🐜", "🐝", "🪲", "🐞", "🦗", "🪳", "🕷", "🕸", "🦂", "🦟", "🪰", "🪱", "🦠", "💐", "🌸", "💮", "🪷", "🏵", "🌹", "🥀", "🌺", "🌻", "🌼", "🌷", "🌱", "🪴", "🌲", "🌳", "🌴", "🌵", "🌾", "🌿", "☘", "🍀", "🍁", "🍂", "🍃", "🪹", "🪺", "🍄", "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🥜", "🫘", "🌰", "🍞", "🥐", "🥖", "🫓", "🥨", "🥯", "🥞", "🧇", "🧀", "🍖", "🍗", "🥩", "🥓", "🍔", "🍟", "🍕", "🌭", "🥪", "🌮", "🌯", "🫔", "🥙", "🧆", "🥚", "🍳", "🥘", "🍲", "🫕", "🥣", "🥗", "🍿", "🧈", "🧂", "🥫", "🍱", "🍘", "🍙", "🍚", "🍛", "🍜", "🍝", "🍠", "🍢", "🍣", "🍤", "🍥", "🥮", "🍡", "🥟", "🥠", "🥡", "🦀", "🦞", "🦐", "🦑", "🦪", "🍦", "🍧", "🍨", "🍩", "🍪", "🎂", "🍰", "🧁", "🥧", "🍫", "🍬", "🍭", "🍮", "🍯", "🍼", "🥛", "☕", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹", "🍺", "🍻", "🥂", "🥃", "🫗", "🥤", "🧋", "🧃", "🧉", "🧊", "🥢", "🍽", "🍴", "🥄", "🔪", "🫙", "🏺", "🌍", "🌎", "🌏", "🌐", "🗺", "🗾", "🧭", "🏔", "⛰", "🌋", "🗻", "🏕", "🏖", "🏜", "🏝", "🏞", "🏟", "🏛", "🏗", "🧱", "🪨", "🪵", "🛖", "🏘", "🏚", "🏠", "🏡", "🏢", "🏣", "🏤", "🏥", "🏦", "🏨", "🏩", "🏪", "🏫", "🏬", "🏭", "🏯", "🏰", "💒", "🗼", "🗽", "⛪", "🕌", "🛕", "🕍", "⛩", "🕋", "⛲", "⛺", "🌁", "🌃", "🏙", "🌄", "🌅", "🌆", "🌇", "🌉", "♨", "🎠", "🛝", "🎡", "🎢", "💈", "🎪", "🚂", "🚃", "🚄", "🚅", "🚆", "🚇", "🚈", "🚉", "🚊", "🚝", "🚞", "🚋", "🚌", "🚍", "🚎", "🚐", "🚑", "🚒", "🚓", "🚔", "🚕", "🚖", "🚗", "🚘", "🚙", "🛻", "🚚", "🚛", "🚜", "🏎", "🏍", "🛵", "🦽", "🦼", "🛺", "🚲", "🛴", "🛹", "🛼", "🚏", "🛣", "🛤", "🛢", "⛽", "🛞", "🚨", "🚥", "🚦", "🛑", "🚧", "⚓", "🛟", "⛵", "🛶", "🚤", "🛳", "⛴", "🛥", "🚢", "✈", "🛩", "🛫", "🛬", "🪂", "💺", "🚁", "🚟", "🚠", "🚡", "🛰", "🚀", "🛸", "🛎", "🧳", "⌛", "⏳", "⌚", "⏰", "⏱", "⏲", "🕰", "🕛", "🕧", "🕐", "🕜", "🕑", "🕝", "🕒", "🕞", "🕓", "🕟", "🕔", "🕠", "🕕", "🕡", "🕖", "🕢", "🕗", "🕣", "🕘", "🕤", "🕙", "🕥", "🕚", "🕦", "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌙", "🌚", "🌛", "🌜", "🌡", "☀", "🌝", "🌞", "🪐", "⭐", "🌟", "🌠", "🌌", "☁", "⛅", "⛈", "🌤", "🌥", "🌦", "🌧", "🌨", "🌩", "🌪", "🌫", "🌬", "🌀", "🌈", "🌂", "☂", "☔", "⛱", "⚡", "❄", "☃", "⛄", "☄", "🔥", "💧", "🌊", "🎃", "🎄", "🎆", "🎇", "🧨", "✨", "🎈", "🎉", "🎊", "🎋", "🎍", "🎎", "🎏", "🎐", "🎑", "🧧", "🎀", "🎁", "🎗", "🎟", "🎫", "🎖", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "⚾", "🥎", "🏀", "🏐", "🏈", "🏉", "🎾", "🥏", "🎳", "🏏", "🏑", "🏒", "🥍", "🏓", "🏸", "🥊", "🥋", "🥅", "⛳", "⛸", "🎣", "🤿", "🎽", "🎿", "🛷", "🥌", "🎯", "🪀", "🪁", "🎱", "🔮", "🪄", "🎮", "🕹", "🎰", "🎲", "🧩", "🧸", "🪅", "🪩", "🪆", "♠", "♥", "♦", "♣", "♟", "🃏", "🀄", "🎴", "🔫", "🎭", "🖼", "🎨", "🧵", "🪡", "🧶", "🪢", "👓", "🕶", "🥽", "🥼", "🦺", "👔", "👕", "👖", "🧣", "🧤", "🧥", "🧦", "👗", "👘", "🥻", "🩱", "🩲", "🩳", "👙", "👚", "👛", "👜", "👝", "🛍", "🎒", "🩴", "👞", "👟", "🥾", "🥿", "👠", "👡", "🩰", "👢", "👑", "👒", "🎩", "🎓", "🧢", "🪖", "⛑", "📿", "💄", "💍", "💎", "🔇", "🔈", "🔉", "🔊", "📢", "📣", "📯", "🔔", "🔕", "🎼", "🎵", "🎶", "🎙", "🎚", "🎛", "🎤", "🎧", "📻", "🎷", "🪗", "🎸", "🎹", "🎺", "🎻", "🪕", "🥁", "🪘", "📱", "📲", "☎", "📞", "📟", "📠", "🔋", "🪫", "🔌", "💻", "🖥", "🖨", "⌨", "🖱", "🖲", "💽", "💾", "💿", "📀", "🧮", "🎥", "🎞", "📽", "🎬", "📺", "📷", "📸", "📹", "📼", "🔍", "🔎", "🕯", "💡", "🔦", "🏮", "🪔", "📔", "📕", "📖", "📗", "📘", "📙", "📚", "📓", "📒", "📃", "📜", "📄", "📰", "🗞", "📑", "🔖", "🏷", "💰", "🪙", "💴", "💵", "💶", "💷", "💸", "💳", "🧾", "💹", "✉", "📧", "📨", "📩", "📤", "📥", "📦", "📫", "📪", "📬", "📭", "📮", "🗳", "✏", "✒", "🖋", "🖊", "🖌", "🖍", "📝", "💼", "📁", "📂", "🗂", "📅", "📆", "🗒", "🗓", "📇", "📈", "📉", "📊", "📋", "📌", "📍", "📎", "🖇", "📏", "📐", "✂", "🗃", "🗄", "🗑", "🔒", "🔓", "🔏", "🔐", "🔑", "🗝", "💣", "🔨", "🪓", "⛏", "⚒", "🛠", "🗡", "⚔", "🪃", "🏹", "🛡", "🪚", "🔧", "🪛", "🔩", "⚙", "🗜", "⚖", "🦯", "🔗", "⛓", "🪝", "🧰", "🧲", "🪜", "⚗", "🧪", "🧫", "🧬", "🔬", "🔭", "📡", "💉", "🩸", "💊", "🩹", "🩼", "🩺", "🩻", "🚪", "🛗", "🪞", "🪟", "🛏", "🛋", "🪑", "🚽", "🪠", "🚿", "🛁", "🪤", "🪒", "🧴", "🧷", "🧹", "🧺", "🧻", "🪣", "🧼", "🫧", "🧥", "🧽", "🧯", "🛒", "🧿", "🪬", "🚬", "⚰", "🪦", "⚱", "🗿", "🪧", "🪪", "🏧", "🚮", "🚰", "♿", "🚹", "🚺", "🚻", "🚼", "🚾", "🛂", "🛃", "🛄", "🛅", "⚠", "🚸", "⛔", "🚫", "🚳", "🚭", "🚯", "🚱", "🚷", "📵", "🔞", "☢", "☣", "⬆", "↗", "➡", "↘", "⬇", "↙", "⬅", "↖", "↕", "↔", "↩", "↪", "⤴", "⤵", "🔃", "🔄", "🔙", "🔚", "🔛", "🔜", "🔝", "🛐", "⚛", "🕉", "✡", "☸", "☯", "✝", "☦", "☪", "☮", "🕎", "🔯", "♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓", "⛎", "🔀", "🔁", "🔂", "▶", "⏩", "⏭", "⏯", "◀", "⏪", "⏮", "🔼", "⏫", "🔽", "⏬", "⏸", "⏹", "⏺", "⏏", "🎦", "🔅", "🔆", "📶", "📳", "📴", "♀", "♂", "⚧", "✖", "➕", "➖", "➗", "🟰", "♾", "‼", "⁉", "❓", "❔", "❕", "❗", "〰", "💱", "💲", "⚕", "♻", "⚜", "🔱", "📛", "🔰", "⭕", "✅", "☑", "✔", "❌", "❎", "➰", "➿", "〽", "✳", "✴", "❇", "©", "®", "™", "🔟", "🔠", "🔡", "🔢", "🔣", "🔤", "🅰", "🆎", "🅱", "🆑", "🆒", "🆓", "ℹ", "🆔", "Ⓜ", "🆕", "🆖", "🅾", "🆗", "🅿", "🆘", "🆙", "🆚", "🈁", "🈂", "🈷", "🈶", "🈯", "🉐", "🈹", "🈚", "🈲", "🉑", "🈸", "🈴", "🈳", "㊗", "㊙", "🈺", "🈵", "🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "⚪", "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "◼", "◻", "◾", "◽", "▪", "▫", "🔶", "🔷", "🔸", "🔹", "🔺", "🔻", "💠", "🔘", "🔳", "🔲", "🏁", "🚩", "🎌", "🏴", "🏳"]
+  cn:    #中文符号
+    type: SINGLE
+    name: 中文
+    keys: ["。", "，", "、", "；", "：", "！", "？", "“", "”", "‘", "’", "（", "）", "〈", "〉", "《", "》", "「", "」", "『", "』", "【", "】", "〖", "〗", "〔", "〕", "｛", "｝", "［", "］", "——", "……", "·", "～", "‐", "‑", "‒", "–", "—", "‖", "¯", "￣", "｀", "ˉ", "ˇ", "ˆ", "＋", "－", "＝", "＜", "＞", "≈", "≠", "≤", "≥", "￥", "€", "￡", "々", "〃", "‹", "›"]
+  math:
+    type: SINGLE
+    name: 数学
+    keys: ["+", "-", "±", "×", "÷", "*", "/", "=", "≠", "≈", "≡", "<", ">", "≤", "≥", "(", ")", "[", "]", "{", "}", "½", "⅓", "⅔", "¼", "¾", "⅕", "⅖", "⅗", "⅘", "%", "‰", "‱", "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹", "ⁿ", "⁺", "⁻", "⁼", "⁽", "⁾", "₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉", "₊", "₋", "₌", "₍", "₎", "°", "′", "″", "∠", "⊥", "∥", "∟", "⌒", "⊙", "∈", "∉", "∋", "∌", "⊂", "⊃", "⊆", "⊇", "∪", "∩", "∅", "∀", "∃", "∄", "¬", "∧", "∨", "⊕", "⊿", "∂", "∆", "∇", "∫", "∬", "∭", "∮", "∯", "∰", "∞", "ℵ", "∝", "∽", "≌", "≐", "≑", "√", "∛", "∜", "∑", "∏", "∐", "ℕ", "ℤ", "ℚ", "ℝ", "ℂ", "ℙ", "ℍ", "⇒", "⇐", "⇔", "→", "←", "↔", "↦", "↩", "&", "•", "〒", "†", "‡", "¶", "§", "ℓ", "℘", "ℑ", "ℜ", "℧"]
+  unit:
+    type: SINGLE
+    name: 单位
+    keys: ["m", "cm", "mm", "μm", "nm", "km", "dm", "Å", "in", "ft", "㎡", "m³", "cm³", "L", "mL", "g", "kg", "mg", "t", "lb", "oz", "s", "min", "h", "d", "ms", "μs", "ns", "℃", "℉", "K", "A", "mA", "μA", "V", "mV", "kV", "Ω", "kΩ", "MΩ", "W", "kW", "mW", "Hz", "kHz", "MHz", "GHz", "THz", "Pa", "kPa", "MPa", "GPa", "atm", "bar", "mmHg", "J", "kJ", "cal", "kcal", "eV", "keV", "MeV", "N", "kN", "dyn", "°", "′", "″", "rad", "m/s", "km/h", "kn", "mph", "b", "B", "KB", "MB", "GB", "TB", "PB", "mol", "M", "mM", "μM", "ppm", "ppb", "¥", "$", "€", "£", "￡", "¢", "₠", "฿", "₩", "₽", "₹", "‰", "‱", "℅", "§", "ℓ"]
+  list:
+    type: SINGLE
+    name: 列表
+    keys: ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳", "⑴", "⑵", "⑶", "⑷", "⑸", "⑹", "⑺", "⑻", "⑼", "⑽", "⑾", "⑿", "⒀", "⒁", "⒂", "⒃", "⒄", "⒅", "⒆", "⒇", "⒈", "⒉", "⒊", "⒋", "⒌", "⒍", "⒎", "⒏", "⒐", "⒑", "⒒", "⒓", "⒔", "⒕", "⒖", "⒗", "⒘", "⒙", "⒚", "⒛", "㈠", "㈡", "㈢", "㈣", "㈤", "㈥", "㈦", "㈧", "㈨", "㈩", "㊀", "㊁", "㊂", "㊃", "㊄", "㊅", "㊆", "㊇", "㊈", "㊉", "➊", "➋", "➌", "➍", "➎", "➏", "➐", "➑", "➒", "➓", "ⅰ", "ⅱ", "ⅲ", "ⅳ", "ⅴ", "ⅵ", "ⅶ", "ⅷ", "ⅸ", "ⅹ", "ⅺ", "ⅻ", "ⅼ", "ⅽ", "ⅾ", "ⅿ", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ", "Ⅼ", "Ⅽ", "Ⅾ", "Ⅿ"]
+  pinyin:
+    type: SINGLE
+    name: 拼音
+    keys: ["ā", "á", "ǎ", "à", "ō", "ó", "ǒ", "ò", "ē", "é", "ě", "è", "ī", "í", "ǐ", "ì", "ū", "ú", "ǔ", "ù", "ǖ", "ǘ", "ǚ", "ǜ", "ü", "ê", "", "āi", "ái", "ǎi", "ài", "ēi", "éi", "ěi", "èi", "āo", "áo", "ǎo", "ào", "ōu", "óu", "ǒu", "òu", "ān", "án", "ǎn", "àn", "ēn", "én", "ěn", "èn", "āng", "áng", "ǎng", "àng", "ēng", "éng", "ěng", "èng", "ōng", "óng", "ǒng", "òng", "ēr", "b", "p", "m", "f", "d", "t", "n", "l", "g", "k", "h", "j", "q", "x", "zh", "ch", "sh", "r", "z", "c", "s", "y", "w", "ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ", "ㄐ", "ㄑ", "ㄒ", "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ", "ㄚ", "ㄛ", "ㄜ", "ㄝ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄣ", "ㄤ", "ㄥ", "ㄦ", "ㄧ", "ㄨ", "ㄩ", "ㄪ", "ㄫ", "ㄬ"]
+  jp:
+    type: SINGLE
+    name: 假名
+    keys: ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ", "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "ん", "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど", "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", "ゃ", "ゅ", "ょ", "っ", "ー", "゛", "゜", "ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "ケ", "コ", "サ", "シ", "ス", "セ", "ソ", "タ", "チ", "ツ", "テ", "ト", "ナ", "ニ", "ヌ", "ネ", "ノ", "ハ", "ヒ", "フ", "ヘ", "ホ", "マ", "ミ", "ム", "メ", "モ", "ヤ", "ユ", "ヨ", "ラ", "リ", "ル", "レ", "ロ", "ワ", "ヲ", "ン", "ガ", "ギ", "グ", "ゲ", "ゴ", "ザ", "ジ", "ズ", "ゼ", "ゾ", "ダ", "ヂ", "ヅ", "デ", "ド", "バ", "ビ", "ブ", "ベ", "ボ", "パ", "ピ", "プ", "ペ", "ポ", "ャ", "ュ", "ョ", "ッ", "ー", "ヴ", "ヰ", "ヱ", "ヵ", "ヶ"]
+  grease:
+    type: SINGLE
+    name: 希腊
+    keys: ["Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π", "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω", "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ", "χ", "ψ", "ω", "ϐ", "ϑ", "ϒ", "ϕ", "ϖ", "ϗ", "ϰ", "ϱ", "ϲ", "ϳ", "ϴ", "ϵ", "϶"]
+  rusa:
+    type: SINGLE
+    name: 俄语
+    keys: ["А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я", "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я"]
+  korea:
+    type: SINGLE
+    name: 韩文
+    keys: ["ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ", "ㅣ", "ㅐ", "ㅒ", "ㅔ", "ㅖ", "ㅘ", "ㅙ", "ㅚ", "ㅝ", "ㅞ", "ㅟ", "ㅢ", "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ", "ㆁ", "ㆄ", "ㆅ", "ㆆ", "ㆇ", "ㆈ", "ㆉ", "ㆊ", "ㆋ", "ㆌ", "ㆍ", "ㆎ", "㉠", "㉡", "㉢", "㉣", "㉤", "㉥", "㉦", "㉧", "㉨", "㉩", "㉪", "㉫", "㉬", "㉭", "㉮", "㉯", "㉰", "㉱", "㉲", "㉳", "㉴", "㉵", "㉶", "㉷", "㉸", "㉹", "㉺", "㉻", "㈀", "㈁", "㈂", "㈃", "㈄", "㈅", "㈆", "㈇", "㈈", "㈉", "㈊", "㈋", "㈌", "㈍", "㈎", "㈏", "㈐", "㈑", "㈒", "㈓", "㈔", "㈕", "㈖", "㈗", "㈘", "㈙", "㈚", "㈛"]
+  lation:
+    type: SINGLE
+    name: 拉丁
+    keys: ["À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "à", "á", "â", "ã", "ä", "å", "æ", "Ç", "ç", "È", "É", "Ê", "Ë", "è", "é", "ê", "ë", "Ì", "Í", "Î", "Ï", "ì", "í", "î", "ï", "Ð", "ð", "Ñ", "ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "ò", "ó", "ô", "õ", "ö", "ø", "Ù", "Ú", "Û", "Ü", "ù", "ú", "û", "ü", "Ý", "ý", "Þ", "þ", "ß", "Š", "š", "Ÿ", "Œ", "œ"]
+  yinbiao:
+    type: SINGLE
+    name: 音标
+    keys: ["i:", "ɪ", "e", "æ", "ɜː", "ə", "ʌ", "u:", "ʊ", "ɔ:", "ɒ", "ɑ:", "eɪ", "aɪ", "ɔɪ", "aʊ", "əʊ", "ɪə", "eə", "ʊə", "p", "t", "k", "f", "θ", "s", "ʃ", "h", "ts", "tʃ", "tr", "b", "d", "g", "v", "ð", "z", "ʒ", "r", "dz", "dʒ", "dr", "m", "n", "ŋ", "l", "w", "j"]
+  script_symbols:
+    type: SINGLE
+    name: 𝒶𝒜
+    keys: ["𝒶", "𝒷", "𝒸", "𝒹", "ℯ", "𝒻", "ℊ", "𝒽", "𝒾", "𝒿", "𝓀", "𝓁", "𝓂", "𝓃", "ℴ", "𝓅", "𝓆", "𝓇", "𝓈", "𝓉", "𝓊", "𝓋", "𝓌", "𝓍", "𝓎", "𝓏", "𝒜", "ℬ", "𝒞", "𝒟", "ℰ", "ℱ", "𝒢", "ℋ", "ℐ", "𝒥", "𝒦", "ℒ", "ℳ", "𝒩", "𝒪", "𝒫", "𝒬", "ℛ", "𝒮", "𝒯", "𝒰", "𝒱", "𝒲", "𝒳", "𝒴", "𝒵"]
+  symbol:
+    type: SINGLE
+    name: 特殊
+    keys: ["△", "▲", "▽", "▼", "○", "●", "◇", "◆", "□", "■", "☆", "★", "←", "↑", "→", "↓", "↖", "↗", "↙", "↘", "↔", "↕", "↩", "↪", "↶", "↷", "⇄", "⇅", "⇆", "⇤", "⇥", "⇦", "⇧", "⇨", "⇩", "⇪", "▸", "◂", "▴", "▾", "◤", "◥", "◣", "◢", "▪", "▫", "◾", "◽", "◼", "◻", "▢", "▣", "❏", "❐", "◲", "〼", "☀", "☼", "☽", "☾", "☁", "☂", "◑", "◐", "㏂", "㏘", "☹", "☻", "☠", "☜", "☝", "☞", "☚", "☟", "☛", "☭", "♀", "♂", "⚧", "♻", "♲", "⚝", "†", "✡", "⚹", "✦", "✸", "✹", "•", "‥", "…", "∷", "※", "♩", "♪", "♫", "♬", "♭", "♯", "♮", "¶", "№", "§", "‖", "◎", "¤", "۞", "℗", "®", "©", "™", "卍", "卐", "℡", "㏇", "Φ", "✁", "✍", "✎", "✆", "📝", "☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷", "⚿", "⛮", "⚙", "☩", "☐", "💬", "🗨", "⟲", "ღ", "✈", "🎤", "🌐", "🔍"]
+  ids:
+    type: SINGLE
+    name: IDS
+    keys: ["⿰", "⿱", "⿲", "⿳", "⿴", "⿵", "⿶", "⿷", "⿸", "⿹", "⿺", "⿻", "↷", "↔"]
+  combing:
+    type: SINGLE
+    name: 组合
+    keys: ["⃢", "꯭", "̣", "̲"]
+  symbollist:
+    type: SYMBOL
+    name: 符号表
+    keys:
+      - {click: "一", label: "/1"}
+      - {click: "二", label: "/2"}
+      - {click: "三", label: "/3"}
+      - {click: "四", label: "/4"}
+      - {click: "五", label: "/5"}
+      - {click: "六", label: "/6"}
+      - {click: "七", label: "/7"}
+      - {click: "八", label: "/8"}
+      - {click: "九", label: "/9"}
+      - {click: "零", label: "/0"}
+      - {click: "十", label: "/10"}
+      - {click: "八卦", label: "/bg"}
+      - {click: "表情", label: "/bq"}
+      - {click: "标点", label: "/bd"}
+      - {click: "电脑", label: "/dn"}
+      - {click: "单位", label: "/dw"}
+      - {click: "分数", label: "/fs"}
+      - {click: "方块", label: "/fk"}
+      - {click: "钢琴", label: "/yy"}
+      - {click: "韩文", label: "/hw"}
+      - {click: "几何", label: "/jh"}
+      - {click: "箭头", label: "/jt"}
+      - {click: "假名", label: "/jm"}
+      - {click: "片假", label: "/pjm"}
+      - {click: "罗马", label: "/lm"}
+      - {click: "罗大", label: "/lmd"}
+      - {click: "麻将", label: "/mj"}
+      - {click: "偏旁", label: "/pp"}
+      - {click: "拼音", label: "/py"}
+      - {click: "扑克", label: "/pk"}
+      - {click: "气象", label: "/tq"}
+      - {click: "上标", label: "/sb"}
+      - {click: "骰子", label: "/sz"}
+      - {click: "天体", label: "/tt"}
+      - {click: "希腊", label: "/xl"}
+      - {click: "希大", label: "/xld"}
+      - {click: "星号", label: "/xh"}
+      - {click: "象棋", label: "/xq"}
+      - {click: "星座", label: "/xz"}
+      - {click: "易经", label: "/yj"}
+      - {click: "音乐", label: "/yy"}
+      - {click: "俄语", label: "/ey"}
+      - {click: "俄大", label: "/eyd"}
+      - {click: "注音", label: "/zy"}
+      - {click: "竖标", label: "/bdz"}
+      - {click: "货币", label: "/hb"}
+  yanwenzi:
+    type: SINGLE
+    name: "颜文字"
+    keys: ["⎛⎝≥⏝⏝≤⎠⎞", "^_^", "^ω^", "^o^", "~\\(≧▽≦)/~", "*^_^*", "↖(^ω^)↗", "(^o^)／", "(=^▽^=)", "=^_^=", "(*^ω^*)", "٩(๑^o^๑)۶", "o(￣▽￣)o", "Y(^_^)Y", "٩( 'ω' )و", "╰(*´︶`*)╯", "*罒▽罒*", "ヾ ^_^♪", "=￣ω￣=", "︿(￣︶￣)︿", "(´▽｀)ノ♪", "乁( ˙ ω˙乁)", "✧*｡٩(ˊωˋ*)و✧*｡", "～(￣▽￣～)(～￣▽￣)～", "QwQ", "(●—●)", "(๑• . •๑)", "ヾ(≧O≦)〃嗷~", "罒ω罒", "(｡ì _ í｡)", "(๑•ี_เ•ี๑)", "ㄟ(≧◇≦)ㄏ", "(*/ω＼*)", "●▽●", "٩(๑òωó๑)۶", "✺◟(∗❛ัᴗ❛ั∗)◞✺", "( σ'ω')σ", "♡＾▽＾♡", "(๑•̀ㅂ•́)و✧", "(ง •̀_•́)ง", "(｡･ω･｡)ﾉ♡", "(☆_☆)", "(๑°3°๑)", "_(•̀ω•́ 」∠)_", "♪～(´ε｀　)", "～(^з^)-☆", "(´∀｀)♡", "ლ(´ڡ`ლ)", "(＞﹏＜)", "T_T", "⊙︿⊙", "〒▽〒", "⊙﹏⊙", "π_π", "(｡•́︿•̀｡)", "(ToT)/~~~", "╯﹏╰", "ಥ_ಥ", "(╥╯^╰╥)", "(〃′o`)", "●﹏●", "( •̥́ ˍ •̀ू )", "(つд⊂)", "心塞(´-ωก`)", "(╥﹏╥)", "┭┮﹏┭┮", "（；´д｀）ゞ", "(´;︵;`)", "(。﹏。)", "┗( T﹏T )┛", "QAQ", "ヘ(_ _ヘ)", "╰（‵□′）╯", "(*￣︿￣)", ">o<", "(-`ェ´-怒)", "ヽ(‘⌒´メ)ノ", "(*｀Ω´*)v", "(｡•ˇ‸ˇ•｡)", "(怒｀Д´怒)", "٩(๑`^´๑)۶", "(;｀O´)o", "╰_╯", "(#｀皿´)<怒怒怒!!!", "<(｀^´)>", "（｀Δ´）！", "ψ(｀∇´)ψ", "(；′⌒`)", "s(・｀ヘ´・;)ゞ", "(▼皿▼#)", "￣へ￣", "←_←", "（╯‵□′）╯︵┴─┴", "（▼へ▼メ）", "☄ฺ(◣д◢)☄ฺ", "→_→", "⊙_⊙", "d(ŐдŐ๑)", "Σ( ° △ °|||)︴", "(((φ(◎ロ◎;)φ)))", "⊙▽⊙", "(๑ŐдŐ)b", "╭(°A°`)╮", "(๑òᆺó๑)", "⊙ω⊙", "Σ(っ °Д °;)っ", " (ﾟДﾟ≡ﾟдﾟ)!?", "( *・ω・)✄╰ひ╯", "(⊙x⊙;)", "┌(。Д。)┐", "(°ー°〃)", "︽⊙_⊙︽", "!!!∑(°Д°ノ)ノ", "(๑ŐдŐ)b☆d(ŐдŐ๑)", "Σ⊙▃⊙川", "ヽ(*。>Д<)o゜", "━((*′д｀)爻(′д｀*))━!!!!", "=_=", "╮(╯_╰)╭", "（︶︿︶）", "_(:з」∠)_", "@_@", "╮(╯▽╰)╭", "(＠￣ー￣＠)", "_(:3」∠❀)_", "눈_눈", "╭(╯ε╰)╮", "(ー_ー)!!", "_(:D)∠)_", "o_O", "╭(╯^╰)╮", "(；一_一)", "´_>`", "-_-#", "┑(￣Д ￣)┍", "≡￣﹏￣≡", "○|￣|_", "-_-||", "ㄟ( ▔, ▔ )ㄏ", "( ＿ ＿)ノ｜壁", "▄█▀█●"]
+
+
+# 颜色回退变量（fallback_colors） 
+# 颜色回退变量（fallback_colors）
+# 颜色回退变量（fallback_colors）
+
+# ── B. 颜色：路径式 color.<domain>[.<sub>].<part>[.<class>][.<state>] ──
+# 值统一 "0xAARRGGBB"；长路径优先，短路径回退；状态恒在末段便于 patch 一截就到。
+schemes:
+  default:
+    name: "默认"
+    author: "linzianxyz"
+    appearance: light
+    color:
+      "candidate.bar.surface": "0xFFFFFFFF"
+      "candidate.comment.content": "0xFF6C6C70"
+      "candidate.comment.content.selected": "0xFF6C6C70"
+      "candidate.content": "0xFF000000"
+      "candidate.content.selected": "0xFF000000"
+      "candidate.elevation": "0x00000000"
+      "candidate.elevation.selected": "0x00000000"
+      "candidate.label.content": "0xFF6C6C70"
+      "candidate.outline": "0x33D0D4DC"
+      "candidate.surface": "0xFFE8EAEF"
+      "candidate.surface.selected": "0xFFE8EAEF"
+      "key.content": "0xFF000000"
+      "key.content.action": "0xFFFFFFFF"
+      "key.content.modifier": "0xFF000000"
+      "key.content.modifier.capsLock": "0xFF1A73E9"
+      "key.content.modifier.pressed": "0xFFFFFFFF"
+      "key.content.pressed": "0xFF000000"
+      "key.content.space": "0xFF000000"
+      "key.content.system": "0xFF000000"
+      "key.content.system.pressed": "0xFF000000"
+      "key.elevation": "0x0A000000"
+      "key.hint": "0xFF6B7280"
+      "key.hint.modifier.capsLock": "0xFF1A73E9"
+      "key.hint.pressed": "0xFF6B7280"
+      "key.outline": "0x00000000"
+      "key.surface": "0xFFFDFDFD"
+      "key.surface.action": "0xFF1A73E9"
+      "key.surface.modifier": "0xFFD5D9E0"
+      "key.surface.modifier.capsLock": "0xFFE8F0FE"
+      "key.surface.modifier.pressed": "0xFF1A73E9"
+      "key.surface.pressed": "0xFFC8CCD4"
+      "key.surface.space": "0xFFF5F6F8"
+      "key.surface.system": "0xFFD5D9E0"
+      "key.surface.system.pressed": "0xFFC5CAD4"
+      "popup.content": "0xFF000000"
+      "popup.content.pressed": "0xFF1A73E9"
+      "popup.surface": "0xFFFDFDFD"
+      "preedit.content": "0xFF8E8E93"
+      "preedit.content.selected": "0xFF000000"
+      "preedit.elevation": "0x00000000"
+      "preedit.surface.selected": "0xFFDCE0E8"
+      "root.surface": "0xFFE8EAEF"
+      "toolbar.surface": "0xFFF0F2F7"
+  Spring:
+    name: "春日／Spring"
+    author: "iniNight"
+    appearance: light
+    color:
+      "candidate.bar.surface": "0xFFEAF6F5"
+      "candidate.comment.content": "0xFF8A9499"
+      "candidate.comment.content.selected": "0xFFB8B0AA"
+      "candidate.content": "0xFF313743"
+      "candidate.content.selected": "0xFF2C5E58"
+      "candidate.elevation": "0xFF686868"
+      "candidate.elevation.selected": "0xFF686868"
+      "candidate.label.content": "0xFF5A6B6B"
+      "candidate.outline": "0xFFD9D9D9"
+      "candidate.surface": "0xFFEAF6F5"
+      "candidate.surface.selected": "0xFFEAF6F5"
+      "key.content": "0xFF313743"
+      "key.content.action": "0xFFFFFFFF"
+      "key.content.modifier": "0xFF313743"
+      "key.content.modifier.capsLock": "0xFF4A9E92"
+      "key.content.modifier.pressed": "0xFF1F1F1F"
+      "key.content.pressed": "0xFF1F1F1F"
+      "key.content.space": "0xFF2C5E58"
+      "key.content.system": "0xFF313743"
+      "key.content.system.pressed": "0xFF313743"
+      "key.elevation": "0xFF686868"
+      "key.hint": "0xFF8A9499"
+      "key.hint.modifier.capsLock": "0xFF4A9E92"
+      "key.hint.pressed": "0xFF2C5E58"
+      "key.outline": "0xFFB5C8C5"
+      "key.surface": "0xFFF7FCFA"
+      "key.surface.action": "0xFF5D7B74"
+      "key.surface.modifier": "0xFFD5EBE8"
+      "key.surface.modifier.capsLock": "0xFFE8F5F3"
+      "key.surface.modifier.pressed": "0xFFC7F2EE"
+      "key.surface.pressed": "0xFFC7F2EE"
+      "key.surface.space": "0xFFE8F5F3"
+      "key.surface.system": "0xFFD5EBE8"
+      "key.surface.system.pressed": "0xFFC5DDD9"
+      "popup.content": "0xFF313743"
+      "popup.content.pressed": "0xFF4A9E92"
+      "popup.surface": "0xFFF7FCFA"
+      "preedit.content": "0xFF1F1F1F"
+      "preedit.content.selected": "0xFF000000"
+      "preedit.elevation": "0xFF8A9499"
+      "preedit.surface.selected": "0xFFC7F2EE"
+      "root.surface": "0xFFEAF6F5"
+      "toolbar.surface": "0xFFF0FAF8"
+  night:
+    name: "深色"
+    author: "linzianxyz"
+    appearance: dark
+    color:
+      "candidate.bar.surface": "0xFF5A5A5A"
+      "candidate.comment.content": "0xFF8A8E91"
+      "candidate.comment.content.selected": "0xFF57DD9D"
+      "candidate.content": "0xFFFFFFFF"
+      "candidate.content.selected": "0xFFFFFFFF"
+      "candidate.elevation": "0xFF1A1A1A"
+      "candidate.elevation.selected": "0xFF1A1A1A"
+      "candidate.label.content": "0xFFFFFFFF"
+      "candidate.outline": "0xFF4A4A4A"
+      "candidate.surface": "0xFF222222"
+      "candidate.surface.selected": "0x00000000"
+      "key.content": "0xFFFFFFFF"
+      "key.content.action": "0xFFFFFFFF"
+      "key.content.modifier": "0xFFFFFFFF"
+      "key.content.modifier.capsLock": "0xFF57DD9D"
+      "key.content.modifier.pressed": "0xFFFFFFFF"
+      "key.content.pressed": "0xFFFFFFFF"
+      "key.content.space": "0xFFFFFFFF"
+      "key.content.system": "0xFFFFFFFF"
+      "key.content.system.pressed": "0xFFFFFFFF"
+      "key.elevation": "0xFF1A1A1A"
+      "key.hint": "0xFFB0B4B8"
+      "key.hint.modifier.capsLock": "0xFF57DD9D"
+      "key.hint.pressed": "0xFFFFFFFF"
+      "key.outline": "0xFF3A3A3A"
+      "key.surface": "0xFF4A4A4A"
+      "key.surface.action": "0xFF1A73E9"
+      "key.surface.modifier": "0xFF3A3A3A"
+      "key.surface.modifier.capsLock": "0xFF3A3A3A"
+      "key.surface.modifier.pressed": "0xFF5A5A5A"
+      "key.surface.pressed": "0xFF5A5A5A"
+      "key.surface.space": "0xFF4A4A4A"
+      "key.surface.system": "0xFF3A3A3A"
+      "key.surface.system.pressed": "0xFF4A4A4A"
+      "popup.content": "0xFFFFFFFF"
+      "popup.content.pressed": "0xFF57DD9D"
+      "popup.surface": "0xFF4A4A4A"
+      "preedit.content": "0xFFFFFFFF"
+      "preedit.content.selected": "0xFFA6A6A6"
+      "preedit.elevation": "0xFF4A4A4A"
+      "preedit.surface.selected": "0xFF3A3A3A"
+      "root.surface": "0xFF222222"
+      "toolbar.surface": "0xFF252525"
+
+# 显式明暗配对，替代容易悬空的双向 dark_scheme / light_scheme。
+# V3 里 Spring → night 但 night 只认 default，Spring 的深色关联实际落空。
+pairs:
+  - { light: "default", dark: "night", default: true }
+  - { light: "Spring", dark: "night", default: false }
+
+# 回退链：值可以是另一个路径名，运行时沿链解析（沿用 ColorTable.resolveRawSource）。
+fallback_colors:
+  "candidate.comment.content": "candidate.content"
+  "candidate.comment.content.selected": "candidate.comment.content"
+  "candidate.content": "preedit.content"
+  "candidate.content.selected": "preedit.content.selected"
+  "candidate.label.content": "candidate.content"
+  "candidate.outline": "key.outline"
+  "candidate.surface.selected": "preedit.surface.selected"
+  "key.content": "candidate.content"
+  "key.content.modifier.capsLock": "key.content.system"
+  "key.content.modifier.pressed": "key.content.system.pressed"
+  "key.content.pressed": "candidate.content.selected"
+  "key.content.system": "key.content.system"
+  "key.content.system.pressed": "key.content.system.pressed"
+  "key.elevation": "key.outline"
+  "key.hint": "candidate.comment.content"
+  "key.hint.pressed": "candidate.comment.content.selected"
+  "key.outline": "key.outline"
+  "key.surface": "root.surface"
+  "key.surface.modifier.capsLock": "key.surface.system"
+  "key.surface.modifier.pressed": "key.surface.system.pressed"
+  "key.surface.pressed": "candidate.surface.selected"
+  "key.surface.system": "key.surface.system"
+  "key.surface.system.pressed": "key.surface.system.pressed"
+  "popup.content": "key.content"
+  "popup.surface": "key.surface"
+  "preedit.content.selected": "preedit.content"
+  "preedit.surface.selected": "root.surface"
+  "root.surface": "key.outline"
+
+# 第三方自定义色标签降为别名：布局改由 class 决定取哪个修饰段。
+color_aliases:
+  bc1: "key.surface.modifier"
+  tc1: "key.content.modifier"
+  bc2: "key.surface.system"
+  tc2: "key.content.system"
+  bc3: "key.surface.space"
+  tc3: "key.content.space"
+  bc4: "key.surface.action"
+  tc4: "key.content.action"
+  baoe: "key.surface.modifier"
+  taoe: "key.content.modifier"
+
+# 一词多义 / 同路径多值：不猜测语义，逐字保留原值，待作者确认后收敛。
+legacy_colors:
+  default:
+    candidate_border_color: 0
+    functional_back_color: 4291546837
+    off_key_back_color: 4292205024
+    # 路径冲突: {"candidate.outline": ["candidate_border_color"], "key.surface.system": ["functional_back_color", "off_key_back_color"]}
+  Spring:
+    candidate_border_color: 4292927712
+    border_color: 0
+    key_hint_color: 4285173896
+    baoe: 4294696931
+    # 路径冲突: {"candidate.outline": ["candidate_border_color"], "key.outline": ["border_color"], "key.hint": ["key_hint_color"], "key.surface.modifier": ["baoe"]}
+  night:
+    candidate_back_color: 4282006074
+    border_color: 0
+    key_hint_color: 4287270545
+    taoe: 4287270545
+    # 路径冲突: {"candidate.surface": ["candidate_back_color"], "key.outline": ["border_color"], "key.hint": ["key_hint_color"], "key.content.modifier": ["taoe"]}
+
+# ── C. 键定义：行为 ID 全局唯一一份，与设备 / 方向 / 主题无关 ──────────
+# class 与 state 是按键侧和颜色侧唯一的接缝，取值来自 vocabulary.yaml。
+keys:
+  "key.edit.backspace":
+    class: "system"
+    label: "⌫"
+    action: {"name": "action.edit.backspace"}
+    repeatable: true
+  "key.edit.copy":
+    label: "复制"
+    action: {"name": "action.edit.copy"}
+  "key.edit.cut":
+    label: "剪切"
+    action: {"name": "action.edit.cut"}
+  "key.edit.enter":
+    class: "action"
+    label: "enter_labels"
+    action: {"name": "action.text.commit"}
+  "key.edit.paste":
+    label: "粘贴"
+    action: {"name": "action.edit.paste"}
+  "key.edit.redo":
+    label: "重做"
+    action: {"name": "action.edit.redo"}
+  "key.edit.selectAll":
+    label: "全选"
+    action: {"name": "action.edit.selectAll"}
+  "key.edit.space":
+    class: "space"
+    label: ""
+    action: {"name": "action.text.commit", "params": {"text": " "}}
+  "key.layout.default":
+    label: "返回"
+    action: {"name": "action.layout.switchKeyboard", "params": {"target": ".default"}}
+  "key.layout.number":
+    class: "system"
+    label: 123
+    action: {"name": "action.layout.switchKeyboard", "params": {"target": "number"}}
+  "key.modifier.shift":
+    label: "▲"
+    action: {"name": "action.modifier.shift"}
+  "key.nav.down":
+    label: "↓"
+    action: {"name": "action.edit.moveCursor", "params": {"axis": "y", "step": "line", "direction": 1}}
+  "key.nav.end":
+    label: "行尾"
+    action: {"name": "action.edit.moveCursorLineEnd"}
+  "key.nav.escape":
+    label: "取消"
+    action: {"name": "action.text.insertText"}
+  "key.nav.home":
+    label: "行首"
+    action: {"name": "action.edit.moveCursorLineStart"}
+  "key.nav.left":
+    label: "←"
+    action: {"name": "action.edit.moveCursor", "params": {"axis": "x", "step": "char", "direction": -1}}
+    repeatable: true
+  "key.nav.right":
+    label: "→"
+    action: {"name": "action.edit.moveCursor", "params": {"axis": "x", "step": "char", "direction": 1}}
+    repeatable: true
+  "key.nav.tab":
+    label: "Tab"
+    action: {"name": "action.text.insertText", "params": {"text": "\t"}}
+  "key.nav.up":
+    label: "↑"
+    action: {"name": "action.edit.moveCursor", "params": {"axis": "y", "step": "line", "direction": -1}}
+  "key.rime.asciiMode":
+    action: {"name": "action.rime.toggleOption", "params": {"option": "ascii_mode", "states": ["中", "En"]}}
+    states: ["中", "En"]
+  "key.rime.delimiter":
+    label: "分词"
+    action: {"name": "action.text.insertText", "params": {"text": "'"}}
+  "key.trime.clipboard":
+    label: "符"
+    action: {"name": "action.trime.showLiquidKeyboard", "params": {"option": "中文"}}
+  "key.trime.settings":
+    label: "配色"
+    action: {"name": "action.trime.showSettings"}
+
+key_aliases:
+  "BackSpace": "key.edit.backspace"
+  "BackSpace3": {"id": "key.edit.backspace", "label": ""}
+  "Color_switch": "key.trime.settings"
+  "Down": "key.nav.down"
+  "End": "key.nav.end"
+  "Escape": "key.nav.escape"
+  "Home": "key.nav.home"
+  "Keyboard_default": "key.layout.default"
+  "Keyboard_number": "key.layout.number"
+  "Left": "key.nav.left"
+  "Left1": {"id": "key.nav.left", "label": "⇦"}
+  "Mode_switch2": "key.rime.asciiMode"
+  "Return": "key.edit.enter"
+  "Return1": {"id": "key.edit.enter", "label": "确认"}
+  "Return2": {"id": "key.edit.enter", "label": ""}
+  "Right": "key.nav.right"
+  "Right1": {"id": "key.nav.right", "label": "⇨"}
+  "Shift_L": "key.modifier.shift"
+  "Shift_L2": {"id": "key.modifier.shift", "label": "选择"}
+  "Shift_L_Lock": {"id": "key.modifier.shift", "lock": "long"}
+  "Tab1": "key.nav.tab"
+  "Theme_settings": {"id": "key.trime.settings", "label": "主题"}
+  "Up": "key.nav.up"
+  "copy": "key.edit.copy"
+  "cut": "key.edit.cut"
+  "delimiter": "key.rime.delimiter"
+  "liquid_keyboard_cn": "key.trime.clipboard"
+  "liquid_keyboard_math": {"id": "key.trime.clipboard", "label": ""}
+  "liquid_keyboard_switch": {"id": "key.trime.clipboard", "label": "···"}
+  "paste": "key.edit.paste"
+  "redo": "key.edit.redo"
+  "select_all": "key.edit.selectAll"
+  "space": "key.edit.space"
+
+# ── D. 布局：行数组即坐标，每键 0 个坐标，只有不规则键写 span 覆盖 ──
+# span 为行内相对权重（1 span = unit%）；横竖屏 / 分体只换本层，不动 keys 与 schemes。
+layouts:
+  "standard26.portrait":
+    columns: 10
+    unit: 10.0
+    rows:
+      - [{"key": "q", "when": {"long_click": {"key": 1, "v3": 1}, "swipe_up": {"key": "!", "v3": "!"}}}, {"key": "w", "when": {"long_click": {"key": 2, "v3": 2}, "swipe_up": {"key": "@", "v3": "@"}}}, {"key": "e", "when": {"long_click": {"key": 3, "v3": 3}, "swipe_up": {"key": "#", "v3": "#"}}}, {"key": "r", "when": {"long_click": {"key": 4, "v3": 4}, "swipe_up": {"key": "$", "v3": "$"}}}, {"key": "t", "when": {"long_click": {"key": 5, "v3": 5}, "swipe_up": {"key": "%", "v3": "%"}}}, {"key": "y", "when": {"long_click": {"key": 6, "v3": 6}, "swipe_up": {"key": "^", "v3": "^"}}}, {"key": "u", "when": {"long_click": {"key": 7, "v3": 7}, "swipe_up": {"key": "&", "v3": "&"}}}, {"key": "i", "when": {"long_click": {"key": 8, "v3": 8}, "swipe_up": {"key": "*", "v3": "*"}}}, {"key": "o", "when": {"long_click": {"key": 9, "v3": 9}, "swipe_up": {"key": "(", "v3": "("}}}, {"key": "p", "when": {"long_click": {"key": 0, "v3": 0}, "swipe_up": {"key": ")", "v3": ")"}}}]
+      - [{"gap": 0.5}, {"key": "a", "when": {"long_click": {"key": "@", "v3": "@"}, "swipe_up": {"key": "key.edit.selectAll", "v3": "select_all"}}}, {"key": "s", "when": {"long_click": {"key": "*", "v3": "*"}, "swipe_up": {"key": "`", "v3": "`"}}}, {"key": "d", "when": {"long_click": {"key": "+", "v3": "+"}, "swipe_up": {"key": "-", "v3": "-"}}}, {"key": "f", "when": {"long_click": {"key": "-", "v3": "-"}, "swipe_up": {"key": "_", "v3": "_"}}}, {"key": "g", "when": {"long_click": {"key": "=", "v3": "="}, "swipe_up": {"key": "@", "v3": "@"}}}, {"key": "h", "when": {"long_click": {"key": "/", "v3": "/"}, "swipe_up": {"key": "(", "v3": "("}}}, {"key": "j", "when": {"long_click": {"key": "#", "v3": "#"}, "swipe_up": {"key": {"send": ")"}, "v3": {"send": ")"}}}}, {"key": "k", "when": {"long_click": {"key": "(", "v3": "("}, "swipe_up": {"key": {"send": "'"}, "v3": {"send": "'"}}}}, {"key": "l", "when": {"long_click": {"key": ")", "v3": ")"}, "swipe_up": {"key": {"send": "\""}, "v3": {"send": "\""}}}}]
+      - [{"key": "key.modifier.shift", "v3": "Shift_L_Lock", "span": 1.4, "when": {"composing": {"key": "key.rime.delimiter", "v3": "delimiter"}}, "class": "modifier", "v3extra": {"key_text_color": "tc1", "key_text_offset_y": -1}}, {"gap": 0.1}, {"key": "z", "label_symbol": "`", "when": {"long_click": {"key": "`", "v3": "`"}, "swipe_up": {"key": "~", "v3": "~"}}}, {"key": "x", "when": {"long_click": {"key": ":", "v3": ":"}, "swipe_up": {"key": "key.edit.cut", "v3": "cut"}}}, {"key": "c", "when": {"long_click": {"key": "\"", "v3": "\""}, "swipe_up": {"key": "\"", "v3": "\""}}}, {"key": "v", "when": {"long_click": {"key": ";", "v3": ";"}, "swipe_up": {"key": "key.edit.paste", "v3": "paste"}}, "v3extra": {"key_symbol_offset_y": 2}}, {"key": "b", "when": {"long_click": {"key": "?", "v3": "?"}, "swipe_up": {"key": ":", "v3": ":"}}}, {"key": "n", "when": {"long_click": {"key": "!", "v3": "!"}, "swipe_up": {"key": ",", "v3": ","}}}, {"key": "m", "when": {"long_click": {"key": "^", "v3": "^"}, "swipe_up": {"key": ".", "v3": "."}}}, {"gap": 0.1}, {"key": "key.edit.backspace", "span": 1.4, "when": {"swipe_up": {"key": "key.nav.escape", "v3": "Escape"}}, "class": "system", "v3extra": {"key_text_color": "tc2", "key_text_offset_y": -1}}]
+      - [{"key": "key.layout.number", "span": 1.5, "label_symbol": "符", "when": {"long_click": {"key": "key.trime.clipboard", "v3": "liquid_keyboard_cn"}, "swipe_up": {"key": "key.trime.settings", "v3": "Color_switch"}}, "class": "system", "v3extra": {"key_long_text_size": 15, "key_symbol_offset_y": 6, "key_symbol_offset_x": -1}}, {"key": ",", "span": 1.25, "label": "️ ，️", "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.space", "span": 4.5, "key_text_size": 20, "hint": "T-RIME", "when": {"long_click": {"key": "key.rime.asciiMode", "v3": "Mode_switch2"}}, "class": "space", "v3extra": {"key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}}, {"key": ".", "span": 1.25, "label": " 。", "when": {"swipe_up": {"key": "?", "v3": "?"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.enter", "span": 1.5, "when": {"composing": {"key": "key.edit.enter", "v3": "Return1"}}, "class": "action", "v3extra": {"key_text_offset_y": -1, "key_text_color": "tc4"}}]
+    landscape_keyboard: "landscape_default"
+    reset_ascii_mode: true
+    label_transform: "uppercase"
+  "editor":
+    unit: 20.0
+    rows:
+      - ["key.edit.cut", {"key": "key.nav.left", "v3": "Left1"}, "key.nav.up", {"key": "key.nav.right", "v3": "Right1"}, {"key": "key.edit.space", "span": 0.95}]
+      - ["key.edit.copy", "key.nav.left", {"key": "key.modifier.shift", "v3": "Shift_L2"}, "key.nav.right", {"key": "key.layout.number", "span": 0.95}]
+      - [{"key": "key.edit.paste", "class": "system"}, "key.nav.home", "key.nav.down", "key.nav.end", {"key": "key.edit.backspace", "span": 0.95, "class": "system"}]
+      - ["key.layout.default", {"key": "key.edit.selectAll", "class": "system"}, {"key": "key.nav.tab", "v3": "Tab1"}, {"key": "key.edit.redo", "class": "system"}, {"key": "key.edit.enter", "span": 0.95, "class": "action", "v3extra": {"key_text_color": "tc4"}}]
+    reset_ascii_mode: true
+  "standard26.landscape":
+    columns: 20
+    unit: 5.0
+    rows:
+      - [{"key": "q", "span": 1.46, "when": {"swipe_up": {"key": "1", "v3": "1"}}}, {"key": "w", "span": 1.46, "when": {"swipe_up": {"key": "2", "v3": "2"}}}, {"key": "e", "span": 1.46, "when": {"swipe_up": {"key": "3", "v3": "3"}}}, {"key": "r", "span": 1.46, "when": {"swipe_up": {"key": "4", "v3": "4"}}}, {"key": "t", "span": 1.46, "when": {"swipe_up": {"key": "5", "v3": "5"}}}, {"gap": 0.6}, {"key": "1", "span": 1.4}, {"key": "2", "span": 1.4}, {"key": "3", "span": 1.4}, {"gap": 0.6}, {"key": "y", "span": 1.46, "when": {"swipe_up": {"key": "6", "v3": "6"}}}, {"key": "u", "span": 1.46, "when": {"swipe_up": {"key": "7", "v3": "7"}}}, {"key": "i", "span": 1.46, "when": {"swipe_up": {"key": "8", "v3": "8"}}}, {"key": "o", "span": 1.46, "when": {"swipe_up": {"key": "9", "v3": "9"}}}, {"key": "p", "span": 1.46, "when": {"swipe_up": {"key": "0", "v3": "0"}}}]
+      - [{"key": "a", "span": 1.46, "when": {"long_click": {"key": "@", "v3": "@"}, "swipe_up": {"key": "key.edit.selectAll", "v3": "select_all"}}}, {"key": "s", "span": 1.46, "when": {"long_click": {"key": "*", "v3": "*"}, "swipe_up": {"key": "`", "v3": "`"}}}, {"key": "d", "span": 1.46, "when": {"long_click": {"key": "+", "v3": "+"}, "swipe_up": {"key": "-", "v3": "-"}}}, {"key": "f", "span": 1.46, "when": {"long_click": {"key": "-", "v3": "-"}, "swipe_up": {"key": "_", "v3": "_"}}}, {"key": "g", "span": 1.46, "when": {"long_click": {"key": "=", "v3": "="}, "swipe_up": {"key": "@", "v3": "@"}}}, {"gap": 0.6}, {"key": "4", "span": 1.4}, {"key": "5", "span": 1.4}, {"key": "6", "span": 1.4}, {"gap": 0.6}, {"key": "g", "span": 1.46, "when": {"long_click": {"key": "=", "v3": "="}, "swipe_up": {"key": "@", "v3": "@"}}}, {"key": "h", "span": 1.46, "when": {"long_click": {"key": "/", "v3": "/"}, "swipe_up": {"key": "(", "v3": "("}}}, {"key": "j", "span": 1.46, "when": {"long_click": {"key": "#", "v3": "#"}, "swipe_up": {"key": ")", "v3": ")"}}}, {"key": "k", "span": 1.46, "when": {"long_click": {"key": "(", "v3": "("}, "swipe_up": {"key": "'", "v3": "'"}}}, {"key": "l", "span": 1.46, "when": {"long_click": {"key": ")", "v3": ")"}, "swipe_up": {"key": "\"", "v3": "\""}}}]
+      - [{"key": "key.modifier.shift", "span": 1.475, "label_symbol": " ", "when": {"composing": {"key": "key.rime.delimiter", "v3": "delimiter"}, "long_click": {"key": "key.modifier.shift", "v3": "Shift_L"}}, "class": "modifier", "v3extra": {"key_text_color": "tc1"}}, {"key": "z", "span": 1.475, "label_symbol": "`", "when": {"swipe_up": {"key": "~", "v3": "~"}}, "v3extra": {"popup": ["`", "Z"]}}, {"key": "x", "span": 1.475, "when": {"long_click": {"key": ":", "v3": ":"}, "swipe_up": {"key": "key.edit.cut", "v3": "cut"}}}, {"key": "c", "span": 1.475, "when": {"long_click": {"key": "\"", "v3": "\""}, "swipe_up": {"key": "\"", "v3": "\""}}}, {"key": "v", "span": 1.475, "when": {"long_click": {"key": ";", "v3": ";"}, "swipe_up": {"key": "key.edit.paste", "v3": "paste"}}}, {"gap": 0.6}, {"key": "7", "span": 1.4}, {"key": "8", "span": 1.4}, {"key": "9", "span": 1.4}, {"gap": 0.6}, {"key": "b", "span": 1.475, "when": {"long_click": {"key": "!", "v3": "!"}, "swipe_up": {"key": ":", "v3": ":"}}}, {"key": "n", "span": 1.475, "when": {"long_click": {"key": "?", "v3": "?"}, "swipe_up": {"key": ",", "v3": ","}}}, {"key": "m", "span": 1.475, "when": {"long_click": {"key": "^", "v3": "^"}, "swipe_up": {"key": ".", "v3": "."}}}, {"key": "key.edit.backspace", "span": 2.8, "class": "system", "v3extra": {"key_text_color": "tc2"}}]
+      - [{"key": "key.trime.clipboard", "v3": "liquid_keyboard_switch", "span": 1.4, "label": "符", "when": {"swipe_up": {"key": "key.trime.settings", "v3": "Color_switch"}}}, {"key": ",", "span": 1.4, "label": "️ ，️", "when": {"swipe_up": {"key": "key.trime.settings", "v3": "Theme_settings"}}}, {"key": "?", "span": 1.4, "label": "？"}, {"key": "key.edit.space", "span": 4.875, "key_text_size": 15, "when": {"long_click": {"key": "key.rime.asciiMode", "v3": "Mode_switch2"}}, "class": "space", "v3extra": {"functional": true, "key_text_color": "tc3"}}, {"gap": 0.3}, {"key": "0", "span": 1.4}, {"gap": 0.3}, {"key": "key.edit.space", "span": 4.725, "key_text_size": 15, "when": {"long_click": {"key": "key.rime.asciiMode", "v3": "Mode_switch2"}}, "class": "space", "v3extra": {"functional": true, "key_text_color": "tc3"}}, {"key": ".", "span": 1.4, "label": " 。", "when": {"swipe_up": {"key": "?", "v3": "?"}}}, {"key": "key.edit.enter", "span": 2.8, "when": {"composing": {"key": "key.edit.enter", "v3": "Return1"}, "swipe_up": {"key": "key.nav.escape", "v3": "Escape"}}, "class": "action", "v3extra": {"key_text_color": "tc4"}}]
+    ascii_keyboard: "letter"
+    landscape_split_percent: 0
+    reset_ascii_mode: true
+    label_transform: "uppercase"
+  "standard26.ascii":
+    unit: 10.0
+    include: "standard26.portrait"
+    rows:
+      []
+    reset_ascii_mode: true
+  "number":
+    unit: 22.0
+    rows:
+      - [{"key": "+", "span": 0.772727, "key_text_size": 20, "when": {"long_click": {"key": "-", "v3": "-"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "1", "2", "3", {"key": "key.edit.backspace", "v3": "BackSpace3", "span": 0.772727, "key_text_size": 21, "class": "system", "v3extra": {"repeatable": true, "key_text_color": "tc2"}}]
+      - [{"key": "%", "span": 0.772727, "key_text_size": 17, "when": {"long_click": {"key": "/", "v3": "/"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "4", "5", "6", {"key": "key.edit.space", "span": 0.772727, "key_text_size": 18, "class": "system", "v3extra": {"key_text_color": "tc2"}}]
+      - [{"key": "=", "span": 0.772727, "key_text_size": 20, "when": {"long_click": {"key": "(){Left}", "v3": "(){Left}"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "7", "8", "9", {"key": "key.trime.clipboard", "v3": "liquid_keyboard_math", "span": 0.772727, "key_text_size": 23, "class": "system", "v3extra": {"key_text_color": "tc2"}}]
+      - [{"key": "key.layout.default", "span": 0.772727, "key_text_size": 17, "class": "system", "v3extra": {"height": 50, "key_text_color": "tc2"}}, {"key": ",", "key_text_size": 20, "label": "️ ，️"}, "0", {"key": ".", "key_text_size": 20, "label": " 。"}, {"key": "key.edit.enter", "v3": "Return2", "span": 0.772727, "key_text_size": 17, "class": "action", "v3extra": {"height": 50, "key_text_color": "tc4"}}]
+    reset_ascii_mode: true
+    vertical_gap: 9
+    horizontal_gap: 4

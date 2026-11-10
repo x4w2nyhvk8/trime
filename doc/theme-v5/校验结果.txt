@@ -1,0 +1,32 @@
+[PASS]  1 交付包文件齐全  — 11 个
+[PASS]  2 5 份 YAML + 反向产物均可解析
+[PASS]  3 config_version 5.0 / trime_version 5  — 5.0 / 5
+[PASS]  4 颜色值统一 0xAARRGGBB 字符串  — 129 个值
+[PASS]  5 颜色路径逐段命中受控词表  — 43 条唯一路径
+[PASS]  6 token 段内 lowerCamel、缩写按普通词  — 366 段
+[PASS]  7 三套方案 color 路径集合完全一致  — 43 条 × 3 套
+[PASS]  8 fallback_colors 为路径式且至少一端在方案内  — 28 条链
+[PASS]  9 pairs 显式配对、无悬空双向互指  — 2 组
+[PASS] 10 V3 悬空关联已修正（Spring→night 但 night 只认 default）  — V3: Spring→night, night→default; V5: ['default', 'Spring']
+[PASS] 11 自定义色标签全部降为路径别名  — 10 个标签
+[PASS] 12 legacy_colors 逐字保留原值、不猜测语义  — 11 个冲突字段待作者确认
+[PASS] 13 行为 ID 为 key.<domain>.<name> 且命中词表  — 23 个 ID
+[PASS] 14 keys.class 命中共享词表  — 4 处声明
+[PASS] 15 action.* 全部命中 39 项封闭动词  — 23 个动作
+[PASS] 16 方向/文本等差异降级为 params  — 11 个带参动作，如 key.nav.left / key.edit.space
+[PASS] 17 key_aliases 全部指向已定义行为 ID  — 33 条别名
+[PASS] 18 替身键合并为同一 ID，差异记为别名覆盖  — 33 条旧名 → 23 个 ID，其中 10 条带差异
+[PASS] 19 布局场景合法、include 目标存在  — 5 个场景
+[PASS] 20 行数组元素为 ID / 字面字符 / 显式 gap  — 130 个元素
+[PASS] 21 when 事件名命中 event 词表（保留 snake_case）  — 114 处
+[PASS] 22 布局就地覆盖的 class 命中共享词表  — 0 处越界
+[PASS] 23 横竖屏换排布不换键定义（共享 ID）  — 共享 4 个行为 ID，keys 区仅 1 份定义
+[PASS] 24 未迁移区（锚点/style/preedit/window/...）逐字保留  — 23317 字符
+[PASS] 25 V5→V3 反向降级信息无损  — 等价差异 0 项；61 色值 ×3 套 + 161 键库逐字一致
+[PASS] 26 反向产物 config_version 3.0 且结构完整  — 5 布局 / 161 键
+[PASS] 27 预览内嵌数据与 V5 方案一致  — 三套配色路径数逐套核对
+[PASS] 28 方案文档中的计数与生成数据一致  — ID 23 / 路径 43 / 链 28 / 配对 2 / 别名 33
+
+============================================================
+汇总: 28 PASS / 0 WARN / 0 FAIL
+============================================================
