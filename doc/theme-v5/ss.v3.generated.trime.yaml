@@ -598,7 +598,7 @@ preset_keyboards:
       - {"click": "BackSpace", "width": 14, "swipe_up": "Escape", "key_back_color": "bc2", "key_text_color": "tc2", "key_text_offset_y": -1}
       - {"click": "Keyboard_number", "width": 15, "label_symbol": "符", "long_click": "liquid_keyboard_cn", "swipe_up": "Color_switch", "key_back_color": "bc2", "key_long_text_size": 15, "key_symbol_offset_y": 6, "key_symbol_offset_x": -1}
       - {"click": ",", "width": 12.5, "label": "️ ，️", "key_back_color": "bc2", "key_text_color": "tc2"}
-      - {"click": "space", "width": 45, "key_text_size": 20, "hint": "T-RIME", "long_click": "Mode_switch2", "key_back_color": "bc3", "key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}
+      - {"click": "space", "width": 45, "hint": "T-RIME", "key_text_size": 20, "long_click": "Mode_switch2", "key_back_color": "bc3", "key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}
       - {"click": ".", "width": 12.5, "label": " 。", "swipe_up": "?", "key_back_color": "bc2", "key_text_color": "tc2"}
       - {"click": "Return", "width": 15, "composing": "Return1", "key_back_color": "bc4", "key_text_offset_y": -1, "key_text_color": "tc4"}
   editor:
@@ -738,9 +738,9 @@ preset_keyboards:
       - {"click": "9"}
       - {"click": "liquid_keyboard_math", "width": 17, "key_text_size": 23, "key_back_color": "bc2", "key_text_color": "tc2"}
       - {"click": "Keyboard_default", "width": 17, "key_text_size": 17, "key_back_color": "bc2", "height": 50, "key_text_color": "tc2"}
-      - {"click": ",", "key_text_size": 20, "label": "️ ，️"}
+      - {"click": ",", "label": "️ ，️", "key_text_size": 20}
       - {"click": "0"}
-      - {"click": ".", "key_text_size": 20, "label": " 。"}
+      - {"click": ".", "label": " 。", "key_text_size": 20}
       - {"click": "Return2", "width": 17, "key_text_size": 17, "key_back_color": "bc4", "height": 50, "key_text_color": "tc4"}
 
 preset_keys:

@@ -311,11 +311,13 @@ EVENT_FIELDS = {
     "swipe_up": "swipe_up", "swipe_down": "swipe_down",
     "swipe_left": "swipe_left", "swipe_right": "swipe_right",
 }
-# 键面显示覆盖：V5 原生字段，就地写在布局元素上
-DISPLAY_FIELDS = {"label", "hint", "label_symbol", "key_text_size"}
+# 键面显示覆盖：V5 原生字段，就地写在布局元素上。
+# 用固定顺序元组（而非 set）——布局元素的字段写出顺序必须可复现，否则
+# 同一份输入在不同 PYTHONHASHSEED 下会产出字节不同的文件。
+DISPLAY_FIELDS = ("label", "hint", "label_symbol", "key_text_size")
 # 已由 V5 语义承载的字段，不再重复保留
 # key_back_color → class；key_text_color 暂留 v3extra（与前者成对，避免猜原文件是否写过）
-MIGRATED_FIELDS = {"click", "width", "key_back_color"} | set(EVENT_FIELDS) | DISPLAY_FIELDS
+MIGRATED_FIELDS = {"click", "width", "key_back_color"} | set(EVENT_FIELDS) | set(DISPLAY_FIELDS)
 
 
 def layout_element(e, kmap, unit, preferred):
