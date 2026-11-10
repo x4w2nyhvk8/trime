@@ -323,141 +323,141 @@ schemes:
     author: "linzianxyz"
     appearance: light
     color:
-      "candidate.bar.surface": "0xFFFFFFFF"
-      "candidate.comment.content": "0xFF6C6C70"
-      "candidate.comment.content.selected": "0xFF6C6C70"
-      "candidate.content": "0xFF000000"
-      "candidate.content.selected": "0xFF000000"
+      "candidate.background": "0xFFE8EAEF"
+      "candidate.background.selected": "0xFFE8EAEF"
+      "candidate.bar.background": "0xFFFFFFFF"
+      "candidate.comment.foreground": "0xFF6C6C70"
+      "candidate.comment.foreground.selected": "0xFF6C6C70"
       "candidate.elevation": "0x00000000"
       "candidate.elevation.selected": "0x00000000"
-      "candidate.label.content": "0xFF6C6C70"
+      "candidate.foreground": "0xFF000000"
+      "candidate.foreground.selected": "0xFF000000"
+      "candidate.label.foreground": "0xFF6C6C70"
       "candidate.outline": "0x33D0D4DC"
-      "candidate.surface": "0xFFE8EAEF"
-      "candidate.surface.selected": "0xFFE8EAEF"
-      "key.content": "0xFF000000"
-      "key.content.action": "0xFFFFFFFF"
-      "key.content.modifier": "0xFF000000"
-      "key.content.modifier.capsLock": "0xFF1A73E9"
-      "key.content.modifier.pressed": "0xFFFFFFFF"
-      "key.content.pressed": "0xFF000000"
-      "key.content.space": "0xFF000000"
-      "key.content.system": "0xFF000000"
-      "key.content.system.pressed": "0xFF000000"
+      "key.background": "0xFFFDFDFD"
+      "key.background.action": "0xFF1A73E9"
+      "key.background.modifier": "0xFFD5D9E0"
+      "key.background.modifier.capsLock": "0xFFE8F0FE"
+      "key.background.modifier.pressed": "0xFF1A73E9"
+      "key.background.pressed": "0xFFC8CCD4"
+      "key.background.space": "0xFFF5F6F8"
+      "key.background.system": "0xFFD5D9E0"
+      "key.background.system.pressed": "0xFFC5CAD4"
       "key.elevation": "0x0A000000"
+      "key.foreground": "0xFF000000"
+      "key.foreground.action": "0xFFFFFFFF"
+      "key.foreground.modifier": "0xFF000000"
+      "key.foreground.modifier.capsLock": "0xFF1A73E9"
+      "key.foreground.modifier.pressed": "0xFFFFFFFF"
+      "key.foreground.pressed": "0xFF000000"
+      "key.foreground.space": "0xFF000000"
+      "key.foreground.system": "0xFF000000"
+      "key.foreground.system.pressed": "0xFF000000"
       "key.hint": "0xFF6B7280"
       "key.hint.modifier.capsLock": "0xFF1A73E9"
       "key.hint.pressed": "0xFF6B7280"
       "key.outline": "0x00000000"
-      "key.surface": "0xFFFDFDFD"
-      "key.surface.action": "0xFF1A73E9"
-      "key.surface.modifier": "0xFFD5D9E0"
-      "key.surface.modifier.capsLock": "0xFFE8F0FE"
-      "key.surface.modifier.pressed": "0xFF1A73E9"
-      "key.surface.pressed": "0xFFC8CCD4"
-      "key.surface.space": "0xFFF5F6F8"
-      "key.surface.system": "0xFFD5D9E0"
-      "key.surface.system.pressed": "0xFFC5CAD4"
-      "popup.content": "0xFF000000"
-      "popup.content.pressed": "0xFF1A73E9"
-      "popup.surface": "0xFFFDFDFD"
-      "preedit.content": "0xFF8E8E93"
-      "preedit.content.selected": "0xFF000000"
+      "popup.background": "0xFFFDFDFD"
+      "popup.foreground": "0xFF000000"
+      "popup.foreground.pressed": "0xFF1A73E9"
+      "preedit.background.selected": "0xFFDCE0E8"
       "preedit.elevation": "0x00000000"
-      "preedit.surface.selected": "0xFFDCE0E8"
-      "root.surface": "0xFFE8EAEF"
-      "toolbar.surface": "0xFFF0F2F7"
+      "preedit.foreground": "0xFF8E8E93"
+      "preedit.foreground.selected": "0xFF000000"
+      "root.background": "0xFFE8EAEF"
+      "toolbar.background": "0xFFF0F2F7"
   night:
     name: "深色"
     author: "linzianxyz"
     appearance: dark
     color:
-      "candidate.bar.surface": "0xFF5A5A5A"
-      "candidate.comment.content": "0xFF8A8E91"
-      "candidate.comment.content.selected": "0xFF57DD9D"
-      "candidate.content": "0xFFFFFFFF"
-      "candidate.content.selected": "0xFFFFFFFF"
+      "candidate.background": "0xFF222222"
+      "candidate.background.selected": "0x00000000"
+      "candidate.bar.background": "0xFF5A5A5A"
+      "candidate.comment.foreground": "0xFF8A8E91"
+      "candidate.comment.foreground.selected": "0xFF57DD9D"
       "candidate.elevation": "0xFF1A1A1A"
       "candidate.elevation.selected": "0xFF1A1A1A"
-      "candidate.label.content": "0xFFFFFFFF"
+      "candidate.foreground": "0xFFFFFFFF"
+      "candidate.foreground.selected": "0xFFFFFFFF"
+      "candidate.label.foreground": "0xFFFFFFFF"
       "candidate.outline": "0xFF4A4A4A"
-      "candidate.surface": "0xFF222222"
-      "candidate.surface.selected": "0x00000000"
-      "key.content": "0xFFFFFFFF"
-      "key.content.action": "0xFFFFFFFF"
-      "key.content.modifier": "0xFFFFFFFF"
-      "key.content.modifier.capsLock": "0xFF57DD9D"
-      "key.content.modifier.pressed": "0xFFFFFFFF"
-      "key.content.pressed": "0xFFFFFFFF"
-      "key.content.space": "0xFFFFFFFF"
-      "key.content.system": "0xFFFFFFFF"
-      "key.content.system.pressed": "0xFFFFFFFF"
+      "key.background": "0xFF4A4A4A"
+      "key.background.action": "0xFF1A73E9"
+      "key.background.modifier": "0xFF3A3A3A"
+      "key.background.modifier.capsLock": "0xFF3A3A3A"
+      "key.background.modifier.pressed": "0xFF5A5A5A"
+      "key.background.pressed": "0xFF5A5A5A"
+      "key.background.space": "0xFF4A4A4A"
+      "key.background.system": "0xFF3A3A3A"
+      "key.background.system.pressed": "0xFF4A4A4A"
       "key.elevation": "0xFF1A1A1A"
+      "key.foreground": "0xFFFFFFFF"
+      "key.foreground.action": "0xFFFFFFFF"
+      "key.foreground.modifier": "0xFFFFFFFF"
+      "key.foreground.modifier.capsLock": "0xFF57DD9D"
+      "key.foreground.modifier.pressed": "0xFFFFFFFF"
+      "key.foreground.pressed": "0xFFFFFFFF"
+      "key.foreground.space": "0xFFFFFFFF"
+      "key.foreground.system": "0xFFFFFFFF"
+      "key.foreground.system.pressed": "0xFFFFFFFF"
       "key.hint": "0xFFB0B4B8"
       "key.hint.modifier.capsLock": "0xFF57DD9D"
       "key.hint.pressed": "0xFFFFFFFF"
       "key.outline": "0xFF3A3A3A"
-      "key.surface": "0xFF4A4A4A"
-      "key.surface.action": "0xFF1A73E9"
-      "key.surface.modifier": "0xFF3A3A3A"
-      "key.surface.modifier.capsLock": "0xFF3A3A3A"
-      "key.surface.modifier.pressed": "0xFF5A5A5A"
-      "key.surface.pressed": "0xFF5A5A5A"
-      "key.surface.space": "0xFF4A4A4A"
-      "key.surface.system": "0xFF3A3A3A"
-      "key.surface.system.pressed": "0xFF4A4A4A"
-      "popup.content": "0xFFFFFFFF"
-      "popup.content.pressed": "0xFF57DD9D"
-      "popup.surface": "0xFF4A4A4A"
-      "preedit.content": "0xFFFFFFFF"
-      "preedit.content.selected": "0xFFA6A6A6"
+      "popup.background": "0xFF4A4A4A"
+      "popup.foreground": "0xFFFFFFFF"
+      "popup.foreground.pressed": "0xFF57DD9D"
+      "preedit.background.selected": "0xFF3A3A3A"
       "preedit.elevation": "0xFF4A4A4A"
-      "preedit.surface.selected": "0xFF3A3A3A"
-      "root.surface": "0xFF222222"
-      "toolbar.surface": "0xFF252525"
+      "preedit.foreground": "0xFFFFFFFF"
+      "preedit.foreground.selected": "0xFFA6A6A6"
+      "root.background": "0xFF222222"
+      "toolbar.background": "0xFF252525"
 
 # 回退链：值可以是另一个路径名，运行时沿链解析（沿用 ColorTable.resolveRawSource）。
 fallback_colors:
-  "candidate.comment.content": "candidate.content"
-  "candidate.comment.content.selected": "candidate.comment.content"
-  "candidate.content": "preedit.content"
-  "candidate.content.selected": "preedit.content.selected"
-  "candidate.label.content": "candidate.content"
+  "candidate.background.selected": "preedit.background.selected"
+  "candidate.comment.foreground": "candidate.foreground"
+  "candidate.comment.foreground.selected": "candidate.comment.foreground"
+  "candidate.foreground": "preedit.foreground"
+  "candidate.foreground.selected": "preedit.foreground.selected"
+  "candidate.label.foreground": "candidate.foreground"
   "candidate.outline": "key.outline"
-  "candidate.surface.selected": "preedit.surface.selected"
-  "key.content": "candidate.content"
-  "key.content.modifier.capsLock": "key.content.system"
-  "key.content.modifier.pressed": "key.content.system.pressed"
-  "key.content.pressed": "candidate.content.selected"
-  "key.content.system": "key.content.system"
-  "key.content.system.pressed": "key.content.system.pressed"
+  "key.background": "root.background"
+  "key.background.modifier.capsLock": "key.background.system"
+  "key.background.modifier.pressed": "key.background.system.pressed"
+  "key.background.pressed": "candidate.background.selected"
+  "key.background.system": "key.background.system"
+  "key.background.system.pressed": "key.background.system.pressed"
   "key.elevation": "key.outline"
-  "key.hint": "candidate.comment.content"
-  "key.hint.pressed": "candidate.comment.content.selected"
+  "key.foreground": "candidate.foreground"
+  "key.foreground.modifier.capsLock": "key.foreground.system"
+  "key.foreground.modifier.pressed": "key.foreground.system.pressed"
+  "key.foreground.pressed": "candidate.foreground.selected"
+  "key.foreground.system": "key.foreground.system"
+  "key.foreground.system.pressed": "key.foreground.system.pressed"
+  "key.hint": "candidate.comment.foreground"
+  "key.hint.pressed": "candidate.comment.foreground.selected"
   "key.outline": "key.outline"
-  "key.surface": "root.surface"
-  "key.surface.modifier.capsLock": "key.surface.system"
-  "key.surface.modifier.pressed": "key.surface.system.pressed"
-  "key.surface.pressed": "candidate.surface.selected"
-  "key.surface.system": "key.surface.system"
-  "key.surface.system.pressed": "key.surface.system.pressed"
-  "popup.content": "key.content"
-  "popup.surface": "key.surface"
-  "preedit.content.selected": "preedit.content"
-  "preedit.surface.selected": "root.surface"
-  "root.surface": "key.outline"
+  "popup.background": "key.background"
+  "popup.foreground": "key.foreground"
+  "preedit.background.selected": "root.background"
+  "preedit.foreground.selected": "preedit.foreground"
+  "root.background": "key.outline"
 
 # 第三方自定义色标签降为别名：布局改由 class 决定取哪个修饰段。
 color_aliases:
-  bc1: "key.surface.modifier"
-  tc1: "key.content.modifier"
-  bc2: "key.surface.system"
-  tc2: "key.content.system"
-  bc3: "key.surface.space"
-  tc3: "key.content.space"
-  bc4: "key.surface.action"
-  tc4: "key.content.action"
-  baoe: "key.surface.modifier"
-  taoe: "key.content.modifier"
+  bc1: "key.background.modifier"
+  tc1: "key.foreground.modifier"
+  bc2: "key.background.system"
+  tc2: "key.foreground.system"
+  bc3: "key.background.space"
+  tc3: "key.foreground.space"
+  bc4: "key.background.action"
+  tc4: "key.foreground.action"
+  baoe: "key.background.modifier"
+  taoe: "key.foreground.modifier"
 
 # 一词多义 / 同路径多值：不猜测语义，逐字保留原值，待作者确认后收敛。
 # 被归档配色（见 parked-schemes.yaml）的遗留字段随归档走，不占主题槽位。
@@ -466,22 +466,23 @@ legacy_colors:
     candidate_border_color: 0
     functional_back_color: 4291546837
     off_key_back_color: 4292205024
-    # 路径冲突: {"candidate.outline": ["candidate_border_color"], "key.surface.system": ["functional_back_color", "off_key_back_color"]}
+    # 路径冲突: {"candidate.outline": ["candidate_border_color"], "key.background.system": ["functional_back_color", "off_key_back_color"]}
   night:
     candidate_back_color: 4282006074
     border_color: 0
     key_hint_color: 4287270545
     taoe: 4287270545
-    # 路径冲突: {"candidate.surface": ["candidate_back_color"], "key.outline": ["border_color"], "key.hint": ["key_hint_color"], "key.content.modifier": ["taoe"]}
+    # 路径冲突: {"candidate.background": ["candidate_back_color"], "key.outline": ["border_color"], "key.hint": ["key_hint_color"], "key.foreground.modifier": ["taoe"]}
 
 # ── C. 键定义：行为 ID 全局唯一一份，与设备 / 方向 / 主题无关 ──────────
-# class 与 state 是按键侧和颜色侧唯一的接缝，取值来自 vocabulary.yaml。
+# class / state 是按键侧与颜色侧的接缝；attributes 是静态性质声明，与
+# action（做什么）、when（何时触发）三轴正交；取值均来自 vocabulary.yaml。
 keys:
   "key.edit.backspace":
     class: "system"
     label: "⌫"
     action: {"name": "action.edit.backspace"}
-    repeatable: true
+    attributes: {"repeatable": true}
   "key.edit.copy":
     label: "复制"
     action: {"name": "action.edit.copy"}
@@ -515,6 +516,7 @@ keys:
   "key.modifier.shift":
     label: "▲"
     action: {"name": "action.modifier.shift"}
+    attributes: {"sticky": true, "modifier": true}
   "key.nav.down":
     label: "↓"
     action: {"name": "action.edit.moveCursor", "params": {"axis": "y", "step": "line", "direction": 1}}
@@ -530,11 +532,11 @@ keys:
   "key.nav.left":
     label: "←"
     action: {"name": "action.edit.moveCursor", "params": {"axis": "x", "step": "char", "direction": -1}}
-    repeatable: true
+    attributes: {"repeatable": true}
   "key.nav.right":
     label: "→"
     action: {"name": "action.edit.moveCursor", "params": {"axis": "x", "step": "char", "direction": 1}}
-    repeatable: true
+    attributes: {"repeatable": true}
   "key.nav.tab":
     label: "Tab"
     action: {"name": "action.text.insertText", "params": {"text": "\t"}}
@@ -599,7 +601,7 @@ layouts:
       - [{"key": "q", "when": {"long_click": {"key": 1, "v3": 1}, "swipe_up": {"key": "!", "v3": "!"}}}, {"key": "w", "when": {"long_click": {"key": 2, "v3": 2}, "swipe_up": {"key": "@", "v3": "@"}}}, {"key": "e", "when": {"long_click": {"key": 3, "v3": 3}, "swipe_up": {"key": "#", "v3": "#"}}}, {"key": "r", "when": {"long_click": {"key": 4, "v3": 4}, "swipe_up": {"key": "$", "v3": "$"}}}, {"key": "t", "when": {"long_click": {"key": 5, "v3": 5}, "swipe_up": {"key": "%", "v3": "%"}}}, {"key": "y", "when": {"long_click": {"key": 6, "v3": 6}, "swipe_up": {"key": "^", "v3": "^"}}}, {"key": "u", "when": {"long_click": {"key": 7, "v3": 7}, "swipe_up": {"key": "&", "v3": "&"}}}, {"key": "i", "when": {"long_click": {"key": 8, "v3": 8}, "swipe_up": {"key": "*", "v3": "*"}}}, {"key": "o", "when": {"long_click": {"key": 9, "v3": 9}, "swipe_up": {"key": "(", "v3": "("}}}, {"key": "p", "when": {"long_click": {"key": 0, "v3": 0}, "swipe_up": {"key": ")", "v3": ")"}}}]
       - [{"gap": 0.5}, {"key": "a", "when": {"long_click": {"key": "@", "v3": "@"}, "swipe_up": {"key": "key.edit.selectAll", "v3": "select_all"}}}, {"key": "s", "when": {"long_click": {"key": "*", "v3": "*"}, "swipe_up": {"key": "`", "v3": "`"}}}, {"key": "d", "when": {"long_click": {"key": "+", "v3": "+"}, "swipe_up": {"key": "-", "v3": "-"}}}, {"key": "f", "when": {"long_click": {"key": "-", "v3": "-"}, "swipe_up": {"key": "_", "v3": "_"}}}, {"key": "g", "when": {"long_click": {"key": "=", "v3": "="}, "swipe_up": {"key": "@", "v3": "@"}}}, {"key": "h", "when": {"long_click": {"key": "/", "v3": "/"}, "swipe_up": {"key": "(", "v3": "("}}}, {"key": "j", "when": {"long_click": {"key": "#", "v3": "#"}, "swipe_up": {"key": {"send": ")"}, "v3": {"send": ")"}}}}, {"key": "k", "when": {"long_click": {"key": "(", "v3": "("}, "swipe_up": {"key": {"send": "'"}, "v3": {"send": "'"}}}}, {"key": "l", "when": {"long_click": {"key": ")", "v3": ")"}, "swipe_up": {"key": {"send": "\""}, "v3": {"send": "\""}}}}]
       - [{"key": "key.modifier.shift", "v3": "Shift_L_Lock", "span": 1.4, "when": {"composing": {"key": "key.rime.delimiter", "v3": "delimiter"}}, "class": "modifier", "v3extra": {"key_text_color": "tc1", "key_text_offset_y": -1}}, {"gap": 0.1}, {"key": "z", "label_symbol": "`", "when": {"long_click": {"key": "`", "v3": "`"}, "swipe_up": {"key": "~", "v3": "~"}}}, {"key": "x", "when": {"long_click": {"key": ":", "v3": ":"}, "swipe_up": {"key": "key.edit.cut", "v3": "cut"}}}, {"key": "c", "when": {"long_click": {"key": "\"", "v3": "\""}, "swipe_up": {"key": "\"", "v3": "\""}}}, {"key": "v", "when": {"long_click": {"key": ";", "v3": ";"}, "swipe_up": {"key": "key.edit.paste", "v3": "paste"}}, "v3extra": {"key_symbol_offset_y": 2}}, {"key": "b", "when": {"long_click": {"key": "?", "v3": "?"}, "swipe_up": {"key": ":", "v3": ":"}}}, {"key": "n", "when": {"long_click": {"key": "!", "v3": "!"}, "swipe_up": {"key": ",", "v3": ","}}}, {"key": "m", "when": {"long_click": {"key": "^", "v3": "^"}, "swipe_up": {"key": ".", "v3": "."}}}, {"gap": 0.1}, {"key": "key.edit.backspace", "span": 1.4, "when": {"swipe_up": {"key": "key.nav.escape", "v3": "Escape"}}, "class": "system", "v3extra": {"key_text_color": "tc2", "key_text_offset_y": -1}}]
-      - [{"key": "key.layout.number", "span": 1.5, "label_symbol": "符", "when": {"long_click": {"key": "key.trime.clipboard", "v3": "liquid_keyboard_cn"}, "swipe_up": {"key": "key.trime.settings", "v3": "Color_switch"}}, "class": "system", "v3extra": {"key_long_text_size": 15, "key_symbol_offset_y": 6, "key_symbol_offset_x": -1}}, {"key": ",", "span": 1.25, "label": "️ ，️", "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.space", "span": 4.5, "hint": "T-RIME", "key_text_size": 20, "when": {"long_click": {"key": "key.rime.asciiMode", "v3": "Mode_switch2"}}, "class": "space", "v3extra": {"key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}}, {"key": ".", "span": 1.25, "label": " 。", "when": {"swipe_up": {"key": "?", "v3": "?"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.enter", "span": 1.5, "when": {"composing": {"key": "key.edit.enter", "v3": "Return1"}}, "class": "action", "v3extra": {"key_text_offset_y": -1, "key_text_color": "tc4"}}]
+      - [{"key": "key.layout.number", "span": 1.5, "label_symbol": "符", "when": {"long_click": {"key": "key.trime.clipboard", "v3": "liquid_keyboard_cn"}, "swipe_up": {"key": "key.trime.settings", "v3": "Color_switch"}}, "class": "system", "v3extra": {"key_long_text_size": 15, "key_symbol_offset_y": 6, "key_symbol_offset_x": -1}}, {"key": ",", "span": 1.25, "label": "️ ，️", "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.space", "span": 4.5, "key_text_size": 20, "hint": "T-RIME", "when": {"long_click": {"key": "key.rime.asciiMode", "v3": "Mode_switch2"}}, "class": "space", "v3extra": {"key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}}, {"key": ".", "span": 1.25, "label": " 。", "when": {"swipe_up": {"key": "?", "v3": "?"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, {"key": "key.edit.enter", "span": 1.5, "when": {"composing": {"key": "key.edit.enter", "v3": "Return1"}}, "class": "action", "v3extra": {"key_text_offset_y": -1, "key_text_color": "tc4"}}]
     landscape_keyboard: "landscape_default"
     reset_ascii_mode: true
     label_transform: "uppercase"
@@ -635,7 +637,7 @@ layouts:
       - [{"key": "+", "span": 0.772727, "key_text_size": 20, "when": {"long_click": {"key": "-", "v3": "-"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "1", "2", "3", {"key": "key.edit.backspace", "v3": "BackSpace3", "span": 0.772727, "key_text_size": 21, "class": "system", "v3extra": {"repeatable": true, "key_text_color": "tc2"}}]
       - [{"key": "%", "span": 0.772727, "key_text_size": 17, "when": {"long_click": {"key": "/", "v3": "/"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "4", "5", "6", {"key": "key.edit.space", "span": 0.772727, "key_text_size": 18, "class": "system", "v3extra": {"key_text_color": "tc2"}}]
       - [{"key": "=", "span": 0.772727, "key_text_size": 20, "when": {"long_click": {"key": "(){Left}", "v3": "(){Left}"}}, "class": "system", "v3extra": {"key_text_color": "tc2"}}, "7", "8", "9", {"key": "key.trime.clipboard", "v3": "liquid_keyboard_math", "span": 0.772727, "key_text_size": 23, "class": "system", "v3extra": {"key_text_color": "tc2"}}]
-      - [{"key": "key.layout.default", "span": 0.772727, "key_text_size": 17, "class": "system", "v3extra": {"height": 50, "key_text_color": "tc2"}}, {"key": ",", "label": "️ ，️", "key_text_size": 20}, "0", {"key": ".", "label": " 。", "key_text_size": 20}, {"key": "key.edit.enter", "v3": "Return2", "span": 0.772727, "key_text_size": 17, "class": "action", "v3extra": {"height": 50, "key_text_color": "tc4"}}]
+      - [{"key": "key.layout.default", "span": 0.772727, "key_text_size": 17, "class": "system", "v3extra": {"height": 50, "key_text_color": "tc2"}}, {"key": ",", "key_text_size": 20, "label": "️ ，️"}, "0", {"key": ".", "key_text_size": 20, "label": " 。"}, {"key": "key.edit.enter", "v3": "Return2", "span": 0.772727, "key_text_size": 17, "class": "action", "v3extra": {"height": 50, "key_text_color": "tc4"}}]
     reset_ascii_mode: true
     vertical_gap: 9
     horizontal_gap: 4

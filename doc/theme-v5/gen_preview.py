@@ -199,17 +199,17 @@ function stOf(cls){ return state === 'normal' ? null : state; }
 
 function render(){
   const s = D.schemes[scheme], st = stOf();
-  const root = resolve('root','surface',null,null);
+  const root = resolve('root','background',null,null);
   const kb = document.getElementById('kb');
   kb.style.background = css(root.val);
 
   // 候选栏
-  const cs = resolve('candidate','surface',null,st==='selected'?null:st);
-  const ct = resolve('candidate','content',null,st);
-  const cc = resolve('candidate','comment','content',st==='selected'?'selected':null);
-  const cl = resolve('candidate','label','content',null);
-  const selS = resolve('candidate','surface',null,'selected');
-  const selT = resolve('candidate','content',null,'selected');
+  const cs = resolve('candidate','background',null,st==='selected'?null:st);
+  const ct = resolve('candidate','foreground',null,st);
+  const cc = resolve('candidate','comment','foreground',st==='selected'?'selected':null);
+  const cl = resolve('candidate','label','foreground',null);
+  const selS = resolve('candidate','background',null,'selected');
+  const selT = resolve('candidate','foreground',null,'selected');
   const cand = document.getElementById('cand');
   cand.style.background = css(cs.val);
   cand.innerHTML = [
@@ -219,7 +219,7 @@ function render(){
   ].join('');
 
   // 编码区
-  const pt = resolve('preedit','content',null,st==='selected'?'selected':null);
+  const pt = resolve('preedit','foreground',null,st==='selected'?'selected':null);
   const pre = document.getElementById('pre');
   pre.style.color = css(pt.val);
   pre.textContent = "tong'wen │ 同文输入法";
@@ -236,8 +236,8 @@ function render(){
       k.style.flex = String(e.s||1);
       if(e.k===null){ div.appendChild(k); return; }
       const cls = e.c || 'character';
-      const surf = resolve('key','surface',cls,st);
-      const cont = resolve('key','content',cls,st);
+      const surf = resolve('key','background',cls,st);
+      const cont = resolve('key','foreground',cls,st);
       const hint = resolve('key','hint',cls,st);
       k.style.background = css(surf.val);
       k.style.color = css(cont.val);
@@ -256,7 +256,7 @@ function render(){
     `<span>别名 <b>${D.stats.aliases}</b></span><span>场景 <b>${D.stats.scenes}</b></span>`+
     `<span>根背景 <b>${root.val}</b></span>`;
   document.getElementById('resolveNote').textContent =
-    `查找顺序：${st?`${'key'}.surface.<class>.${st} → `:''}key.surface.<class> → ${st?`key.surface.${st} → `:''}key.surface（长路径优先，短路径回退）。`+
+    `查找顺序：${st?`${'key'}.background.<class>.${st} → `:''}key.background.<class> → ${st?`key.background.${st} → `:''}key.background（长路径优先，短路径回退）。`+
     `共 ${Object.keys(D.fallback).length} 条 fallback 链可在运行时继续回退。`;
 }
 
@@ -267,8 +267,8 @@ function showInfo(e, cls, surf, cont, hint, st){
     `<div>按键 <b>${e.k}</b></div>`+
     `<div>身份 <b>${dom(e.id)}</b></div>`+
     `<div>class <b>${cls}</b>　state <b>${state}</b></div><hr>`+
-    `<div>surface <b>${surf.path}</b></div><div>　${surf.val}</div>`+
-    `<div>content <b>${cont.path}</b></div><div>　${cont.val}</div>`+
+    `<div>background <b>${surf.path}</b></div><div>　${surf.val}</div>`+
+    `<div>foreground <b>${cont.path}</b></div><div>　${cont.val}</div>`+
     `<div>hint　　<b>${hint.path}</b></div><div>　${hint.val}</div><hr>`+
     `<div>对比度 <b>${ratio}:1</b> ${ratio>=4.5?'✓ AA':(ratio>=3?'△ AA Large':'✗ 不足')}</div>`+
     `<div>span <b>${e.s}</b>（行内相对权重）</div>`;

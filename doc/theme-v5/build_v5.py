@@ -250,8 +250,17 @@ def build_keys(d3, m):
         if "label" in pk:
             entry["label"] = pk["label"]
         entry["action"] = infer_action(pk, amap)
+        # 键属性轴：静态声明「这键是什么性质」，与 action(做什么) / when(何时) 正交。
+        # 对齐 AOSP isSticky / isRepeatable / isModifier，词表见 vocabulary.yaml。
+        attrs = {}
         if pk.get("repeatable"):
-            entry["repeatable"] = True
+            attrs["repeatable"] = True
+        if pk.get("shift_lock") or kid == "key.modifier.shift":
+            attrs["sticky"] = True
+        if kid.startswith("key.modifier.") or cls == "modifier":
+            attrs["modifier"] = True
+        if attrs:
+            entry["attributes"] = attrs
         if pk.get("states"):
             entry["states"] = pk["states"]
         if pk.get("shift_lock"):
@@ -467,7 +476,8 @@ def emit_v5(d3, m, two, parked, ren, legacy, fallbacks, dropped_fb,
                     A(f"    {k}: {v if isinstance(v, (int, float)) else q(v)}")
         A("")
     A("# ── C. 键定义：行为 ID 全局唯一一份，与设备 / 方向 / 主题无关 ──────────")
-    A("# class 与 state 是按键侧和颜色侧唯一的接缝，取值来自 vocabulary.yaml。")
+    A("# class / state 是按键侧与颜色侧的接缝；attributes 是静态性质声明，与")
+    A("# action（做什么）、when（何时触发）三轴正交；取值均来自 vocabulary.yaml。")
     A("keys:")
     for kid, e in keys.items():
         A(f"  {q(kid)}:")

@@ -12,82 +12,82 @@ meta:
   note: "多个旧名映射到同一路径时，值相同则合并，值不同则进 legacy_colors 保留，绝不丢信息"
 
 # ── ① 配色字段 → color 短路径（路径写在 schemes.<name>.color 下）──
-# 状态一律放末段；部件词固定 surface/content/hint/outline/elevation
+# 状态一律放末段；部件词固定 background/foreground/hint/outline/elevation
 color_map:
   # 根背景 / 候选栏底 / 工具栏底
-  root_background:                "root.surface"
-  keyboard_background:            "root.surface"
-  keyboard_back_color:            "root.surface"
-  back_color:                     "root.surface"
-  text_back_color:                "root.surface"
-  candidate_background:           "candidate.surface"
-  liquid_keyboard_background:     "toolbar.surface"
+  root_background:                "root.background"
+  keyboard_background:            "root.background"
+  keyboard_back_color:            "root.background"
+  back_color:                     "root.background"
+  text_back_color:                "root.background"
+  candidate_background:           "candidate.background"
+  liquid_keyboard_background:     "toolbar.background"
   # 编码区（preedit）
-  text_color:                     "preedit.content"
-  hilited_text_color:             "preedit.content.selected"
-  hilited_back_color:             "preedit.surface.selected"
+  text_color:                     "preedit.foreground"
+  hilited_text_color:             "preedit.foreground.selected"
+  hilited_back_color:             "preedit.background.selected"
   hilited_shadow_color:           "preedit.elevation"
   # 候选栏
-  candidate_text_color:           "candidate.content"
-  candidate_back_color:           "candidate.surface"
+  candidate_text_color:           "candidate.foreground"
+  candidate_back_color:           "candidate.background"
   candidate_shadow_color:         "candidate.elevation"
   candidate_separator_color:      "candidate.outline"
   candidate_border_color:         "candidate.outline"
-  hilited_candidate_text_color:   "candidate.content.selected"
-  hilited_candidate_back_color:   "candidate.surface.selected"
+  hilited_candidate_text_color:   "candidate.foreground.selected"
+  hilited_candidate_back_color:   "candidate.background.selected"
   hilited_candidate_shadow_color: "candidate.elevation.selected"
-  hilited_candidate_button_color: "candidate.bar.surface"
-  comment_text_color:             "candidate.comment.content"
-  hilited_comment_text_color:     "candidate.comment.content.selected"
-  label_color:                    "candidate.label.content"
+  hilited_candidate_button_color: "candidate.bar.background"
+  comment_text_color:             "candidate.comment.foreground"
+  hilited_comment_text_color:     "candidate.comment.foreground.selected"
+  label_color:                    "candidate.label.foreground"
   # 按键（常态）
-  key_back_color:                 "key.surface"
+  key_back_color:                 "key.background"
   key_border_color:               "key.outline"
-  key_text_color:                 "key.content"
+  key_text_color:                 "key.foreground"
   key_symbol_color:               "key.hint"
   key_hint_color:                 "key.hint"
   shadow_color:                   "key.elevation"
   border_color:                   "key.outline"
   # 按键（按下态 pressed）
-  hilited_key_text_color:         "key.content.pressed"
+  hilited_key_text_color:         "key.foreground.pressed"
   hilited_key_symbol_color:       "key.hint.pressed"
-  hilited_key_back_color:         "key.surface.pressed"
+  hilited_key_back_color:         "key.background.pressed"
   # 按键（角色 class：system / modifier）
-  functional_back_color:          "key.surface.system"
-  functional_text_color:          "key.content.system"
-  off_key_back_color:             "key.surface.system"
-  off_key_text_color:             "key.content.system"
-  hilited_functional_back_color:  "key.surface.system.pressed"
-  hilited_functional_text_color:  "key.content.system.pressed"
-  hilited_off_key_back_color:     "key.surface.system.pressed"
-  hilited_off_key_text_color:     "key.content.system.pressed"
+  functional_back_color:          "key.background.system"
+  functional_text_color:          "key.foreground.system"
+  off_key_back_color:             "key.background.system"
+  off_key_text_color:             "key.foreground.system"
+  hilited_functional_back_color:  "key.background.system.pressed"
+  hilited_functional_text_color:  "key.foreground.system.pressed"
+  hilited_off_key_back_color:     "key.background.system.pressed"
+  hilited_off_key_text_color:     "key.foreground.system.pressed"
   # on_key_* 是锁定/激活态，归到 capsLock 末段，避免与 bc1（Shift 常态）撞路径
-  on_key_back_color:              "key.surface.modifier.capsLock"
-  on_key_text_color:              "key.content.modifier.capsLock"
+  on_key_back_color:              "key.background.modifier.capsLock"
+  on_key_text_color:              "key.foreground.modifier.capsLock"
   on_key_symbol_color:            "key.hint.modifier.capsLock"
-  hilited_on_key_back_color:      "key.surface.modifier.pressed"
-  hilited_on_key_text_color:      "key.content.modifier.pressed"
+  hilited_on_key_back_color:      "key.background.modifier.pressed"
+  hilited_on_key_text_color:      "key.foreground.modifier.pressed"
   # 悬浮预览 / 长按气泡
-  preview_back_color:             "popup.surface"
-  preview_text_color:             "popup.content"
-  popup_back_color:               "popup.surface"
-  popup_text_color:               "popup.content"
-  hilited_popup_text_color:       "popup.content.pressed"
+  preview_back_color:             "popup.background"
+  preview_text_color:             "popup.foreground"
+  popup_back_color:               "popup.background"
+  popup_text_color:               "popup.foreground"
+  hilited_popup_text_color:       "popup.foreground.pressed"
 
 # ── ② 第三方自定义色标签 → class 修饰段 ──
 # 方块主题用 bc1~bc4 / baoe 给不同位置的键上色，本质是「按角色分组」，
 # V5 里由布局条目的 class 决定取哪个修饰段，标签本身降为别名。
 label_map:
-  bc1: "key.surface.modifier"      # 第 3 行 Shift 键
-  tc1: "key.content.modifier"
-  bc2: "key.surface.system"        # 退格 / 符号 / 标点
-  tc2: "key.content.system"
-  bc3: "key.surface.space"         # 空格
-  tc3: "key.content.space"
-  bc4: "key.surface.action"        # 回车
-  tc4: "key.content.action"
-  baoe: "key.surface.modifier"
-  taoe: "key.content.modifier"
+  bc1: "key.background.modifier"      # 第 3 行 Shift 键
+  tc1: "key.foreground.modifier"
+  bc2: "key.background.system"        # 退格 / 符号 / 标点
+  tc2: "key.foreground.system"
+  bc3: "key.background.space"         # 空格
+  tc3: "key.foreground.space"
+  bc4: "key.background.action"        # 回车
+  tc4: "key.foreground.action"
+  baoe: "key.background.modifier"
+  taoe: "key.foreground.modifier"
 
 # ── ③ 旧键名 → 行为 ID key.<domain>.<name> ──
 # 数字后缀替身键合并到同一 ID，差异降级为 label / params / when 覆盖

@@ -26,7 +26,12 @@
 [PASS] 26 反向产物 config_version 3.0 且结构完整  — 5 布局 / 161 键
 [PASS] 27 预览内嵌数据与 V5 方案一致  — day / night 路径数逐套核对
 [PASS] 28 方案文档中的计数与生成数据一致  — ID 23 / 路径 43 / 链 28 / 归档 1 / 别名 33
+[PASS] 29 部件词定稿 background / foreground，结构文件无旧词残留  — ['background', 'elevation', 'foreground', 'hint', 'outline']
+[PASS] 30 state 补 active，与 class / context 三表正交  — state 9 词，含 active；与 class/context 交集 0
+[PASS] 31 attributes 只声明 sticky / repeatable / modifier  — 5 处声明，取值 ['modifier', 'repeatable', 'sticky']
+[PASS] 32 动作域分语义类/来源类，key_domain ⊆ action_domain 不再各自生长  — 语义类 5 + 来源类 4；key_domain 8 词全被覆盖
+[PASS] 33 class_variant 与 direction 四方位词表齐备  — 变体 {'space': 'character', 'modifier': 'system'} / 方位 ['down', 'left', 'right', 'up']
 
 ============================================================
-汇总: 28 PASS / 0 WARN / 0 FAIL
+汇总: 33 PASS / 0 WARN / 0 FAIL
 ============================================================

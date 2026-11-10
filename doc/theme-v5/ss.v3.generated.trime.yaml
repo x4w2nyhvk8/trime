@@ -349,39 +349,19 @@ preset_color_schemes:
     name: "默认"
     author: "linzianxyz"
     color_format: "rgb"
-    hilited_candidate_button_color: 4294967295
-    comment_text_color: 4285295728
-    hilited_comment_text_color: 4285295728
-    candidate_text_color: 4278190080
-    hilited_candidate_text_color: 4278190080
-    candidate_shadow_color: 0
-    hilited_candidate_shadow_color: 0
-    label_color: 4285295728
-    candidate_separator_color: 869323996
-    candidate_border_color: 0
     candidate_background: 4293454575
     candidate_back_color: 4293454575
     hilited_candidate_back_color: 4293454575
-    key_text_color: 4278190080
-    tc4: 4294967295
-    tc1: 4278190080
-    taoe: 4278190080
-    on_key_text_color: 4279923689
-    hilited_on_key_text_color: 4294967295
-    hilited_key_text_color: 4278190080
-    tc3: 4278190080
-    functional_text_color: 4278190080
-    off_key_text_color: 4278190080
-    tc2: 4278190080
-    hilited_functional_text_color: 4278190080
-    hilited_off_key_text_color: 4278190080
-    shadow_color: 167772160
-    key_symbol_color: 4285231744
-    key_hint_color: 4285231744
-    on_key_symbol_color: 4279923689
-    hilited_key_symbol_color: 4285231744
-    key_border_color: 0
-    border_color: 0
+    hilited_candidate_button_color: 4294967295
+    comment_text_color: 4285295728
+    hilited_comment_text_color: 4285295728
+    candidate_shadow_color: 0
+    hilited_candidate_shadow_color: 0
+    candidate_text_color: 4278190080
+    hilited_candidate_text_color: 4278190080
+    label_color: 4285295728
+    candidate_separator_color: 869323996
+    candidate_border_color: 0
     key_back_color: 4294835709
     bc4: 4279923689
     bc1: 4292205024
@@ -395,15 +375,35 @@ preset_color_schemes:
     bc2: 4292205024
     hilited_functional_back_color: 4291152596
     hilited_off_key_back_color: 4291152596
+    shadow_color: 167772160
+    key_text_color: 4278190080
+    tc4: 4294967295
+    tc1: 4278190080
+    taoe: 4278190080
+    on_key_text_color: 4279923689
+    hilited_on_key_text_color: 4294967295
+    hilited_key_text_color: 4278190080
+    tc3: 4278190080
+    functional_text_color: 4278190080
+    off_key_text_color: 4278190080
+    tc2: 4278190080
+    hilited_functional_text_color: 4278190080
+    hilited_off_key_text_color: 4278190080
+    key_symbol_color: 4285231744
+    key_hint_color: 4285231744
+    on_key_symbol_color: 4279923689
+    hilited_key_symbol_color: 4285231744
+    key_border_color: 0
+    border_color: 0
+    preview_back_color: 4294835709
+    popup_back_color: 4294835709
     preview_text_color: 4278190080
     popup_text_color: 4278190080
     hilited_popup_text_color: 4279923689
-    preview_back_color: 4294835709
-    popup_back_color: 4294835709
+    hilited_back_color: 4292665576
+    hilited_shadow_color: 0
     text_color: 4287532691
     hilited_text_color: 4278190080
-    hilited_shadow_color: 0
-    hilited_back_color: 4292665576
     root_background: 4293454575
     keyboard_background: 4293454575
     keyboard_back_color: 4293454575
@@ -415,39 +415,19 @@ preset_color_schemes:
     name: "春日／Spring"
     author: "iniNight"
     color_format: "rgb"
-    hilited_candidate_button_color: 4293588725
-    comment_text_color: 4287272089
-    hilited_comment_text_color: 4290293930
-    candidate_text_color: 4281415491
-    hilited_candidate_text_color: 4281097816
-    candidate_shadow_color: 4285032552
-    hilited_candidate_shadow_color: 4285032552
-    label_color: 4284115819
-    candidate_separator_color: 4292467161
-    candidate_border_color: 4292927712
     candidate_background: 4293588725
     candidate_back_color: 4293588725
     hilited_candidate_back_color: 4293588725
-    key_text_color: 4281415491
-    tc4: 4294967295
-    tc1: 4281415491
-    taoe: 4281415491
-    on_key_text_color: 4283080338
-    hilited_on_key_text_color: 4280229663
-    hilited_key_text_color: 4280229663
-    tc3: 4281097816
-    functional_text_color: 4281415491
-    off_key_text_color: 4281415491
-    tc2: 4281415491
-    hilited_functional_text_color: 4281415491
-    hilited_off_key_text_color: 4281415491
-    shadow_color: 4285032552
-    key_symbol_color: 4287272089
-    key_hint_color: 4285173896
-    on_key_symbol_color: 4283080338
-    hilited_key_symbol_color: 4281097816
-    key_border_color: 4290103493
-    border_color: 0
+    hilited_candidate_button_color: 4293588725
+    comment_text_color: 4287272089
+    hilited_comment_text_color: 4290293930
+    candidate_shadow_color: 4285032552
+    hilited_candidate_shadow_color: 4285032552
+    candidate_text_color: 4281415491
+    hilited_candidate_text_color: 4281097816
+    label_color: 4284115819
+    candidate_separator_color: 4292467161
+    candidate_border_color: 4292927712
     key_back_color: 4294442234
     bc4: 4284316532
     bc1: 4292209640
@@ -461,15 +441,35 @@ preset_color_schemes:
     bc2: 4292209640
     hilited_functional_back_color: 4291157465
     hilited_off_key_back_color: 4291157465
+    shadow_color: 4285032552
+    key_text_color: 4281415491
+    tc4: 4294967295
+    tc1: 4281415491
+    taoe: 4281415491
+    on_key_text_color: 4283080338
+    hilited_on_key_text_color: 4280229663
+    hilited_key_text_color: 4280229663
+    tc3: 4281097816
+    functional_text_color: 4281415491
+    off_key_text_color: 4281415491
+    tc2: 4281415491
+    hilited_functional_text_color: 4281415491
+    hilited_off_key_text_color: 4281415491
+    key_symbol_color: 4287272089
+    key_hint_color: 4285173896
+    on_key_symbol_color: 4283080338
+    hilited_key_symbol_color: 4281097816
+    key_border_color: 4290103493
+    border_color: 0
+    preview_back_color: 4294442234
+    popup_back_color: 4294442234
     preview_text_color: 4281415491
     popup_text_color: 4281415491
     hilited_popup_text_color: 4283080338
-    preview_back_color: 4294442234
-    popup_back_color: 4294442234
+    hilited_back_color: 4291293934
+    hilited_shadow_color: 4287272089
     text_color: 4280229663
     hilited_text_color: 4278190080
-    hilited_shadow_color: 4287272089
-    hilited_back_color: 4291293934
     root_background: 4293588725
     keyboard_background: 4293588725
     keyboard_back_color: 4293588725
@@ -481,39 +481,19 @@ preset_color_schemes:
     name: "深色"
     author: "linzianxyz"
     color_format: "rgb"
-    hilited_candidate_button_color: 4284111450
-    comment_text_color: 4287270545
-    hilited_comment_text_color: 4283948445
-    candidate_text_color: 4294967295
-    hilited_candidate_text_color: 4294967295
-    candidate_shadow_color: 4279900698
-    hilited_candidate_shadow_color: 4279900698
-    label_color: 4294967295
-    candidate_separator_color: 4283058762
-    candidate_border_color: 4283058762
     candidate_background: 4280427042
     candidate_back_color: 4282006074
     hilited_candidate_back_color: 0
-    key_text_color: 4294967295
-    tc4: 4294967295
-    tc1: 4294967295
-    taoe: 4287270545
-    on_key_text_color: 4283948445
-    hilited_on_key_text_color: 4294967295
-    hilited_key_text_color: 4294967295
-    tc3: 4294967295
-    functional_text_color: 4294967295
-    off_key_text_color: 4294967295
-    tc2: 4294967295
-    hilited_functional_text_color: 4294967295
-    hilited_off_key_text_color: 4294967295
-    shadow_color: 4279900698
-    key_symbol_color: 4289770680
-    key_hint_color: 4287270545
-    on_key_symbol_color: 4283948445
-    hilited_key_symbol_color: 4294967295
-    key_border_color: 4282006074
-    border_color: 0
+    hilited_candidate_button_color: 4284111450
+    comment_text_color: 4287270545
+    hilited_comment_text_color: 4283948445
+    candidate_shadow_color: 4279900698
+    hilited_candidate_shadow_color: 4279900698
+    candidate_text_color: 4294967295
+    hilited_candidate_text_color: 4294967295
+    label_color: 4294967295
+    candidate_separator_color: 4283058762
+    candidate_border_color: 4283058762
     key_back_color: 4283058762
     bc4: 4279923689
     bc1: 4282006074
@@ -527,15 +507,35 @@ preset_color_schemes:
     bc2: 4282006074
     hilited_functional_back_color: 4283058762
     hilited_off_key_back_color: 4283058762
+    shadow_color: 4279900698
+    key_text_color: 4294967295
+    tc4: 4294967295
+    tc1: 4294967295
+    taoe: 4287270545
+    on_key_text_color: 4283948445
+    hilited_on_key_text_color: 4294967295
+    hilited_key_text_color: 4294967295
+    tc3: 4294967295
+    functional_text_color: 4294967295
+    off_key_text_color: 4294967295
+    tc2: 4294967295
+    hilited_functional_text_color: 4294967295
+    hilited_off_key_text_color: 4294967295
+    key_symbol_color: 4289770680
+    key_hint_color: 4287270545
+    on_key_symbol_color: 4283948445
+    hilited_key_symbol_color: 4294967295
+    key_border_color: 4282006074
+    border_color: 0
+    preview_back_color: 4283058762
+    popup_back_color: 4283058762
     preview_text_color: 4294967295
     popup_text_color: 4294967295
     hilited_popup_text_color: 4283948445
-    preview_back_color: 4283058762
-    popup_back_color: 4283058762
+    hilited_back_color: 4282006074
+    hilited_shadow_color: 4283058762
     text_color: 4294967295
     hilited_text_color: 4289111718
-    hilited_shadow_color: 4283058762
-    hilited_back_color: 4282006074
     root_background: 4280427042
     keyboard_background: 4280427042
     keyboard_back_color: 4280427042
@@ -598,7 +598,7 @@ preset_keyboards:
       - {"click": "BackSpace", "width": 14, "swipe_up": "Escape", "key_back_color": "bc2", "key_text_color": "tc2", "key_text_offset_y": -1}
       - {"click": "Keyboard_number", "width": 15, "label_symbol": "符", "long_click": "liquid_keyboard_cn", "swipe_up": "Color_switch", "key_back_color": "bc2", "key_long_text_size": 15, "key_symbol_offset_y": 6, "key_symbol_offset_x": -1}
       - {"click": ",", "width": 12.5, "label": "️ ，️", "key_back_color": "bc2", "key_text_color": "tc2"}
-      - {"click": "space", "width": 45, "hint": "T-RIME", "key_text_size": 20, "long_click": "Mode_switch2", "key_back_color": "bc3", "key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}
+      - {"click": "space", "width": 45, "key_text_size": 20, "hint": "T-RIME", "long_click": "Mode_switch2", "key_back_color": "bc3", "key_symbol_offset_x": -0.5, "key_symbol_offset_y": 10, "functional": true, "key_text_offset_y": -1, "key_hint_offset_x": -60, "key_hint_offset_y": -3, "key_text_color": "tc3"}
       - {"click": ".", "width": 12.5, "label": " 。", "swipe_up": "?", "key_back_color": "bc2", "key_text_color": "tc2"}
       - {"click": "Return", "width": 15, "composing": "Return1", "key_back_color": "bc4", "key_text_offset_y": -1, "key_text_color": "tc4"}
   editor:
@@ -738,9 +738,9 @@ preset_keyboards:
       - {"click": "9"}
       - {"click": "liquid_keyboard_math", "width": 17, "key_text_size": 23, "key_back_color": "bc2", "key_text_color": "tc2"}
       - {"click": "Keyboard_default", "width": 17, "key_text_size": 17, "key_back_color": "bc2", "height": 50, "key_text_color": "tc2"}
-      - {"click": ",", "label": "️ ，️", "key_text_size": 20}
+      - {"click": ",", "key_text_size": 20, "label": "️ ，️"}
       - {"click": "0"}
-      - {"click": ".", "label": " 。", "key_text_size": 20}
+      - {"click": ".", "key_text_size": 20, "label": " 。"}
       - {"click": "Return2", "width": 17, "key_text_size": 17, "key_back_color": "bc4", "height": 50, "key_text_color": "tc4"}
 
 preset_keys:

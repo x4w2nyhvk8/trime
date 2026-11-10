@@ -313,6 +313,54 @@ def main():
     check(28, "方案文档中的计数与生成数据一致", counts_ok,
           f"ID {len(ids)} / 路径 {len(vals)//len(d5['schemes'])} / 链 {len(fb)} / 归档 {len(parked)} / 别名 {len(ka)}")
 
+    # ── 29 部件词定稿：background / foreground（B 方案 ①）──
+    # 只校验参与生成/运行的结构文件；方案文档里的「改造前 / 不采纳」对照段落
+    # 是有意保留的历史说明，不属残留，但必须写明定稿与不撤回。
+    parts = set(V["color_part"])
+    want_parts = {"background", "foreground", "hint", "outline", "elevation"}
+    struct = ("ss.v5.trime.yaml", "v5-map.yaml", "gen_preview.py",
+              "parked-schemes.yaml", "ss.v3.generated.trime.yaml")
+    stale = [(f, w) for f in struct
+             for w in (".surface", ".content", "onSurface")
+             if w in (ROOT / f).read_text(encoding="utf-8")]
+    doc_b = (ROOT / "V5主题方案.md").read_text(encoding="utf-8")
+    declared = "定稿" in doc_b and "不撤回" in doc_b and "background / foreground" in doc_b
+    ok29 = parts == want_parts and not stale and declared
+    check(29, "部件词定稿 background / foreground，结构文件无旧词残留",
+          ok29,
+          f"{sorted(parts)}" if ok29 else f"词表 {sorted(parts)} / 残留 {stale[:4]} / 文档声明 {declared}")
+
+    # ── 30 状态轴：补 active 且与 class / context 正交（B 方案 ②）──
+    disjoint = not (sets["state"] & sets["class"] or sets["state"] & sets["context"])
+    check(30, "state 补 active，与 class / context 三表正交",
+          "active" in sets["state"] and disjoint,
+          f"state {len(sets['state'])} 词，含 active；与 class/context 交集 0")
+
+    # ── 31 键属性轴：静态声明命中封闭词表（B 方案 ③）──
+    declared = {a for e in d5["keys"].values() for a in (e.get("attributes") or {})}
+    bad_attr = declared - sets["key_attribute"]
+    check(31, "attributes 只声明 sticky / repeatable / modifier",
+          declared and not bad_attr and sets["key_attribute"] == {"sticky", "repeatable", "modifier"},
+          f"{sum(len(e.get('attributes') or {}) for e in d5['keys'].values())} 处声明，取值 {sorted(declared)}"
+          if not bad_attr else f"越界 {sorted(bad_attr)}")
+
+    # ── 32 域词表收口：key_domain 并入 action_domain（B 方案 ④）──
+    semantic = {"text", "edit", "modifier", "nav", "layout"}
+    origin = {"rime", "trime", "device", "system"}
+    ad = sets["action_domain"]
+    check(32, "动作域分语义类/来源类，key_domain ⊆ action_domain 不再各自生长",
+          semantic | origin == ad and sets["key_domain"] <= ad,
+          f"语义类 {len(semantic)} + 来源类 {len(origin)}；key_domain {len(sets['key_domain'])} 词全被覆盖")
+
+    # ── 33 方位 hint 与 class 变体结构完整（B 方案 ⑤）──
+    cv = V.get("class_variant") or {}
+    cv_ok = bool(cv) and all(k in sets["class"] and v in sets["class"]
+                             for k, v in cv.items())
+    dir_ok = sets["direction"] == {"up", "down", "left", "right"}
+    check(33, "class_variant 与 direction 四方位词表齐备",
+          cv_ok and dir_ok,
+          f"变体 {cv} / 方位 {sorted(sets['direction'])}")
+
     # ── 汇总 ──
     n = {t: sum(1 for r in results if r[0] == t) for t in ("PASS", "WARN", "FAIL")}
     print("\n" + "=" * 60)
