@@ -63,14 +63,19 @@ vocabulary:
     - bar
     - item
 
+  # 部件词：与元书 Foreground/Background、foxy Text/background、V3
+  # *_text_color / *_back_color 对齐。foreground 覆盖主文字与图标 tint
+  #（keyTextColor 亦被 TabUi / PaginationUi 复用）；background 为键面与容器底色。
+  # 状态不进部件词，恒在路径末段。
   color_part:
-    - surface
-    - content
+    - background
+    - foreground
     - hint
     - outline
     - elevation
 
   # 共享词表 ①：class —— 按键的 class 值 == 颜色路径的修饰段
+  # space 是 character 的 variant，modifier 是 system 的 variant（对齐 foxy keyType）。
   class:
     - default
     - character
@@ -80,15 +85,31 @@ vocabulary:
     - space
 
   # 共享词表 ②：state —— 动作产生的视觉状态 == 颜色路径的末段
+  # 颜色路径末段严格共用本表（或 context），不另造状态词。
   state:
     - normal
     - pressed
     - selected
     - focused
     - disabled
+    - active       # 单手 / 语音 / 分体 / 尺寸等激活态（foxy 工具栏）
     - capsLock
     - popup
     - trail
+
+  # class 的变体关系：variant 继承基类的取色，仅额外覆盖差异段。
+  # foxy 的 keyType 里空格是 LETTER、Shift 是 FUNCTION，本质就是这种 variant。
+  class_variant:
+    space: character
+    modifier: system
+
+  # 方向 hint：foxy 的 hintUp / keyHintTextTop~Bottom 与元书的 keyHintTextTopColor
+  # 都按方位取色。作为修饰段挂在 hint 之后，路径形如 key.hint.up。
+  direction:
+    - up
+    - down
+    - left
+    - right
 
   # 共享词表 ③：context —— Rime 会话状态（同文特有），与 state 共占修饰槽
   # preedit 是「编码区」这一 UI 域；composing 是「输入中」这一上下文态，二者不可混用。
@@ -116,12 +137,16 @@ vocabulary:
     - ascii
 
   # action 路径：action.<domain>.<verb>
+  # 域分两组：语义类（动作作用于谁）/ 来源类（动作由谁提供），对齐 foxy rime.* / app。
+  # key_domain 与 action_domain 共用同一批词，禁止各自生长（validate.py 校验子集关系）。
   action_domain:
+    # 语义类
     - text
     - edit
     - modifier
     - nav
     - layout
+    # 来源类
     - rime
     - trime
     - device
@@ -207,6 +232,13 @@ vocabulary:
     - copy
     - undo
     - redo
+
+  # 键属性轴：只声明「这键是什么性质」，不描述做什么(action) / 何时触发(event)。
+  # 对齐 AOSP isSticky / isRepeatable / isModifier，从 when 事件表中提出为静态声明。
+  key_attribute:
+    - sticky
+    - repeatable
+    - modifier
 
   # geometry 属性：均为 YAML 结构字段名，刻意只用单字词，避开 snake_case 约束
   geometry:

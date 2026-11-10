@@ -45,7 +45,9 @@ FORBID = re.compile(syn.get("forbidden_regex", "(?!)"))
 CVAL = re.compile(syn.get("color_value_regex", "^$"))
 MAXDEPTH = syn.get("max_depth", 6)
 
-TOKEN_LISTS = {k: v for k, v in voc.items() if k != "event"}
+# class_variant 是映射（variant→基类），不是 token 列表，单独校验其键值
+TOKEN_LISTS = {k: v for k, v in voc.items()
+               if k != "event" and isinstance(v, list)}
 CLASS = set(voc.get("class", []))
 STATE = set(voc.get("state", []))
 CONTEXT = set(voc.get("context", []))
@@ -372,6 +374,48 @@ try:
           "工作区仅新增本目录" if not bad else "; ".join(bad[:3]))
 except Exception as exc:
     check(25, "零侵入检查", True, f"git 不可用，跳过（{type(exc).__name__}）", warn=True)
+
+# ── 26 部件词定稿（B 方案 ①）───────────────────────────────────
+# 结构文件（词表 / 示例 / 迁移表）零残留；Naming.md 是散文，其中
+# 「为何不采用 onSurface」是有意保留的决策说明，只查点分路径残留。
+want = {"background", "foreground", "hint", "outline", "elevation"}
+structural = ("examples.yaml", "legacy-map.yaml", "vocabulary.yaml")
+stale = [f for f in structural
+         if any(w in (ROOT / f).read_text(encoding="utf-8")
+                for w in (".surface", ".content", "onSurface"))]
+prose = (ROOT / "Naming.md").read_text(encoding="utf-8")
+prose_stale = any(w in prose for w in (".surface", ".content"))
+ok26 = PART == want and not stale and not prose_stale
+check(26, "部件词定稿 background / foreground，结构文件无旧词残留",
+      ok26,
+      f"{sorted(PART)}" if ok26 else f"词表 {sorted(PART)} / 残留 {stale} / 散文路径残留 {prose_stale}")
+
+# ── 27 state 补 active 且三表正交（B 方案 ②）───────────────────
+ok27 = "active" in STATE and not (STATE & CLASS or STATE & CONTEXT)
+check(27, "state 含 active，与 class / context 两两不交", ok27,
+      f"state {len(STATE)} 词，含 active")
+
+# ── 28 域收口 + 新增三份词表（B 方案 ③④⑤）────────────────────
+ad = set(voc.get("action_domain", []))
+kd = set(voc.get("key_domain", []))
+cv = voc.get("class_variant") or {}
+dirs = set(voc.get("direction", []))
+attrs = set(voc.get("key_attribute", []))
+ok28 = (ad == {"text", "edit", "modifier", "nav", "layout",
+               "rime", "trime", "device", "system"}
+        and kd <= ad
+        and isinstance(cv, dict)
+        and all(k in CLASS and v in CLASS for k, v in cv.items())
+        and dirs == {"up", "down", "left", "right"}
+        and attrs == {"sticky", "repeatable", "modifier"})
+check(28, "动作域分语义/来源类，class_variant / direction / key_attribute 齐备",
+      ok28, f"action_domain {len(ad)} 词；key_domain {len(kd)} 词全被覆盖；"
+            f"变体 {len(cv)} / 方位 {len(dirs)} / 属性 {len(attrs)}")
+
+# ── 29 class_variant 的键值均为合法 token 段 ───────────────────
+ok29 = bool(cv) and all(seg_ok(k) and seg_ok(v) for k, v in cv.items())
+check(29, "class_variant 的 variant / 基类均命中 class 且为合法段", ok29,
+      f"{cv}" if ok29 else "变体键值越界")
 
 # ── 汇总 ──────────────────────────────────────────────────────
 print("=" * 78)

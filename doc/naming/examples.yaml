@@ -82,10 +82,10 @@ scenes:
         label: "______"
         geometry: { row: 3, col: 3, span: 3 }
       colors:
-        "color.key.surface.space": "0xFFECEFF1"
-        "color.key.content.space": "0xFF37474F"
-        "color.key.surface.space.pressed": "0xFFD3D7DA"
-        "color.key.surface.space.capsLock": "0xFFD0D8E8"
+        "color.key.background.space": "0xFFECEFF1"
+        "color.key.foreground.space": "0xFF37474F"
+        "color.key.background.space.pressed": "0xFFD3D7DA"
+        "color.key.background.space.capsLock": "0xFFD0D8E8"
       fixed_key_bar:
         - { key: "key.edit.space", label: "空格" }
       notes:
@@ -129,14 +129,14 @@ scenes:
         note: "候选栏选项按 osfans/trime#732 抽象为「具有特殊 class 的按键」"
         geometry: { row: 0, col: 0, span: 1 }
       colors:
-        "color.candidate.surface": "0xFFE4E7E9"
-        "color.candidate.content": "0xFF5A676E"
-        "color.candidate.comment.content": "0xFF7B868C"
-        "color.candidate.label.content": "0xFF7B868C"
+        "color.candidate.background": "0xFFE4E7E9"
+        "color.candidate.foreground": "0xFF5A676E"
+        "color.candidate.comment.foreground": "0xFF7B868C"
+        "color.candidate.label.foreground": "0xFF7B868C"
         "color.candidate.outline": "0xFFC1C7CA"
-        "color.candidate.content.selected": "0xFF000000"
-        "color.candidate.surface.selected": "0xFFD3D7DA"
-        "color.candidate.comment.content.selected": "0xFF000000"
+        "color.candidate.foreground.selected": "0xFF000000"
+        "color.candidate.background.selected": "0xFFD3D7DA"
+        "color.candidate.comment.foreground.selected": "0xFF000000"
       notes:
         - "Rime 语义子树：comment / label 作为可选子域，归在 color.candidate.* 下"
         - "selected 是 state 词表成员，复用同一修饰槽，不再造 hilited_ 前缀"
@@ -165,14 +165,14 @@ scenes:
           name: "action.trime.showClipboard"
         geometry: { row: 0, col: 8, span: 1 }
       colors:
-        "color.toolbar.surface": "0xFFFFFFFF"
-        "color.toolbar.content": "0xFF37474F"
-        "color.toolbar.surface.pressed": "0xFFD3D7DA"
-        "color.key.surface.system": "0xFFECEFF1"
-        "color.key.content.system": "0xFF37474F"
-        "color.clipboard.surface": "0xFFECEFF1"
-        "color.clipboard.content.selected": "0xFF000000"
-        "color.smartbar.surface": "0xFFE4E7E9"
+        "color.toolbar.background": "0xFFFFFFFF"
+        "color.toolbar.foreground": "0xFF37474F"
+        "color.toolbar.background.pressed": "0xFFD3D7DA"
+        "color.key.background.system": "0xFFECEFF1"
+        "color.key.foreground.system": "0xFF37474F"
+        "color.clipboard.background": "0xFFECEFF1"
+        "color.clipboard.foreground.selected": "0xFF000000"
+        "color.smartbar.background": "0xFFE4E7E9"
       notes:
         - "工具栏 / 剪贴板 / 智能栏各有自己的 color domain，互不借用"
         - "按钮本身仍复用 color.key.*（一切皆按键），class: system 决定取哪个修饰段"
@@ -191,4 +191,4 @@ layout_geometry:
     grid: { columns: 10, rows: 4 }
     space_key_1d: { row: 3, col: 3, span: 3 }
     space_key_split: { row: 3, col: 4, span: 2 }
-    note: "换行 / 分体 / 横竖屏只改 grid 与 geometry；color.key.surface.space.* 在两种几何下完全相同"
+    note: "换行 / 分体 / 横竖屏只改 grid 与 geometry；color.key.background.space.* 在两种几何下完全相同"

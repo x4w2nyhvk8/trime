@@ -24,70 +24,70 @@ version_gate:
 
 # ── 旧颜色名（ColorKey 枚举的小写蛇形拼写）──
 colors:
-  - { legacy: key_back_color,             path: "color.key.surface" }
-  - { legacy: key_text_color,             path: "color.key.content" }
+  - { legacy: key_back_color,             path: "color.key.background" }
+  - { legacy: key_text_color,             path: "color.key.foreground" }
   - { legacy: key_symbol_color,           path: "color.key.hint" }
   - { legacy: key_border_color,           path: "color.key.outline" }
   - { legacy: shadow_color,               path: "color.key.elevation", ambiguous: true, note: "文字阴影与下缘阴影同义" }
-  - { legacy: hilited_key_back_color,     path: "color.key.surface.pressed" }
-  - { legacy: hilited_key_text_color,     path: "color.key.content.pressed" }
+  - { legacy: hilited_key_back_color,     path: "color.key.background.pressed" }
+  - { legacy: hilited_key_text_color,     path: "color.key.foreground.pressed" }
   - { legacy: hilited_key_symbol_color,   path: "color.key.hint.pressed" }
   - { legacy: hilited_key_border_color,   path: "color.key.outline.pressed" }
-  - { legacy: off_key_back_color,         path: "color.key.surface.system" }
-  - { legacy: off_key_text_color,         path: "color.key.content.system" }
+  - { legacy: off_key_back_color,         path: "color.key.background.system" }
+  - { legacy: off_key_text_color,         path: "color.key.foreground.system" }
   - { legacy: off_key_symbol_color,       path: "color.key.hint.system" }
   - { legacy: off_key_border_color,       path: "color.key.outline.system" }
-  - { legacy: hilited_off_key_back_color, path: "color.key.surface.system.pressed" }
-  - { legacy: hilited_off_key_text_color, path: "color.key.content.system.pressed" }
+  - { legacy: hilited_off_key_back_color, path: "color.key.background.system.pressed" }
+  - { legacy: hilited_off_key_text_color, path: "color.key.foreground.system.pressed" }
   - { legacy: hilited_off_key_symbol_color, path: "color.key.hint.system.pressed" }
   - { legacy: hilited_off_key_border_color, path: "color.key.outline.system.pressed" }
-  - { legacy: on_key_back_color,          path: "color.key.surface.modifier" }
-  - { legacy: on_key_text_color,          path: "color.key.content.modifier" }
+  - { legacy: on_key_back_color,          path: "color.key.background.modifier" }
+  - { legacy: on_key_text_color,          path: "color.key.foreground.modifier" }
   - { legacy: on_key_symbol_color,        path: "color.key.hint.modifier" }
-  - { legacy: hilited_on_key_back_color,  path: "color.key.surface.modifier.pressed" }
-  - { legacy: hilited_on_key_text_color,  path: "color.key.content.modifier.pressed" }
-  - { legacy: keyboard_back_color,        path: "color.root.surface" }
-  - { legacy: keyboard_background,        path: "color.root.surface" }
-  - { legacy: root_background,            path: "color.root.surface" }
-  - { legacy: back_color,                 path: "color.root.surface" }
+  - { legacy: hilited_on_key_back_color,  path: "color.key.background.modifier.pressed" }
+  - { legacy: hilited_on_key_text_color,  path: "color.key.foreground.modifier.pressed" }
+  - { legacy: keyboard_back_color,        path: "color.root.background" }
+  - { legacy: keyboard_background,        path: "color.root.background" }
+  - { legacy: root_background,            path: "color.root.background" }
+  - { legacy: back_color,                 path: "color.root.background" }
   - { legacy: border_color,               path: "color.key.outline" }
-  - { legacy: text_color,                 path: "color.preedit.content" }
-  - { legacy: hilited_text_color,         path: "color.preedit.content.selected" }
-  - { legacy: text_back_color,            path: "color.preedit.surface" }
-  - { legacy: hilited_back_color,         path: "color.preedit.surface.selected" }
-  - { legacy: candidate_text_color,       path: "color.candidate.content" }
-  - { legacy: comment_text_color,         path: "color.candidate.comment.content" }
-  - { legacy: label_color,                path: "color.candidate.label.content" }
-  - { legacy: candidate_background,       path: "color.candidate.surface" }
+  - { legacy: text_color,                 path: "color.preedit.foreground" }
+  - { legacy: hilited_text_color,         path: "color.preedit.foreground.selected" }
+  - { legacy: text_back_color,            path: "color.preedit.background" }
+  - { legacy: hilited_back_color,         path: "color.preedit.background.selected" }
+  - { legacy: candidate_text_color,       path: "color.candidate.foreground" }
+  - { legacy: comment_text_color,         path: "color.candidate.comment.foreground" }
+  - { legacy: label_color,                path: "color.candidate.label.foreground" }
+  - { legacy: candidate_background,       path: "color.candidate.background" }
   - { legacy: candidate_border_color,     path: "color.candidate.outline" }
   - { legacy: candidate_separator_color,  path: "color.candidate.outline" }
-  - { legacy: hilited_candidate_text_color,   path: "color.candidate.content.selected" }
-  - { legacy: hilited_candidate_back_color,   path: "color.candidate.surface.selected" }
-  - { legacy: hilited_comment_text_color,     path: "color.candidate.comment.content.selected" }
-  - { legacy: hilited_label_color,            path: "color.candidate.label.content.selected" }
-  - { legacy: hilited_candidate_button_color, path: "color.candidate.surface.selected", ambiguous: true }
-  - { legacy: popup_back_color,           path: "color.popup.surface" }
-  - { legacy: popup_text_color,           path: "color.popup.content" }
-  - { legacy: hilited_popup_back_color,   path: "color.popup.surface.pressed" }
-  - { legacy: hilited_popup_text_color,   path: "color.popup.content.pressed" }
-  - { legacy: long_text_back_color,       path: "color.popup.surface", ambiguous: true }
-  - { legacy: long_text_color,            path: "color.popup.content", ambiguous: true }
-  - { legacy: liquid_keyboard_background, path: "color.root.surface", ambiguous: true, note: "新方案另开 toolbar / clipboard / smartbar 域" }
+  - { legacy: hilited_candidate_text_color,   path: "color.candidate.foreground.selected" }
+  - { legacy: hilited_candidate_back_color,   path: "color.candidate.background.selected" }
+  - { legacy: hilited_comment_text_color,     path: "color.candidate.comment.foreground.selected" }
+  - { legacy: hilited_label_color,            path: "color.candidate.label.foreground.selected" }
+  - { legacy: hilited_candidate_button_color, path: "color.candidate.background.selected", ambiguous: true }
+  - { legacy: popup_back_color,           path: "color.popup.background" }
+  - { legacy: popup_text_color,           path: "color.popup.foreground" }
+  - { legacy: hilited_popup_back_color,   path: "color.popup.background.pressed" }
+  - { legacy: hilited_popup_text_color,   path: "color.popup.foreground.pressed" }
+  - { legacy: long_text_back_color,       path: "color.popup.background", ambiguous: true }
+  - { legacy: long_text_color,            path: "color.popup.foreground", ambiguous: true }
+  - { legacy: liquid_keyboard_background, path: "color.root.background", ambiguous: true, note: "新方案另开 toolbar / clipboard / smartbar 域" }
 
 # ── 第三方主题自定义色标签：全部降为别名，不再自立一套回退链 ──
 aliases:
-  - { label: bkg,    path: "color.key.surface.space" }
-  - { label: tkg,    path: "color.key.content.space" }
-  - { label: benter, path: "color.key.surface.action" }
-  - { label: tenter, path: "color.key.content.action" }
-  - { label: bgn,    path: "color.key.surface.system" }
-  - { label: tgn,    path: "color.key.content.system" }
-  - { label: bbs,    path: "color.key.surface.system" }
-  - { label: tbs,    path: "color.key.content.system" }
-  - { label: bh1,    path: "color.key.surface", note: "行号信息丢弃" }
-  - { label: bh2,    path: "color.key.surface", note: "行号信息丢弃" }
-  - { label: bh3,    path: "color.key.surface", note: "行号信息丢弃" }
-  - { label: bh4,    path: "color.key.surface", note: "行号信息丢弃" }
+  - { label: bkg,    path: "color.key.background.space" }
+  - { label: tkg,    path: "color.key.foreground.space" }
+  - { label: benter, path: "color.key.background.action" }
+  - { label: tenter, path: "color.key.foreground.action" }
+  - { label: bgn,    path: "color.key.background.system" }
+  - { label: tgn,    path: "color.key.foreground.system" }
+  - { label: bbs,    path: "color.key.background.system" }
+  - { label: tbs,    path: "color.key.foreground.system" }
+  - { label: bh1,    path: "color.key.background", note: "行号信息丢弃" }
+  - { label: bh2,    path: "color.key.background", note: "行号信息丢弃" }
+  - { label: bh3,    path: "color.key.background", note: "行号信息丢弃" }
+  - { label: bh4,    path: "color.key.background", note: "行号信息丢弃" }
 
 # ── 旧键名 → 行为 ID（数字后缀替身键合并到同一 ID，差异降级为值）──
 keys:

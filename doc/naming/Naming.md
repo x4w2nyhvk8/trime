@@ -48,7 +48,7 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 | 位置 | 例子 | 能否驼峰 |
 | --- | --- | --- |
 | YAML 结构字段名 | `preset_color_schemes:`、`long_click:`、`key_back_color:` | ❌ 必须 snake_case |
-| token 字符串值 | `"color.key.surface.space.capsLock"`、`"action.edit.moveCursor"` | ✅ 段内 lowerCamel |
+| token 字符串值 | `"color.key.background.space.capsLock"`、`"action.edit.moveCursor"` | ✅ 段内 lowerCamel |
 
 `strictMode = false` 意味着在 YAML 里写 `keyBackColor:` 会被**静默丢弃**——配置看着写了却不生效，这是必须避开陷阱。
 
@@ -64,7 +64,7 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 
 | ns | 管什么 | 例子 |
 | --- | --- | --- |
-| `color` | 视觉外观 | `color.key.surface.space.pressed` |
+| `color` | 视觉外观 | `color.key.background.space.pressed` |
 | `action` | 动作动词 | `action.edit.moveCursor` |
 | `event` | 触发时机（字段名形式，snake_case） | `event.long_click` |
 | `key` | 行为 ID | `key.edit.space` |
@@ -73,10 +73,18 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 
 - `<domain>`：`key / preedit / candidate / popup / toolbar / clipboard / root / smartbar`
 - `<sub>`（可选）：`comment / label / bar / item` —— 容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
-- `<part>`：固定五个 `surface / content / hint / outline / elevation`
+- `<part>`：固定五个 `background / foreground / hint / outline / elevation`
+
+> **部件词定稿说明**：对照元书 `Foreground`/`Background`、foxy `Text`/`background`、同文 V3 `*_text_color`/`*_back_color`，三家都直说「前景 / 文字」「背景」；V5 早期自造的 `surface`/`content` 是唯一需要查映射表才能读懂的一对，故改为 `background`/`foreground` 并**不撤回**。`foreground` 覆盖主文字与图标 tint（`keyTextColor` 亦被 `TabUi`/`PaginationUi` 复用），比 `text` 更准；也曾评估 MD3 的 `onSurface`/`onSurfaceVariant`，但它们表达「画在哪个容器之上」的配对关系，配套 `surfaceContainerLow/High` 一整层容器层级，纯 YAML 扁平色表没有容器概念，引入 `on*` 反而多一层解释，故不采用。`hint`（辅助小字）、`outline`（描边）、`elevation`（阴影）保留。
+
+**状态词表补 `active`**：单手 / 语音 / 分体 / 尺寸等工具栏图标的激活态；`state` 与 `class`、`context` 三表正交，颜色末段严格共用，不另造状态词。
+
+**域收口**：`key_domain`（8 词）全部并入 `action_domain`，后者按**语义类** `text/edit/modifier/nav/layout` 与**来源类** `rime/trime/device/system` 分组，对应 foxy 的 `rime.*` / `app` / `switch_layout`；`validate.py` 强制 `key_domain ⊆ action_domain`，杜绝两份词表各长各的。另设 `class_variant: {space: character, modifier: system}`（foxy 里空格的 `keyType` 是 `LETTER`、Shift 是 `FUNCTION`，本质是继承基类取色再覆盖差异段）与 `direction: up/down/left/right`（路径形如 `key.hint.up`，对齐 foxy `hintUp` 与元书 `keyHintTextTopColor`）。
+
+**三根正交轴**：动作 `action`（做什么，39 项封闭动词 + `params`）、属性 `attributes`（这键是什么性质，`sticky/repeatable/modifier`，对齐 AOSP `isSticky/isRepeatable/isModifier`）、事件 `when`（什么时候，13 个 `event.*`）。`attributes` 是从 `when` 提出的静态声明——`shift_lock` 不再是「双击切大写」这一事件的附属，而是「这键可锁定」的性质。三者互不越界，词表分别受控。
 - 修饰段来自共享词表，最多两个，且 `class` 必须排在 `state`/`context` 之前
 
-**特异性规则**：路径越长越优先，短路径是长路径的回退。`color.key.surface.space.pressed` 未定义 → 退 `color.key.surface.space` → 退 `color.key.surface`。这与 `fallback_colors` 的字符串链、CSS 层叠是同一套规则，也与 `preset_key_style.default` 的样式回退一致——**一条规则，不是三套**。
+**特异性规则**：路径越长越优先，短路径是长路径的回退。`color.key.background.space.pressed` 未定义 → 退 `color.key.background.space` → 退 `color.key.background`。这与 `fallback_colors` 的字符串链、CSS 层叠是同一套规则，也与 `preset_key_style.default` 的样式回退一致——**一条规则，不是三套**。
 
 **值格式**：`"0xAARRGGBB"`，一律加引号。YAML 里 `#` 是注释符，所以不用元书的 `#RRGGBBAA`；`0x...` 不加引号可能被 YAML 1.1 当整数。
 
@@ -85,7 +93,7 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 ```yaml
 # my.trime.custom.yaml
 patch:
-  "preset_color_schemes/yuanshu-light/color/key/surface/system/pressed": "0xFFFFFFFF"
+  "preset_color_schemes/yuanshu-light/color/key/background/system/pressed": "0xFFFFFFFF"
 ```
 
 ## 4. 协调的实质：`class` 与 `state` 是两份共享词表
@@ -93,7 +101,7 @@ patch:
 统一**不是**把颜色和动作的名字改得一样长，而是让它们在一条驱动链上咬合：
 
 ```
-event.swipe_left → action.edit.moveCursor → state: pressed → color.key.surface.space.pressed
+event.swipe_left → action.edit.moveCursor → state: pressed → color.key.background.space.pressed
 ```
 
 按键声明的 `class`、动作产生的 `state`，**就是颜色路径的末两段**。拼错一个词，两侧同时失效，所以词表不能各写一份，必须统一放在 `vocabulary.yaml` 并双向校验：
@@ -106,7 +114,7 @@ event.swipe_left → action.edit.moveCursor → state: pressed → color.key.sur
 
 `class` / `state` / `context` **不加命名空间前缀**：在按键里作属性值、在颜色里作修饰段，靠位置区分；前缀只留给跨字段引用、`patch`、诊断和词表本身。
 
-一个术语歧义必须消掉：`preedit` 是「编码区」这一 **UI 域**（仓库里本来就有 `InlinePreeditMode.kt`），`composing` 是「输入中」这一 **上下文态**。`color.preedit.content` 与 `color.key.surface.action.composing` 分工不同，不可混用。
+一个术语歧义必须消掉：`preedit` 是「编码区」这一 **UI 域**（仓库里本来就有 `InlinePreeditMode.kt`），`composing` 是「输入中」这一 **上下文态**。`color.preedit.foreground` 与 `color.key.background.action.composing` 分工不同，不可混用。
 
 ## 5. 四轴正交
 
@@ -145,10 +153,10 @@ key.edit.space:
   geometry: { row: 3, col: 3, span: 3 }
 
 # 颜色侧（值取自默认方案，6 位补 alpha）
-color.key.surface.space:           "0xFFECEFF1"
-color.key.content.space:           "0xFF37474F"
-color.key.surface.space.pressed:   "0xFFD3D7DA"
-color.key.surface.space.capsLock:  "0xFFD0D8E8"
+color.key.background.space:           "0xFFECEFF1"
+color.key.foreground.space:           "0xFF37474F"
+color.key.background.space.pressed:   "0xFFD3D7DA"
+color.key.background.space.capsLock:  "0xFFD0D8E8"
 ```
 
 `class: space` 是颜色路径的修饰段，动作产生的 `state` 是末段。`fixed_key_bar` 只需 `{ key: key.edit.space, label: 空格 }`，`space1` 消失（`Return1` / `Return2` / `BackSpace2` / `Shift_L3` 同理）。
