@@ -176,7 +176,12 @@ check(8, "class / state / context 两两不交（修饰段无歧义）", ok,
 
 # ── 09 结构完整性 ─────────────────────────────────────────────
 mr = V.get("modifier_rules", {})
-ok = all(k in mr for k in ["pool", "max_class", "max_state_or_context", "order"])
+# 源码 Key.kt 的二维状态轴要求两段 state，故 modifier_rules 由
+# max_state_or_context 改为 max_state + state_order，且 class 与 state 正交。
+ok = all(k in mr for k in ["pool", "max_class", "order"])
+ok = ok and ("max_state" in mr or "max_state_or_context" in mr)
+ok = ok and "state_order" in mr and mr.get("max_state", 1) == 2
+ok = ok and mr.get("class_state_context_mutually_exclusive") is False
 ok = ok and set(V.get("axes", [])) == {"when", "action", "class_and_state", "geometry"}
 ok = ok and len(M.get("resolve_order", [])) >= 5 and "field" in M.get("version_gate", {})
 check(9, "modifier_rules / axes / resolve_order / version_gate 齐全", ok)
@@ -361,9 +366,11 @@ check(23, "Naming.md 的计数标记与词表 / 源码一致", not bad and len(d
 
 # ── 24 交付文件齐全 ───────────────────────────────────────────
 files = ["README.md", "Naming.md", "vocabulary.yaml", "examples.yaml",
-         "legacy-map.yaml", "validate.py"]
+         "legacy-map.yaml", "validate.py", "color-registry.yaml",
+         "build_registry.py"]
 missing = [f for f in files if not (ROOT / f).is_file()]
-check(24, "交付包 6 个文件齐全", not missing, f"缺失：{missing}" if missing else f"{len(files)} 个")
+check(24, "交付包文件齐全", not missing,
+      f"{len(files)} 个" if not missing else f"缺失：{missing}")
 
 # ── 25 零侵入 ─────────────────────────────────────────────────
 try:
@@ -385,10 +392,14 @@ stale = [f for f in structural
                 for w in (".surface", ".content", "onSurface"))]
 prose = (ROOT / "Naming.md").read_text(encoding="utf-8")
 prose_stale = any(w in prose for w in (".surface", ".content"))
-ok26 = PART == want and not stale and not prose_stale
-check(26, "部件词定稿 background / foreground，结构文件无旧词残留",
+# separator 是以源码为锚后新增的部件词（CANDIDATE_SEPARATOR_COLOR 不能与
+# CANDIDATE_BORDER_COLOR 共占 candidate.outline），只允许这一种扩充。
+extra = PART - want
+ok26 = want <= PART and extra <= {"separator"} and not stale and not prose_stale
+check(26, "部件词定稿 background / foreground，新增 separator 有源码依据",
       ok26,
-      f"{sorted(PART)}" if ok26 else f"词表 {sorted(PART)} / 残留 {stale} / 散文路径残留 {prose_stale}")
+      f"定稿五词 + 源码补充 {sorted(extra)}" if ok26
+      else f"词表 {sorted(PART)} / 残留 {stale} / 散文路径残留 {prose_stale}")
 
 # ── 27 state 补 active 且三表正交（B 方案 ②）───────────────────
 ok27 = "active" in STATE and not (STATE & CLASS or STATE & CONTEXT)
@@ -416,6 +427,78 @@ check(28, "动作域分语义/来源类，class_variant / direction / key_attrib
 ok29 = bool(cv) and all(seg_ok(k) and seg_ok(v) for k, v in cv.items())
 check(29, "class_variant 的 variant / 基类均命中 class 且为合法段", ok29,
       f"{cv}" if ok29 else "变体键值越界")
+
+# ── 30 规范色表以源码为锚（不以任何主题样本为限）──────────────
+reg = load("color-registry.yaml")
+src = reg["source"]
+keys = set(src["color_keys"])
+covered = set(reg["canonical"]) | set(reg["synonyms"])
+ok30 = (src["enum_count"] == 52 and len(keys) == 52
+        and src["fallback_chain_count"] == 49
+        and len(src["fallback_chains"]) == 49
+        and src["style_key_count"] == 58
+        and len(reg["style_fields"]) == 58
+        and covered == keys)
+check(30, "规范色表以源码为锚：52 枚举全覆盖，49 链 / 58 style 字段自包含",
+      ok30, f"canonical {len(reg['canonical'])} + synonyms {len(reg['synonyms'])}"
+            f" = {len(covered)}；缺 {sorted(keys - covered)[:3]}")
+
+# ── 31 去歧义 R1/R2/R3/R6 与六条规则清单 ───────────────────────
+cpaths = list(reg["canonical"].values())
+r1 = len(cpaths) == len(set(cpaths))
+r2 = all("evidence" in s and s["path"] in set(cpaths)
+         for s in reg["synonyms"].values())
+r3 = not (set(reg["aliases"]) & set(reg["canonical"]))
+r6 = set(reg["value_types"]) == {"color", "image"}
+rule_ids = {r["id"] for r in reg["rules"]}
+ok31 = r1 and r2 and r3 and r6 and rule_ids == {f"R{i}" for i in range(1, 7)}
+check(31, "去歧义 R1/R2/R3/R6 与六条规则清单齐备", ok31,
+      f"唯一 {r1} / 同义证据 {r2} / 别名隔离 {r3} / 值域 {r6} / 规则 {sorted(rule_ids)}")
+
+# ── 32 R5 回退链无环 + 补充色码有依据 ──────────────────────────
+fb2 = reg["fallbacks"]
+def no_cycle():
+    for start in fb2:
+        cur, seen = start, set()
+        while cur in fb2:
+            if cur in seen:
+                return False
+            seen.add(cur)
+            cur = fb2[cur]
+    return True
+fb_bad = [f"{a}->{b}" for a, b in fb2.items()
+          if b not in set(cpaths) | set(reg["supplementary"])]
+sup = reg["supplementary"]
+allowed = DOMAIN | SUB | PART | CLASS | STATE | CONTEXT | set(voc.get("direction", []))
+sup_bad = []
+for pth, meta in sup.items():
+    segs = pth.split(".")
+    if segs[0] not in DOMAIN:
+        sup_bad.append(f"{pth} domain")
+    if any(s not in allowed for s in segs[1:]):
+        sup_bad.append(f"{pth} 段")
+    if not any(s in PART for s in segs):
+        sup_bad.append(f"{pth} 缺部件")
+    if not all(k in meta for k in ("origin", "reason", "status")):
+        sup_bad.append(f"{pth} 缺依据")
+    if pth in set(cpaths):
+        sup_bad.append(f"{pth} 与规范冲突")
+ok32 = no_cycle() and not fb_bad and len(fb2) >= 47 and not sup_bad
+check(32, f"回退链 {len(fb2)} 条无环、补充色码 {len(sup)} 条均附来源与理由",
+      ok32, "47 条 + 2 同义自环；方位 hint / disabled / active / focused / selected"
+            if ok32 else f"悬空 {fb_bad[:2]} / 补充 {sup_bad[:3]}")
+
+# ── 33 源码漂移检测：枚举一变，规范必须重生成 ──────────────────
+import hashlib
+color_src = REPO / "app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt"
+if color_src.is_file():
+    sha = hashlib.sha256(color_src.read_bytes()).hexdigest()
+    ok33 = sha == src["color_key_sha256"]
+    check(33, "源码 sha256 与规范色表一致（枚举变更须重跑生成器）",
+          ok33, f"{sha[:12]}")
+else:
+    check(33, "源码 sha256 与规范色表一致", True,
+          "源码不在仓库检出内，按 registry 自包含清单核对（跳过直读）", warn=True)
 
 # ── 汇总 ──────────────────────────────────────────────────────
 print("=" * 78)

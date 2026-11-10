@@ -46,6 +46,8 @@ axes:
 vocabulary:
 
   # color 路径：color.<domain>[.<sub>].<part>[.<class>][.<state|context>]
+  # 域取自源码 UI 归属，不是某份主题用到的字段。keyboard 对应
+  # KEYBOARD_BACK_COLOR / KEYBOARD_BACKGROUND 两个引擎枚举。
   color_domain:
     - key
     - preedit
@@ -54,25 +56,31 @@ vocabulary:
     - toolbar
     - clipboard
     - root
+    - keyboard
     - smartbar
 
   # 可选子域：容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
+  # longText 对应 LONG_TEXT_COLOR / LONG_TEXT_BACK_COLOR（键面长标签）
   color_sub:
     - comment
     - label
     - bar
     - item
+    - longText
 
   # 部件词：与元书 Foreground/Background、foxy Text/background、V3
   # *_text_color / *_back_color 对齐。foreground 覆盖主文字与图标 tint
   #（keyTextColor 亦被 TabUi / PaginationUi 复用）；background 为键面与容器底色。
   # 状态不进部件词，恒在路径末段。
+  # separator 来自 CANDIDATE_SEPARATOR_COLOR：分隔线与边框是不同视觉对象，
+  # 与 CANDIDATE_BORDER_COLOR 不能共占一条路径（R1 一值一路径）。
   color_part:
     - background
     - foreground
     - hint
     - outline
     - elevation
+    - separator
 
   # 共享词表 ①：class —— 按键的 class 值 == 颜色路径的修饰段
   # space 是 character 的 variant，modifier 是 system 的 variant（对齐 foxy keyType）。
@@ -86,14 +94,19 @@ vocabulary:
 
   # 共享词表 ②：state —— 动作产生的视觉状态 == 颜色路径的末段
   # 颜色路径末段严格共用本表（或 context），不另造状态词。
+  # 持续态 persistent：描述「这键/图标处于什么状态」，可保持
+  # 瞬时态 transient：描述「这一刻发生了什么」，不持久
+  # 注意：不用 on/off —— YAML 1.1 将二者解析为布尔字面量，作为 token 段
+  # 会造成解析歧义。源码 ON_KEY_*/OFF_KEY_* 统一映射到 active/inactive。
   state:
     - normal
+    - active       # 激活：工具栏图标（foxy）/ 可切换键（源码 ON_KEY_*，Key.kt 状态 2）
+    - inactive     # 未激活：可切换键（源码 OFF_KEY_*，Key.kt 状态 1）
+    - capsLock     # deprecated：由 active/inactive 取代，仅为兼容样本产物保留
     - pressed
     - selected
     - focused
     - disabled
-    - active       # 单手 / 语音 / 分体 / 尺寸等激活态（foxy 工具栏）
-    - capsLock
     - popup
     - trail
 
@@ -253,7 +266,27 @@ vocabulary:
 modifier_rules:
   pool: "class ∪ state ∪ context"
   max_class: 1
-  max_state_or_context: 1
-  order: "class 必须排在 state/context 之前"
-  class_state_context_mutually_exclusive: true
+  # 源码 Key.kt:340-341 证明 on/off（持续态）与 hilited（瞬时态）是两根正交轴：
+  # 状态 2/1 决定取 onKey*/offKey*，isPressed 再决定取 hlOnKey*/hlOffKey*。
+  # 故允许两个 state 段，顺序固定，class 恒在最前。
+  max_state: 2
+  state_order: "persistent(active/inactive/capsLock) -> transient(pressed/selected/focused/disabled)"
+  order: "class 排在 state/context 之前；持续态排在瞬时态之前"
+  class_state_context_mutually_exclusive: false
   subdomain_optional: true
+
+# 值域：ColorTable.Value 为 Color / Image / None 三态，二者不可混用（R6）
+value_type:
+  - color        # "0xAARRGGBB"
+  - image        # .png / .webp / .jpg / .gif，按背景目录下的文件名解析
+
+# 事实来源：规范色表以引擎源码为锚，不由主题样本反推
+source_anchor:
+  files:
+    - "app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt"
+    - "app/src/main/java/com/osfans/trime/data/theme/model/GeneralStyle.kt"
+    - "app/src/main/java/com/osfans/trime/data/theme/ColorTable.kt"
+    - "app/src/main/java/com/osfans/trime/ime/keyboard/KeyBehavior.kt"
+  registry: "doc/naming/color-registry.yaml"
+  generator: "doc/naming/build_registry.py"
+  rule: "新增或改名枚举须重跑生成器与校验器；主题样本只取子集，不得反向定义规范"

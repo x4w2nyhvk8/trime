@@ -1,0 +1,370 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 同文输入法规范色表 —— 唯一事实来源是引擎源码，不是任何一份主题。
+# 由 build_registry.py 自动生成，请勿手改数值；改规则请改脚本。
+# 规范正文：doc/naming/Naming.md「以源码为锚的规范色表」一章。
+
+version: 1
+source:
+  color_key_file: "app/src/main/java/com/osfans/trime/data/theme/ColorKey.kt"
+  color_key_sha256: "d047a6db6df45aa2b2f177387ba5432c5e12c46437fab0c4affdbb6a18c05fa5"
+  enum_count: 52
+  fallback_chain_count: 49
+  style_file: "app/src/main/java/com/osfans/trime/data/theme/model/GeneralStyle.kt"
+  style_key_count: 58
+  behavior_count: 13
+  action_verb_count: 39
+  color_keys:
+    - "back_color"
+    - "border_color"
+    - "candidate_background"
+    - "candidate_border_color"
+    - "candidate_separator_color"
+    - "candidate_text_color"
+    - "comment_text_color"
+    - "hilited_back_color"
+    - "hilited_candidate_back_color"
+    - "hilited_candidate_button_color"
+    - "hilited_candidate_text_color"
+    - "hilited_comment_text_color"
+    - "hilited_key_back_color"
+    - "hilited_key_border_color"
+    - "hilited_key_text_color"
+    - "hilited_key_symbol_color"
+    - "hilited_label_color"
+    - "hilited_off_key_back_color"
+    - "hilited_off_key_border_color"
+    - "hilited_off_key_text_color"
+    - "hilited_off_key_symbol_color"
+    - "hilited_on_key_back_color"
+    - "hilited_on_key_border_color"
+    - "hilited_on_key_text_color"
+    - "hilited_on_key_symbol_color"
+    - "hilited_popup_back_color"
+    - "hilited_popup_text_color"
+    - "hilited_text_color"
+    - "key_back_color"
+    - "key_border_color"
+    - "key_text_color"
+    - "key_symbol_color"
+    - "keyboard_back_color"
+    - "keyboard_background"
+    - "label_color"
+    - "liquid_keyboard_background"
+    - "long_text_back_color"
+    - "long_text_color"
+    - "off_key_back_color"
+    - "off_key_border_color"
+    - "off_key_text_color"
+    - "off_key_symbol_color"
+    - "on_key_back_color"
+    - "on_key_border_color"
+    - "on_key_text_color"
+    - "on_key_symbol_color"
+    - "popup_back_color"
+    - "popup_text_color"
+    - "root_background"
+    - "shadow_color"
+    - "text_back_color"
+    - "text_color"
+  fallback_chains:
+    - "candidate_text_color -> text_color"
+    - "comment_text_color -> candidate_text_color"
+    - "border_color -> back_color"
+    - "candidate_separator_color -> border_color"
+    - "hilited_text_color -> text_color"
+    - "hilited_back_color -> back_color"
+    - "hilited_candidate_text_color -> hilited_text_color"
+    - "hilited_candidate_back_color -> hilited_back_color"
+    - "hilited_candidate_button_color -> hilited_candidate_back_color"
+    - "hilited_label_color -> hilited_candidate_text_color"
+    - "hilited_comment_text_color -> comment_text_color"
+    - "hilited_key_back_color -> hilited_candidate_back_color"
+    - "hilited_key_border_color -> key_border_color"
+    - "hilited_key_text_color -> hilited_candidate_text_color"
+    - "hilited_key_symbol_color -> hilited_comment_text_color"
+    - "hilited_off_key_back_color -> hilited_key_back_color"
+    - "hilited_on_key_back_color -> hilited_key_back_color"
+    - "hilited_off_key_border_color -> hilited_key_border_color"
+    - "hilited_on_key_border_color -> hilited_key_border_color"
+    - "hilited_off_key_text_color -> hilited_key_text_color"
+    - "hilited_on_key_text_color -> hilited_key_text_color"
+    - "hilited_off_key_symbol_color -> hilited_key_symbol_color"
+    - "hilited_on_key_symbol_color -> hilited_key_symbol_color"
+    - "key_back_color -> back_color"
+    - "key_border_color -> border_color"
+    - "key_text_color -> candidate_text_color"
+    - "key_symbol_color -> comment_text_color"
+    - "label_color -> candidate_text_color"
+    - "off_key_back_color -> key_back_color"
+    - "off_key_border_color -> key_border_color"
+    - "off_key_text_color -> key_text_color"
+    - "off_key_symbol_color -> key_symbol_color"
+    - "on_key_back_color -> hilited_key_back_color"
+    - "on_key_border_color -> hilited_key_border_color"
+    - "on_key_text_color -> hilited_key_text_color"
+    - "on_key_symbol_color -> hilited_key_symbol_color"
+    - "popup_back_color -> key_back_color"
+    - "popup_text_color -> key_text_color"
+    - "hilited_popup_back_color -> hilited_key_back_color"
+    - "hilited_popup_text_color -> hilited_key_text_color"
+    - "shadow_color -> border_color"
+    - "root_background -> back_color"
+    - "candidate_background -> back_color"
+    - "keyboard_back_color -> border_color"
+    - "keyboard_background -> keyboard_back_color"
+    - "liquid_keyboard_background -> keyboard_back_color"
+    - "text_back_color -> back_color"
+    - "long_text_color -> key_text_color"
+    - "long_text_back_color -> key_back_color"
+
+# 去歧义硬规则（validate.py 逐条校验）
+rules:
+  - { id: "R1", text: "一个可独立赋值的引擎色键占且仅占一条规范路径；禁止隐式合并" }
+  - { id: "R2", text: "语义重合的两代枚举必须在 synonyms 中显式声明并附源码证据，不得静默共用路径" }
+  - { id: "R3", text: "主题自定义字段只能进 aliases 或 class 修饰段，不得进 canonical" }
+  - { id: "R4", text: "持续态(on/off/active) 与瞬时态(pressed/selected) 正交，顺序固定：class -> 持续态 -> 瞬时态" }
+  - { id: "R5", text: "49 条内置回退链全部路径化显式写入 fallbacks，主题未写字段不依赖运行时隐式行为" }
+  - { id: "R6", text: "值域二元：0xAARRGGBB 或图片文件名(.png/.webp/.jpg/.gif)，二者不可混用" }
+
+# R1/R2：52 个引擎色键的规范路径。同义两代枚举另列 synonyms。
+canonical:
+  back_color: "root.background"
+  border_color: "root.outline"
+  shadow_color: "root.elevation"
+  keyboard_back_color: "keyboard.background"
+  liquid_keyboard_background: "toolbar.background"
+  text_back_color: "preedit.background"
+  text_color: "preedit.foreground"
+  hilited_text_color: "preedit.foreground.selected"
+  hilited_back_color: "preedit.background.selected"
+  candidate_background: "candidate.background"
+  candidate_border_color: "candidate.outline"
+  candidate_separator_color: "candidate.separator"
+  candidate_text_color: "candidate.foreground"
+  hilited_candidate_back_color: "candidate.background.selected"
+  hilited_candidate_text_color: "candidate.foreground.selected"
+  hilited_candidate_button_color: "candidate.bar.background"
+  comment_text_color: "candidate.comment.foreground"
+  hilited_comment_text_color: "candidate.comment.foreground.selected"
+  label_color: "candidate.label.foreground"
+  hilited_label_color: "candidate.label.foreground.selected"
+  key_back_color: "key.background"
+  key_border_color: "key.outline"
+  key_text_color: "key.foreground"
+  key_symbol_color: "key.hint"
+  hilited_key_back_color: "key.background.pressed"
+  hilited_key_border_color: "key.outline.pressed"
+  hilited_key_text_color: "key.foreground.pressed"
+  hilited_key_symbol_color: "key.hint.pressed"
+  off_key_back_color: "key.background.modifier.inactive"
+  off_key_border_color: "key.outline.modifier.inactive"
+  off_key_text_color: "key.foreground.modifier.inactive"
+  off_key_symbol_color: "key.hint.modifier.inactive"
+  on_key_back_color: "key.background.modifier.active"
+  on_key_border_color: "key.outline.modifier.active"
+  on_key_text_color: "key.foreground.modifier.active"
+  on_key_symbol_color: "key.hint.modifier.active"
+  hilited_off_key_back_color: "key.background.modifier.inactive.pressed"
+  hilited_off_key_border_color: "key.outline.modifier.inactive.pressed"
+  hilited_off_key_text_color: "key.foreground.modifier.inactive.pressed"
+  hilited_off_key_symbol_color: "key.hint.modifier.inactive.pressed"
+  hilited_on_key_back_color: "key.background.modifier.active.pressed"
+  hilited_on_key_border_color: "key.outline.modifier.active.pressed"
+  hilited_on_key_text_color: "key.foreground.modifier.active.pressed"
+  hilited_on_key_symbol_color: "key.hint.modifier.active.pressed"
+  popup_back_color: "popup.background"
+  popup_text_color: "popup.foreground"
+  hilited_popup_back_color: "popup.background.pressed"
+  hilited_popup_text_color: "popup.foreground.pressed"
+  long_text_back_color: "key.longText.background"
+  long_text_color: "key.longText.foreground"
+
+# R2：语义重合的枚举，显式声明并附源码证据，杜绝静默合并。
+synonyms:
+  root_background: { path: "root.background", evidence: "ColorKey.builtinFallbackColors: ROOT_BACKGROUND -> BACK_COLOR" }
+  keyboard_background: { path: "keyboard.background", evidence: "ColorKey.builtinFallbackColors: KEYBOARD_BACKGROUND -> KEYBOARD_BACK_COLOR" }
+
+# R5：源码 49 条内置回退链的路径化全集。
+fallbacks:
+  "candidate.foreground": "preedit.foreground"
+  "candidate.comment.foreground": "candidate.foreground"
+  "root.outline": "root.background"
+  "candidate.separator": "root.outline"
+  "preedit.foreground.selected": "preedit.foreground"
+  "preedit.background.selected": "root.background"
+  "candidate.foreground.selected": "preedit.foreground.selected"
+  "candidate.background.selected": "preedit.background.selected"
+  "candidate.bar.background": "candidate.background.selected"
+  "candidate.label.foreground.selected": "candidate.foreground.selected"
+  "candidate.comment.foreground.selected": "candidate.comment.foreground"
+  "key.background.pressed": "candidate.background.selected"
+  "key.outline.pressed": "key.outline"
+  "key.foreground.pressed": "candidate.foreground.selected"
+  "key.hint.pressed": "candidate.comment.foreground.selected"
+  "key.background.modifier.inactive.pressed": "key.background.pressed"
+  "key.background.modifier.active.pressed": "key.background.pressed"
+  "key.outline.modifier.inactive.pressed": "key.outline.pressed"
+  "key.outline.modifier.active.pressed": "key.outline.pressed"
+  "key.foreground.modifier.inactive.pressed": "key.foreground.pressed"
+  "key.foreground.modifier.active.pressed": "key.foreground.pressed"
+  "key.hint.modifier.inactive.pressed": "key.hint.pressed"
+  "key.hint.modifier.active.pressed": "key.hint.pressed"
+  "key.background": "root.background"
+  "key.outline": "root.outline"
+  "key.foreground": "candidate.foreground"
+  "key.hint": "candidate.comment.foreground"
+  "candidate.label.foreground": "candidate.foreground"
+  "key.background.modifier.inactive": "key.background"
+  "key.outline.modifier.inactive": "key.outline"
+  "key.foreground.modifier.inactive": "key.foreground"
+  "key.hint.modifier.inactive": "key.hint"
+  "key.background.modifier.active": "key.background.pressed"
+  "key.outline.modifier.active": "key.outline.pressed"
+  "key.foreground.modifier.active": "key.foreground.pressed"
+  "key.hint.modifier.active": "key.hint.pressed"
+  "popup.background": "key.background"
+  "popup.foreground": "key.foreground"
+  "popup.background.pressed": "key.background.pressed"
+  "popup.foreground.pressed": "key.foreground.pressed"
+  "root.elevation": "root.outline"
+  "candidate.background": "root.background"
+  "keyboard.background": "root.outline"
+  "toolbar.background": "keyboard.background"
+  "preedit.background": "root.background"
+  "key.longText.foreground": "key.foreground"
+  "key.longText.background": "key.background"
+
+# 补充色码：源码 52 枚举之外、语义必需且有参照实现依据的槽位。
+# status: proposed —— 需 V5 解析器支持；当前 Trime 忽略，不影响回退。
+supplementary:
+  "key.hint.up":
+    origin: "foxy keyHintTextTopColor / hintUp；元书 keyHintTextTopColor"
+    reason: "上滑提示文字按方位独立取色，源码只有一个 key_symbol_color，无法表达四方位"
+    status: proposed
+  "key.hint.down":
+    origin: "foxy keyHintTextBottomColor"
+    reason: "同上，下滑提示"
+    status: proposed
+  "key.hint.left":
+    origin: "foxy keyHintTextLeftColor"
+    reason: "同上，左滑提示"
+    status: proposed
+  "key.hint.right":
+    origin: "foxy keyHintTextRightColor"
+    reason: "同上，右滑提示"
+    status: proposed
+  "key.foreground.disabled":
+    origin: "AOSP Keyboard.Key isModifier/isSticky 状态机；MD3 disabled 层级"
+    reason: "源码无禁用态色键，主流输入法在按键不可用时降透明度，纯 YAML 只能靠独立槽位"
+    status: proposed
+  "key.background.disabled":
+    origin: "AOSP state-list selector disabled 态"
+    reason: "与 foreground.disabled 成对，避免只改文字不改底色"
+    status: proposed
+  "toolbar.foreground.active":
+    origin: "foxy 工具栏图标「单手/语音/分体/尺寸激活」"
+    reason: "源码 toolbar 只有 liquid_keyboard_background，激活态无槽位；state.active 已入词表但无色码"
+    status: proposed
+  "candidate.foreground.focused":
+    origin: "MD3 focus 层级；Fcitx5 SelectedColor"
+    reason: "selected 表示已高亮候选，focused 表示键盘导航焦点，二者可同时存在，源码合并了"
+    status: proposed
+  "popup.background.selected":
+    origin: "foxy 长按气泡选中项"
+    reason: "pressed 是手指按下瞬间，selected 是气泡内当前选中项，源码只提供 hilited_popup_* 一个态"
+    status: proposed
+  "root.foreground":
+    origin: "元书 Foreground / foxy Text / MD3 onSurface"
+    reason: "源码 key_text_color 被 TabUi / PaginationUi 当通用图标 tint 复用，却没有全局前景槽位"
+    status: proposed
+
+# R3：主题自定义字段 / 同义旧名，只能作别名，不进 canonical。
+aliases:
+  preview_back_color: { path: "popup.background", kind: synonym, evidence: "旧版悬浮预览字段名，与 popup_back_color 同义" }
+  preview_text_color: { path: "popup.foreground", kind: synonym, evidence: "旧版悬浮预览字段名，与 popup_text_color 同义" }
+  key_hint_color: { path: "key.hint", kind: synonym, evidence: "与 key_symbol_color 同义，均绘制键面辅助小字" }
+  functional_back_color: { path: "key.background.system", kind: theme_defined }
+  functional_text_color: { path: "key.foreground.system", kind: theme_defined }
+  hilited_functional_back_color: { path: "key.background.system.pressed", kind: theme_defined }
+  hilited_functional_text_color: { path: "key.foreground.system.pressed", kind: theme_defined }
+  candidate_back_color: { path: "candidate.background", kind: synonym }
+  candidate_shadow_color: { path: "candidate.elevation", kind: theme_defined }
+  hilited_candidate_shadow_color: { path: "candidate.elevation.selected", kind: theme_defined }
+  hilited_shadow_color: { path: "preedit.elevation", kind: theme_defined }
+  bc1: { path: "key.background.modifier", kind: theme_defined }
+  tc1: { path: "key.foreground.modifier", kind: theme_defined }
+  bc2: { path: "key.background.system", kind: theme_defined }
+  tc2: { path: "key.foreground.system", kind: theme_defined }
+  bc3: { path: "key.background.space", kind: theme_defined }
+  tc3: { path: "key.foreground.space", kind: theme_defined }
+  bc4: { path: "key.background.action", kind: theme_defined }
+  tc4: { path: "key.foreground.action", kind: theme_defined }
+  baoe: { path: "key.background.modifier", kind: theme_defined }
+  taoe: { path: "key.foreground.modifier", kind: theme_defined }
+
+# 源码 style 字段全集（几何/字体，与颜色共享对象词，不进 color.*）
+style_fields:
+  - auto_caps
+  - background_folder
+  - candidate_border
+  - candidate_border_round
+  - candidate_corner_radius
+  - candidate_font
+  - candidate_padding
+  - candidate_spacing
+  - candidate_text_size
+  - candidate_text_vertical_bias
+  - candidate_view_height
+  - comment_font
+  - comment_height
+  - comment_position
+  - comment_text_size
+  - comment_vertical_bias
+  - enter_label_mode
+  - enter_labels
+  - hanb_font
+  - horizontal_gap
+  - key_border
+  - key_font
+  - key_height
+  - key_hint_offset_x
+  - key_hint_offset_y
+  - key_long_text_size
+  - key_press_offset_x
+  - key_press_offset_y
+  - key_symbol_offset_x
+  - key_symbol_offset_y
+  - key_text_offset_x
+  - key_text_offset_y
+  - key_text_size
+  - key_width
+  - keyboard_height
+  - keyboard_height_land
+  - keyboard_padding
+  - keyboard_padding_bottom
+  - keyboard_padding_land
+  - keyboard_padding_land_bottom
+  - keyboard_padding_left
+  - keyboard_padding_right
+  - label_font
+  - label_text_size
+  - latin_font
+  - popup_bottom_margin
+  - popup_font
+  - popup_height
+  - popup_key_height
+  - popup_text_size
+  - popup_width
+  - reset_ascii_mode_on_focus_change
+  - round_corner
+  - shadow_radius
+  - symbol_font
+  - symbol_text_size
+  - text_font
+  - vertical_gap
+
+# R6：值域二元
+value_types:
+  color: "0xAARRGGBB"
+  image: [.png, .webp, .jpg, .gif]
+

@@ -71,14 +71,14 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 
 `color` 路径展开为 `color.<domain>[.<sub>].<part>[.<class>][.<state|context>]`：
 
-- `<domain>`：`key / preedit / candidate / popup / toolbar / clipboard / root / smartbar`
-- `<sub>`（可选）：`comment / label / bar / item` —— 容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
-- `<part>`：固定五个 `background / foreground / hint / outline / elevation`
-- 修饰段来自共享词表，最多两个，且 `class` 必须排在 `state`/`context` 之前
+- `<domain>`：`key / preedit / candidate / popup / toolbar / clipboard / root / keyboard / smartbar`（`keyboard` 来自 `KEYBOARD_BACK_COLOR` / `KEYBOARD_BACKGROUND`）
+- `<sub>`（可选）：`comment / label / bar / item / longText` —— 容纳 Rime 特有的信息层级，做成子树而非平级兄弟字段
+- `<part>`：固定六个 `background / foreground / hint / outline / elevation / separator`（`separator` 来自 `CANDIDATE_SEPARATOR_COLOR`，与 `outline` 是两个视觉对象）
+- 修饰段来自共享词表：`class` 最多 1 段、`state` 最多 2 段；顺序固定 `class` → 持续态 → 瞬时态（`Key.kt:340-341` 证明二者正交）
 
 > **部件词定稿说明**：对照元书 `Foreground`/`Background`、foxy `Text`/`background`、同文 V3 `*_text_color`/`*_back_color`，三家都直说「前景 / 文字」「背景」；V5 早期自造的 `surface`/`content` 是唯一需要查映射表才能读懂的一对，故改为 `background`/`foreground` 并**不撤回**。`foreground` 覆盖主文字与图标 tint（`keyTextColor` 亦被 `TabUi`/`PaginationUi` 复用），比 `text` 更准；也曾评估 MD3 的 `onSurface`/`onSurfaceVariant`，但它们表达「画在哪个容器之上」的配对关系，配套 `surfaceContainerLow/High` 一整层容器层级，纯 YAML 扁平色表没有容器概念，引入 `on*` 反而多一层解释，故不采用。`hint`（辅助小字）、`outline`（描边）、`elevation`（阴影）保留。
 
-**状态词表补 `active`**：单手 / 语音 / 分体 / 尺寸等工具栏图标的激活态；`state` 与 `class`、`context` 三表正交，颜色末段严格共用，不另造状态词。
+**状态词表**：`active`（工具栏图标激活 / 可切换键开）、`inactive`（可切换键关）、`capsLock`（deprecated，由前两者取代）。**不用 `on` / `off`**——YAML 1.1 把二者解析成布尔字面量，用作 token 段本身就是歧义；源码 `ON_KEY_*` / `OFF_KEY_*` 映射到 `active` / `inactive`。`state` 与 `class`、`context` 三表正交，颜色末段严格共用，不另造状态词。
 
 **域收口**：`key_domain`（8 词）全部并入 `action_domain`，后者按**语义类** `text/edit/modifier/nav/layout` 与**来源类** `rime/trime/device/system` 分组，对应 foxy 的 `rime.*` / `app` / `switch_layout`；`validate.py` 强制 `key_domain ⊆ action_domain`，杜绝两份词表各长各的。另设 `class_variant: {space: character, modifier: system}`（foxy 里空格的 `keyType` 是 `LETTER`、Shift 是 `FUNCTION`，本质是继承基类取色再覆盖差异段）与 `direction: up/down/left/right`（路径形如 `key.hint.up`，对齐 foxy `hintUp` 与元书 `keyHintTextTopColor`）。
 
@@ -86,7 +86,7 @@ Kotlin 模型层本来就是驼峰（`keyBackColor`、`hilitedKeyTextColor`、`l
 
 **特异性规则**：路径越长越优先，短路径是长路径的回退。`color.key.background.space.pressed` 未定义 → 退 `color.key.background.space` → 退 `color.key.background`。这与 `fallback_colors` 的字符串链、CSS 层叠是同一套规则，也与 `preset_key_style.default` 的样式回退一致——**一条规则，不是三套**。
 
-**值格式**：`"0xAARRGGBB"`，一律加引号。YAML 里 `#` 是注释符，所以不用元书的 `#RRGGBBAA`；`0x...` 不加引号可能被 YAML 1.1 当整数。
+**值格式**：`"0xAARRGGBB"`，一律加引号。YAML 里 `#` 是注释符，所以不用元书的 `#RRGGBBAA`；`0x...` 不加引号可能被 YAML 1.1 当整数。`ColorTable.Value` 还允许图片值（`.png` / `.webp` / `.jpg` / `.gif` 文件名），规范值域为**颜色或图片，二者不可混用**（R6）。
 
 **状态放末段**（而非现状的前缀 `hilited_`、官方扁平重命名的中缀），理由是 `patch` 寻址能「一截就到」：
 
@@ -116,7 +116,68 @@ event.swipe_left → action.edit.moveCursor → state: pressed → color.key.bac
 
 一个术语歧义必须消掉：`preedit` 是「编码区」这一 **UI 域**（仓库里本来就有 `InlinePreeditMode.kt`），`composing` 是「输入中」这一 **上下文态**。`color.preedit.foreground` 与 `color.key.background.action.composing` 分工不同，不可混用。
 
-## 5. 四轴正交
+## 5. 事实来源：以引擎源码为锚的规范色表
+
+规范不由任何一份主题反推。此前映射取自具体主题样本，换主题就漏字段：源码 52 个 `ColorKey` 枚举里样本只写了 41 个，12 个既没写也没被收录（含 `hilited_popup_back_color`）。现以引擎源码为唯一事实来源，`color-registry.yaml` 由 `build_registry.py` 从 `ColorKey.kt` 自动生成，**不含任何主题样本信息**。
+
+### 5.1 源码事实清单
+
+| 来源 | 数量 | 提供什么 |
+| --- | --- | --- |
+| `ColorKey.kt` 枚举 | 52 | 引擎保证的规范色键，YAML 拼写 = 枚举名小写 |
+| `ColorKey.builtinFallbackColors` | 49 | 内置回退链（三级解析的第三级） |
+| `ThemeColors.kt` getter | 52 | 运行时类型化读取，与枚举一一对应 |
+| `GeneralStyle.KNOWN_KEYS` | 58 | style 几何/字体字段，有 `ThemeDiagnosticsTest` 防漂移 |
+| `KeyBehavior.kt` / `ActionVerb.kt` | 13 / 39 | 触发时机 / 封闭动词 |
+| `ColorTable.resolveRawSource` | — | 三级解析：scheme → 主题 `fallback_colors` → 内置链；值域 Color / Image / None |
+
+引擎自己就分了两层：`ColorKey.kt` 注释写明「枚举覆盖内置回退链与运行时请求的每个键；主题自定义且不在枚举里的键，走 `ColorTable` 的字符串路径」。规范沿用这个分层。
+
+### 5.2 三层分离
+
+```
+源码（唯一事实来源）
+  ↓ build_registry.py 解析枚举 / 回退链 / style 字段
+规范层 color-registry.yaml   canonical 50 + synonyms 2 + fallbacks 47
+                             + supplementary 10 + aliases 21 + style_fields 58
+  ↓ 主题按需取子集
+主题层 *.trime.yaml          只写用到的路径；未写字段走显式回退链
+  ↓ 翻译表 + 反向降级
+运行时 V3 旧名               ColorKey 枚举 + 字符串路径
+```
+
+registry 自包含 52 个枚举名与 49 条回退链清单，并记录源码 `sha256`；第 33 项校验在枚举变更时报警。规范色表在 `docs/unified-naming` 与 `theme/v5-fangkua` 两分支各存一份**字节一致的副本**；样本侧的路径差异另放 `migration.yaml`，不进规范。
+
+### 5.3 六条去歧义规则
+
+| 规则 | 内容 |
+| --- | --- |
+| **R1** | 一个可独立赋值的引擎色键占且仅占一条规范路径，禁止隐式合并 |
+| **R2** | 语义重合的两代枚举在 `synonyms` 显式声明并附源码证据（`ROOT_BACKGROUND → BACK_COLOR`、`KEYBOARD_BACKGROUND → KEYBOARD_BACK_COLOR`） |
+| **R3** | 主题自定义字段只能进 `aliases` 或 `class` 修饰段，不得进 `canonical` |
+| **R4** | 持续态与瞬时态正交，顺序固定 class → 持续态 → 瞬时态 |
+| **R5** | 49 条内置回退链全部路径化显式写入 `fallbacks`（47 条 + 2 同义自环），不依赖运行时隐式行为 |
+| **R6** | 值域二元：颜色或图片，二者不可混用 |
+
+### 5.4 三个关键取舍
+
+1. **不用 `on` / `off`**：YAML 1.1 布尔字面量。`Key.kt:340-341` 里状态 2/1 决定取 `onKey*`/`offKey*`，`isPressed` 再决定取 `hlOnKey*`/`hlOffKey*`，是两根正交轴；映射到 `active` / `inactive` 后，路径形如 `key.foreground.modifier.active.pressed`。
+2. **`separator` 独立成部件**：`CANDIDATE_SEPARATOR_COLOR` 与 `CANDIDATE_BORDER_COLOR` 不能共占 `candidate.outline`（R1）。
+3. **`keyboard` 独立成域**：`KEYBOARD_BACK_COLOR` / `KEYBOARD_BACKGROUND` 不再与 `BACK_COLOR` 共占 `root.background`。
+
+同时 `longText` 成为子域（`LONG_TEXT_COLOR` / `LONG_TEXT_BACK_COLOR`），`modifier_rules` 由「class 与 state 互斥」改为「正交、最多两段」——互斥规则在源码全集的二维状态面前不成立。
+
+### 5.5 补充色码
+
+源码 52 枚举之外、有参照实现依据且语义必需的 10 条槽位，均标 `status: proposed`（需 V5 解析器支持，当前 Trime 忽略）：四方位 hint（foxy `keyHintText*Color` / 元书 `keyHintTextTopColor`）、`disabled` 前景与背景（AOSP state-list）、`toolbar.foreground.active`（foxy 激活图标）、`candidate.foreground.focused`（MD3 focus）、`popup.background.selected`（foxy 气泡选中项）、`root.foreground`（元书 `Foreground` / foxy `Text`；源码把 `keyTextColor` 当全局 tint 用却无全局前景槽位）。每条强制携带 `origin` 与 `reason`，第 32 项校验检查，杜绝凭空补词。
+
+### 5.6 与样本产物的边界
+
+具体主题的翻译表与产物保留原样、等价不变，它们是**规范色表的一个子集实例**而非规范本身。`migration.yaml` 登记样本路径到规范路径的 15 条差异，待 V5 解析器接入时统一切换，不是两套并存规范。第 30~33 项校验对源码覆盖度、去歧义规则、回退链无环、补充色码依据与源码漂移做硬约束。
+
+---
+
+## 6. 四轴正交
 
 | 轴 | 词表来源 | 消费方 |
 | --- | --- | --- |
@@ -131,7 +192,7 @@ event.swipe_left → action.edit.moveCursor → state: pressed → color.key.bac
 
 **动作枚举必须封闭**：新增动作是改代码 + 改词表，不是造一个新键名；否则会滑回 `Return1` 那种替身键。`params` 必须可 `patch`（如 `"preset_keys/.../when/swipe_left/params/continuous"`）。
 
-## 6. 例子：主键盘空格键
+## 7. 例子：主键盘空格键
 
 完整逐字对照见 `examples.yaml`（`current.*` 的 file/line/text 由 `validate.py` 回查源文件）。摘要：
 
@@ -163,7 +224,7 @@ color.key.background.space.capsLock:  "0xFFD0D8E8"
 
 **几何是独立第四轴**：它不属 `color.*`，但语法一致——`geometry.row` 同样是路径式、可 patch、可回退。`examples.yaml` 的 `layout_geometry` 给出 1D / 分体两种几何下**完全相同的颜色路径**。
 
-## 7. 兼容与迁移
+## 8. 兼容与迁移
 
 兼容层在 `legacy-map.yaml`：**49** 条旧颜色名、**12** 条自定义色标签、**18** 组旧键名映射，旧名全部作为别名保留，存量主题零改动。
 
@@ -184,14 +245,14 @@ color.key.background.space.capsLock:  "0xFFD0D8E8"
 3. 对齐 [osfans/trime#732](https://github.com/osfans/trime/issues/732) 的 `preset_color` + `preset_key_style` + `class` 骨架，从布局移除颜色参数（`class` 词表直接对应官方 `class`）
 4. `slideCursor` / `slideDelete` / `repeatable` / `shift_lock` 四个布尔收编成 `action` 动词 + 参数；状态轴独立；最后才补 Glide / 扩展 popup 等新能力
 
-## 8. 四条同文自己的东西
+## 9. 四条同文自己的东西
 
 1. **Rime 语义进命名树**：`preedit`（编码区）、`candidate.comment`（码提示）、`candidate.label`（候选序号）是中文输入法独有的信息层级，做成子树而非平级字段。
 2. **一切皆按键 + class**：[#732](https://github.com/osfans/trime/issues/732) 第 7 条——「候选栏中的选项、悬浮窗、点击按键弹出字符也抽象地看作具有特殊 class 的按键」。于是 `candidate` / `popup` / `toolbar` 复用 `color.key.*`，靠 `class` 区分，不必各有一套部件词表。
 3. **路径即补丁地址**：第三方皮肤靠 `*.trime.custom.yaml` 对单个字段打补丁，倒逼命名必须是从粗到细、可精确切分的路径。这是把 CSS 选择器「编译」成路径的理由——选择器不能被 `patch`，路径可以。
 4. **值可以是另一个名字**：`fallback_colors` + `ColorTable.resolveRawSource` 让颜色值不必是终结色值，可以是另一个 token 名，运行时沿链解析，主题作者还能在 custom 文件里往链上插一节点。命名在同文不只是标识符，是一张**可被 patch 改写的解析图**。
 
-## 9. 依据
+## 10. 依据
 
 | 依据 | 位置 |
 | --- | --- |
@@ -204,7 +265,7 @@ color.key.background.space.capsLock:  "0xFFD0D8E8"
 | 自定义色标签 `bkg/tkg/benter` | `app/src/main/assets/shared/tongwenfeng.trime.yaml:194-196` |
 | 下一代主题设计规范讨论（`preset_color` / `class` / 实时预览） | [osfans/trime#732](https://github.com/osfans/trime/issues/732) |
 
-## 10. 明确不做
+## 11. 明确不做
 
 - 不批量重命名存量 `preset_keys` 键名（它们是主题作者的事实 API）
 - 不把颜色定义搬出 YAML（`patch` / `__include` / 注释丢不起；JSON 仅作工具交换格式）
