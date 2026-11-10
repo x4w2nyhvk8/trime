@@ -60,7 +60,7 @@ def simplify(rows):
 
 data = {
     "schemes": {sid: sc["color"] for sid, sc in d5["schemes"].items()},
-    "pairs": d5["pairs"],
+    "slots": list(d5["schemes"].keys()),   # 固定 ["day", "night"]，配对由结构隐含
     "rows": simplify(d5["layouts"]["standard26.portrait"]["rows"]),
     "legacy": legacy_by_path,
     "fallback": d5["fallback_colors"],

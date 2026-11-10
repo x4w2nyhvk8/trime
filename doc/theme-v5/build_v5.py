@@ -3,7 +3,9 @@
 """Trime V5 主题方案构建器。
 
 从 ss.v3.trime.yaml（方块主题，config_version 3.0）按 v5-map.yaml 的规则生成：
-  ss.v5.trime.yaml            V5 主题方案（路径式颜色 / 行为 ID / 行数组布局）
+  ss.v5.trime.yaml            V5 主题方案（路径式颜色 / 行为 ID / 行数组布局，
+                              固定 day / night 两套配色）
+  parked-schemes.yaml         超出两套的 V3 配色完整归档（信息不丢失）
   ss.v3.generated.trime.yaml  反向降级产物，可导入当前 Trime
   build-report.json           转换统计与信息等价结论
 
@@ -24,6 +26,7 @@ V3 = ROOT / "ss.v3.trime.yaml"
 MAP = ROOT / "v5-map.yaml"
 V5 = ROOT / "ss.v5.trime.yaml"
 V3_GEN = ROOT / "ss.v3.generated.trime.yaml"
+PARKED = ROOT / "parked-schemes.yaml"
 REPORT = ROOT / "build-report.json"
 
 EPS = 1e-6
@@ -135,6 +138,22 @@ def build_pairs(d3):
         for light in light_of_dark.get(dark, []):
             pairs.append({"light": light, "dark": dark, "default": light == "default"})
     return pairs
+
+
+def canonical_schemes(schemes, d3):
+    """V5 规范：每主题只存在日间 / 夜间两套配色。
+
+    返回 (two, parked, ren)：
+      two    {"day": ..., "night": ...}，取默认配对的两个成员；
+      parked 其余配色（本例 Spring），完整归档到 parked-schemes.yaml，
+             信息不丢失，需要时拆成独立主题文件；
+      ren    原 sid → V5 槽位名，供 legacy_colors 改键。
+    """
+    dflt = next(p for p in build_pairs(d3) if p["default"])
+    two = {"day": schemes[dflt["light"]], "night": schemes[dflt["dark"]]}
+    ren = {dflt["light"]: "day", dflt["dark"]: "night"}
+    parked = {sid: s for sid, s in schemes.items() if sid not in ren}
+    return two, parked, ren
 
 
 # ── 键 ──────────────────────────────────────────────────────────
@@ -388,7 +407,8 @@ def emit_rows(rows, indent=6):
     return "\n".join(out)
 
 
-def emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs, keys, aliases, layouts, pt):
+def emit_v5(d3, m, two, parked, ren, legacy, fallbacks, dropped_fb,
+            keys, aliases, layouts, pt):
     L = []
     A = L.append
     A("# Trime V5 主题方案 —— 方块（由 build_v5.py 自 ss.v3.trime.yaml 生成）")
@@ -407,9 +427,12 @@ def emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs, keys, aliases,
     A(pt)
     A("")
     A("# ── B. 颜色：路径式 color.<domain>[.<sub>].<part>[.<class>][.<state>] ──")
+    A("# 规范：每个主题只存在日间（day）与夜间（night）两套配色，配对由结构隐含，")
+    A("# 不再需要 pairs / dark_scheme / light_scheme。V3 的多余配色归档于")
+    A("# parked-schemes.yaml，需要时拆成独立主题文件（自带 day + night）。")
     A("# 值统一 \"0xAARRGGBB\"；长路径优先，短路径回退；状态恒在末段便于 patch 一截就到。")
     A("schemes:")
-    for sid, s in schemes.items():
+    for sid, s in two.items():
         A(f"  {sid}:")
         A(f"    name: {q(s['name'])}")
         A(f"    author: {q(s['author'])}")
@@ -417,12 +440,6 @@ def emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs, keys, aliases,
         A("    color:")
         for path, val in s["color"].items():
             A(f"      {q(path)}: {q(val)}")
-    A("")
-    A("# 显式明暗配对，替代容易悬空的双向 dark_scheme / light_scheme。")
-    A("# V3 里 Spring → night 但 night 只认 default，Spring 的深色关联实际落空。")
-    A("pairs:")
-    for p in pairs:
-        A(f"  - {{ light: {q(p['light'])}, dark: {q(p['dark'])}, default: {str(p['default']).lower()} }}")
     A("")
     A("# 回退链：值可以是另一个路径名，运行时沿链解析（沿用 ColorTable.resolveRawSource）。")
     A("fallback_colors:")
@@ -436,10 +453,12 @@ def emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs, keys, aliases,
     for lab, path in m["label_map"].items():
         A(f"  {lab}: {q(path)}")
     A("")
-    if legacy:
+    legacy_two = {ren[sid]: fields for sid, fields in legacy.items() if sid in ren}
+    if legacy_two:
         A("# 一词多义 / 同路径多值：不猜测语义，逐字保留原值，待作者确认后收敛。")
+        A("# 被归档配色（见 parked-schemes.yaml）的遗留字段随归档走，不占主题槽位。")
         A("legacy_colors:")
-        for sid, fields in legacy.items():
+        for sid, fields in legacy_two.items():
             A(f"  {sid}:")
             for k, v in fields.items():
                 if k == "_conflict_paths":
@@ -484,6 +503,33 @@ def emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs, keys, aliases,
 
 
 # ── 反向降级 ────────────────────────────────────────────────────
+def emit_parked(parked, legacy, ren_unused=None):
+    """多余配色归档：V5 主题槽位只有 day / night，其余方案完整落盘。"""
+    L = []
+    A = L.append
+    A("# V5 规范：每个主题只存在日间（day）与夜间（night）两套配色。")
+    A("# 原 V3 里超出两套的方案完整归档于此，颜色值逐字保留、信息不丢失；")
+    A("# 需要启用时，复制本文件为一个独立主题（自带 day + night 两个槽位）。")
+    A("parked_schemes:")
+    for sid, s in parked.items():
+        A(f"  {sid}:")
+        A(f"    name: {q(s['name'])}")
+        A(f"    author: {q(s['author'])}")
+        A(f"    appearance: {s['appearance']}")
+        A("    color:")
+        for path, val in s["color"].items():
+            A(f"      {q(path)}: {q(val)}")
+        fields = legacy.get(sid) or {}
+        if fields:
+            A("    legacy:")
+            for k, v in fields.items():
+                if k == "_conflict_paths":
+                    A(f"      # 路径冲突: {json.dumps(v, ensure_ascii=False)}")
+                else:
+                    A(f"      {k}: {v if isinstance(v, (int, float)) else q(v)}")
+    return "\n".join(L) + "\n"
+
+
 def reverse_v3(d3, m, schemes, legacy, fallbacks, layouts):
     """以原 V3 为基底，用 V5 的配色与布局重建可导入文件；未迁移键库原样保留。"""
     out = copy.deepcopy(d3)
@@ -673,11 +719,11 @@ def main():
 
     schemes, legacy, cstats = build_colors(d3, m)
     fallbacks, dropped_fb = build_fallbacks(d3, m)
-    pairs = build_pairs(d3)
+    two, parked, ren = canonical_schemes(schemes, d3)
     keys, aliases, usage = build_keys(d3, m)
     layouts = build_layouts(d3, m)
 
-    text = emit_v5(d3, m, schemes, legacy, fallbacks, dropped_fb, pairs,
+    text = emit_v5(d3, m, two, parked, ren, legacy, fallbacks, dropped_fb,
                    keys, aliases, layouts, pt)
     # 生成即自检可解析
     try:
@@ -687,6 +733,7 @@ def main():
         (ROOT / "ss.v5.broken.yaml").write_text(text, encoding="utf-8")
         return 1
     V5.write_text(text, encoding="utf-8")
+    PARKED.write_text(emit_parked(parked, legacy), encoding="utf-8")
 
     gen = reverse_v3(d3, m, schemes, legacy, fallbacks, layouts)
     gen_text = emit_v3(gen, pt)
@@ -702,9 +749,10 @@ def main():
                      "fallback_chains": len(d3["fallback_colors"]),
                      "placeholder_keys": sum(1 for kb in d3["preset_keyboards"].values()
                                              for e in (kb.get("keys") or []) if "click" not in e)},
-        "v5": {"color_paths_per_scheme": {k: len(v["color"]) for k, v in schemes.items()},
+        "v5": {"color_paths_per_scheme": {k: len(v["color"]) for k, v in two.items()},
                "fallback_chains": len(fallbacks),
-               "pairs": len(pairs),
+               "scheme_slots": ["day", "night"],
+               "parked_schemes": sorted(parked),
                "key_ids": len(keys),
                "key_aliases": len(aliases),
                "layout_scenes": len(layouts),
@@ -715,7 +763,8 @@ def main():
         "dropped_fallback_chains": dropped_fb,
         "equivalence_issues": issues,
         "bytes": {"v3": V3.stat().st_size, "v5": V5.stat().st_size,
-                  "v3_generated": V3_GEN.stat().st_size},
+                  "v3_generated": V3_GEN.stat().st_size,
+                  "parked": PARKED.stat().st_size},
     }
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))

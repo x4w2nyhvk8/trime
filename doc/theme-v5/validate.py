@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parent
 FILES = ["ss.v3.trime.yaml", "ss.v5.trime.yaml", "v5-map.yaml",
          "vocabulary.yaml", "v5-addendum.yaml", "build_v5.py",
          "gen_preview.py", "preview.html", "V5主题方案.md",
-         "build-report.json", "ss.v3.generated.trime.yaml"]
+         "build-report.json", "ss.v3.generated.trime.yaml",
+         "parked-schemes.yaml"]
 
 results = []
 
@@ -96,9 +97,9 @@ def main():
     check(6, "token 段内 lowerCamel、缩写按普通词", not badseg,
           f"{sum(len(p.split('.')) for _, p, _ in vals)} 段" if not badseg else f"{sorted(set(badseg))[:5]}")
 
-    # ── 7 三套方案路径集合一致 ──
+    # ── 7 两套配色路径集合一致 ──
     psets = [set(sc["color"]) for sc in d5["schemes"].values()]
-    check(7, "三套方案 color 路径集合完全一致", all(p == psets[0] for p in psets),
+    check(7, "day / night 两套 color 路径集合完全一致", all(p == psets[0] for p in psets),
           f"{len(psets[0])} 条 × {len(psets)} 套")
 
     # ── 8 fallback_colors 两端路径有效 ──
@@ -108,25 +109,34 @@ def main():
     check(8, "fallback_colors 为路径式且至少一端在方案内", not badfb,
           f"{len(fb)} 条链" if not badfb else f"{badfb[:3]}")
 
-    # ── 9 pairs 引用有效且明暗配对正确 ──
-    pairs = d5.get("pairs") or []
-    pair_bad = []
-    for p in pairs:
-        l, dk = p["light"], p["dark"]
-        if l not in d5["schemes"] or dk not in d5["schemes"]:
-            pair_bad.append(f"{l}/{dk} 方案不存在")
-        elif d5["schemes"][l]["appearance"] != "light" or d5["schemes"][dk]["appearance"] != "dark":
-            pair_bad.append(f"{l}/{dk} appearance 不匹配")
-    check(9, "pairs 显式配对、无悬空双向互指", not pair_bad,
-          f"{len(pairs)} 组" if not pair_bad else f"{pair_bad}")
+    # ── 9 主题只存在日间 / 夜间两套 ──
+    slots = list(d5["schemes"].keys())
+    ok9 = slots == ["day", "night"] and d5["schemes"]["day"]["appearance"] == "light" \
+        and d5["schemes"]["night"]["appearance"] == "dark" and "pairs" not in d5
+    check(9, "每主题只存在 day(日间)/night(夜间) 两套，配对由结构隐含", ok9,
+          f"schemes = {slots}, pairs 段{'存在' if 'pairs' in d5 else '已取消'}")
 
-    # ── 10 Spring 的深色关联被修复 ──
-    has_spring = any(p["light"] == "Spring" and p["dark"] == "night" for p in pairs)
-    v3_spring = d3["preset_color_schemes"]["Spring"].get("dark_scheme")
-    v3_night = d3["preset_color_schemes"]["night"].get("light_scheme")
-    check(10, "V3 悬空关联已修正（Spring→night 但 night 只认 default）",
-          has_spring and v3_spring == "night" and v3_night != "Spring",
-          f"V3: Spring→{v3_spring}, night→{v3_night}; V5: {[p['light'] for p in pairs]}")
+    # ── 10 多余配色已完整归档（信息不丢失）──
+    parked_doc = load("parked-schemes.yaml") if (ROOT / "parked-schemes.yaml").is_file() else {}
+    parked = parked_doc.get("parked_schemes") or {}
+    extra = [s for s in d3["preset_color_schemes"] if s not in ("default", "night")]
+    ok10 = set(parked) == set(extra)
+    bad_archive = []
+    for sid in extra:
+        pk = parked.get(sid) or {}
+        pleg = pk.get("legacy") or {}
+        for field, val in d3["preset_color_schemes"][sid].items():
+            if field in ("name", "author", "dark_scheme", "light_scheme", "color_format"):
+                continue
+            path = mp["color_map"].get(field) or mp["label_map"].get(field)
+            v5v = f"0x{val & 0xFFFFFFFF:08X}" if isinstance(val, int) else val
+            if path and pk.get("color", {}).get(path) == v5v:
+                continue          # 该字段是路径的当选值
+            if str(field) in pleg or field in pleg:
+                continue          # 该字段逐字保留在归档 legacy
+            bad_archive.append(f"{sid}.{field}")
+    check(10, f"多余配色 {extra} 已归档且逐字等于 V3", ok10 and not bad_archive,
+          f"归档 {sorted(parked)}" if ok10 and not bad_archive else f"{bad_archive[:5]}")
 
     # ── 11 color_aliases 路径有效 ──
     ca = d5.get("color_aliases") or {}
@@ -137,9 +147,10 @@ def main():
     # ── 12 legacy_colors 只收无法归约的字段 ──
     lc = d5.get("legacy_colors") or {}
     lc_fields = [k for v in lc.values() for k in v if k != "_conflict_paths"]
+    ren = {"day": "default", "night": "night"}   # V5 槽位 → V3 原 sid
     lc_bad = [(s, f, v) for s, fields in lc.items() for f, v in fields.items()
               if f != "_conflict_paths"
-              and d3["preset_color_schemes"][s].get(f) != v]
+              and d3["preset_color_schemes"].get(ren.get(s, s), {}).get(f) != v]
     check(12, "legacy_colors 逐字保留原值、不猜测语义", not lc_bad,
           f"{len(lc_fields)} 个冲突字段待作者确认" if not lc_bad else f"{lc_bad[:3]}")
 
@@ -269,7 +280,9 @@ def main():
     keys_ok = gen["preset_keys"] == d3["preset_keys"]
     check(25, "V5→V3 反向降级信息无损",
           not rep["equivalence_issues"] and color_ok and keys_ok,
-          f"等价差异 {len(rep['equivalence_issues'])} 项；61 色值 ×3 套 + 161 键库逐字一致")
+          f"等价差异 {len(rep['equivalence_issues'])} 项；61 色值 ×3 套 + 161 键库逐字一致"
+          if not rep["equivalence_issues"] and color_ok and keys_ok
+          else f"等价差异 {rep['equivalence_issues'][:3]}")
 
     # ── 26 反向产物可导入当前 Trime ──
     check(26, "反向产物 config_version 3.0 且结构完整",
@@ -290,15 +303,15 @@ def main():
     except Exception:
         pv_ok = False
     check(27, "预览内嵌数据与 V5 方案一致", pv_ok,
-          "三套配色路径数逐套核对" if pv_ok else "内嵌 JSON 缺失或不一致")
+          "day / night 路径数逐套核对" if pv_ok else "内嵌 JSON 缺失或不一致")
 
     # ── 28 文档计数反查 ──
     doc = (ROOT / "V5主题方案.md").read_text(encoding="utf-8")
     counts_ok = all(str(n) in doc for n in
                     [len(ids), len(vals) // len(d5["schemes"]), len(fb),
-                     len(pairs), len(ka), rep["baseline"]["preset_keys"]])
+                     len(parked), len(ka), rep["baseline"]["preset_keys"]])
     check(28, "方案文档中的计数与生成数据一致", counts_ok,
-          f"ID {len(ids)} / 路径 {len(vals)//len(d5['schemes'])} / 链 {len(fb)} / 配对 {len(pairs)} / 别名 {len(ka)}")
+          f"ID {len(ids)} / 路径 {len(vals)//len(d5['schemes'])} / 链 {len(fb)} / 归档 {len(parked)} / 别名 {len(ka)}")
 
     # ── 汇总 ──
     n = {t: sum(1 for r in results if r[0] == t) for t in ("PASS", "WARN", "FAIL")}

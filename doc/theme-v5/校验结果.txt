@@ -1,15 +1,15 @@
-[PASS]  1 交付包文件齐全  — 11 个
+[PASS]  1 交付包文件齐全  — 12 个
 [PASS]  2 5 份 YAML + 反向产物均可解析
 [PASS]  3 config_version 5.0 / trime_version 5  — 5.0 / 5
-[PASS]  4 颜色值统一 0xAARRGGBB 字符串  — 129 个值
+[PASS]  4 颜色值统一 0xAARRGGBB 字符串  — 86 个值
 [PASS]  5 颜色路径逐段命中受控词表  — 43 条唯一路径
-[PASS]  6 token 段内 lowerCamel、缩写按普通词  — 366 段
-[PASS]  7 三套方案 color 路径集合完全一致  — 43 条 × 3 套
+[PASS]  6 token 段内 lowerCamel、缩写按普通词  — 244 段
+[PASS]  7 day / night 两套 color 路径集合完全一致  — 43 条 × 2 套
 [PASS]  8 fallback_colors 为路径式且至少一端在方案内  — 28 条链
-[PASS]  9 pairs 显式配对、无悬空双向互指  — 2 组
-[PASS] 10 V3 悬空关联已修正（Spring→night 但 night 只认 default）  — V3: Spring→night, night→default; V5: ['default', 'Spring']
+[PASS]  9 每主题只存在 day(日间)/night(夜间) 两套，配对由结构隐含  — schemes = ['day', 'night'], pairs 段已取消
+[PASS] 10 多余配色 ['Spring'] 已归档且逐字等于 V3  — 归档 ['Spring']
 [PASS] 11 自定义色标签全部降为路径别名  — 10 个标签
-[PASS] 12 legacy_colors 逐字保留原值、不猜测语义  — 11 个冲突字段待作者确认
+[PASS] 12 legacy_colors 逐字保留原值、不猜测语义  — 7 个冲突字段待作者确认
 [PASS] 13 行为 ID 为 key.<domain>.<name> 且命中词表  — 23 个 ID
 [PASS] 14 keys.class 命中共享词表  — 4 处声明
 [PASS] 15 action.* 全部命中 39 项封闭动词  — 23 个动作
@@ -24,8 +24,8 @@
 [PASS] 24 未迁移区（锚点/style/preedit/window/...）逐字保留  — 23317 字符
 [PASS] 25 V5→V3 反向降级信息无损  — 等价差异 0 项；61 色值 ×3 套 + 161 键库逐字一致
 [PASS] 26 反向产物 config_version 3.0 且结构完整  — 5 布局 / 161 键
-[PASS] 27 预览内嵌数据与 V5 方案一致  — 三套配色路径数逐套核对
-[PASS] 28 方案文档中的计数与生成数据一致  — ID 23 / 路径 43 / 链 28 / 配对 2 / 别名 33
+[PASS] 27 预览内嵌数据与 V5 方案一致  — day / night 路径数逐套核对
+[PASS] 28 方案文档中的计数与生成数据一致  — ID 23 / 路径 43 / 链 28 / 归档 1 / 别名 33
 
 ============================================================
 汇总: 28 PASS / 0 WARN / 0 FAIL

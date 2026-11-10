@@ -1,0 +1,58 @@
+# V5 规范：每个主题只存在日间（day）与夜间（night）两套配色。
+# 原 V3 里超出两套的方案完整归档于此，颜色值逐字保留、信息不丢失；
+# 需要启用时，复制本文件为一个独立主题（自带 day + night 两个槽位）。
+parked_schemes:
+  Spring:
+    name: "春日／Spring"
+    author: "iniNight"
+    appearance: light
+    color:
+      "candidate.bar.surface": "0xFFEAF6F5"
+      "candidate.comment.content": "0xFF8A9499"
+      "candidate.comment.content.selected": "0xFFB8B0AA"
+      "candidate.content": "0xFF313743"
+      "candidate.content.selected": "0xFF2C5E58"
+      "candidate.elevation": "0xFF686868"
+      "candidate.elevation.selected": "0xFF686868"
+      "candidate.label.content": "0xFF5A6B6B"
+      "candidate.outline": "0xFFD9D9D9"
+      "candidate.surface": "0xFFEAF6F5"
+      "candidate.surface.selected": "0xFFEAF6F5"
+      "key.content": "0xFF313743"
+      "key.content.action": "0xFFFFFFFF"
+      "key.content.modifier": "0xFF313743"
+      "key.content.modifier.capsLock": "0xFF4A9E92"
+      "key.content.modifier.pressed": "0xFF1F1F1F"
+      "key.content.pressed": "0xFF1F1F1F"
+      "key.content.space": "0xFF2C5E58"
+      "key.content.system": "0xFF313743"
+      "key.content.system.pressed": "0xFF313743"
+      "key.elevation": "0xFF686868"
+      "key.hint": "0xFF8A9499"
+      "key.hint.modifier.capsLock": "0xFF4A9E92"
+      "key.hint.pressed": "0xFF2C5E58"
+      "key.outline": "0xFFB5C8C5"
+      "key.surface": "0xFFF7FCFA"
+      "key.surface.action": "0xFF5D7B74"
+      "key.surface.modifier": "0xFFD5EBE8"
+      "key.surface.modifier.capsLock": "0xFFE8F5F3"
+      "key.surface.modifier.pressed": "0xFFC7F2EE"
+      "key.surface.pressed": "0xFFC7F2EE"
+      "key.surface.space": "0xFFE8F5F3"
+      "key.surface.system": "0xFFD5EBE8"
+      "key.surface.system.pressed": "0xFFC5DDD9"
+      "popup.content": "0xFF313743"
+      "popup.content.pressed": "0xFF4A9E92"
+      "popup.surface": "0xFFF7FCFA"
+      "preedit.content": "0xFF1F1F1F"
+      "preedit.content.selected": "0xFF000000"
+      "preedit.elevation": "0xFF8A9499"
+      "preedit.surface.selected": "0xFFC7F2EE"
+      "root.surface": "0xFFEAF6F5"
+      "toolbar.surface": "0xFFF0FAF8"
+    legacy:
+      candidate_border_color: 4292927712
+      border_color: 0
+      key_hint_color: 4285173896
+      baoe: 4294696931
+      # 路径冲突: {"candidate.outline": ["candidate_border_color"], "key.outline": ["border_color"], "key.hint": ["key_hint_color"], "key.surface.modifier": ["baoe"]}

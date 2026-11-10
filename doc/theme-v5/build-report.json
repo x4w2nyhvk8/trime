@@ -9,12 +9,17 @@
   },
   "v5": {
     "color_paths_per_scheme": {
-      "default": 43,
-      "Spring": 43,
+      "day": 43,
       "night": 43
     },
     "fallback_chains": 28,
-    "pairs": 2,
+    "scheme_slots": [
+      "day",
+      "night"
+    ],
+    "parked_schemes": [
+      "Spring"
+    ],
     "key_ids": 23,
     "key_aliases": 33,
     "layout_scenes": 5,
@@ -40,7 +45,8 @@
   "equivalence_issues": [],
   "bytes": {
     "v3": 69163,
-    "v5": 58029,
-    "v3_generated": 64110
+    "v5": 55875,
+    "v3_generated": 64110,
+    "parked": 2534
   }
 }
