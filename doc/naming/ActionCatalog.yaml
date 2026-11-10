@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 39 个封闭动作动词 → 同文现有行为的落地目录（可执行规格）
+# status：available 现有一等实现 / alias 由组合键或布尔开关等价表达 /
+#         partial 有近似实现但需运行时确认 / missing 当前无对应行为
+# 与 app/.../naming/ActionVerb.kt 的 id/domain 由 validate.py 双向核对。
+version: 1
+
+meta:
+  source: "app/src/main/assets/shared/trime.yaml preset_keys（106 条）"
+  note: "本阶段只接无参动词；带参请用 KeyActionToken.Inline（commit/text/label）或后续 params 扩展"
+  status_enum: [available, alias, partial, missing]
+
+catalog:
+  - { verb: commit, domain: text, status: available, params: [text], maps_to: "PresetKey(commit=…)", source: "KeyActionToken.Inline.commit", note: "默认归一化为空格上屏；带参走 Inline" }
+  - { verb: insertText, domain: text, status: available, params: [text], maps_to: "PresetKey(text=…)", source: "KeyActionToken.Inline.text", note: "带参走 Inline" }
+  - { verb: repeatCommit, domain: text, status: available, maps_to: "command: commit, option: %1$s", source: "preset_keys.RepeatCommit" }
+  - { verb: backspace, domain: edit, status: available, maps_to: "send: BackSpace, repeatable: true", source: "preset_keys.BackSpace" }
+  - { verb: delete, domain: edit, status: partial, maps_to: "send: Delete", source: "KeyCode 键名表", note: "需运行时确认 Delete 键码可解析" }
+  - { verb: deleteWord, domain: edit, status: alias, maps_to: "send: BackSpace, slideDelete: true", source: "tongwenfeng.trime.yaml BackSpace2", note: "连续左滑删词，非一次性删词" }
+  - { verb: selectAll, domain: edit, status: alias, maps_to: 'send: "{Control+a}"', source: "KeyAction 组合键语法", note: "模拟按键，非一等动词" }
+  - { verb: selectText, domain: edit, status: missing, maps_to: "", source: "", note: "同文无选区 API 暴露" }
+  - { verb: cut, domain: edit, status: alias, maps_to: 'send: "{Control+x}"', source: "KeyAction 组合键语法" }
+  - { verb: copy, domain: edit, status: alias, maps_to: 'send: "{Control+c}"', source: "KeyAction 组合键语法" }
+  - { verb: paste, domain: edit, status: alias, maps_to: 'send: "{Control+v}"', source: "KeyAction 组合键语法" }
+  - { verb: undo, domain: edit, status: alias, maps_to: 'send: "{Control+z}"', source: "KeyAction 组合键语法" }
+  - { verb: redo, domain: edit, status: alias, maps_to: 'send: "{Control+y}"', source: "KeyAction 组合键语法" }
+  - { verb: moveCursor, domain: edit, status: alias, params: [axis, continuous], maps_to: "send: Left, slideCursor: true", source: "tongwenfeng.trime.yaml space 键", note: "布尔开关的动词化，参数是后续阶段" }
+  - { verb: moveCursorLineStart, domain: edit, status: alias, maps_to: "send: Home", source: "KeyCode 键名表" }
+  - { verb: moveCursorLineEnd, domain: edit, status: alias, maps_to: "send: End", source: "KeyCode 键名表" }
+  - { verb: moveCursorPageStart, domain: edit, status: alias, maps_to: "send: Page_Up", source: "KeyCode 键名表" }
+  - { verb: moveCursorPageEnd, domain: edit, status: alias, maps_to: "send: Page_Down", source: "KeyCode 键名表" }
+  - { verb: shift, domain: modifier, status: available, maps_to: "send: Shift_L", source: "preset_keys.Shift_L" }
+  - { verb: toggleCapsLock, domain: modifier, status: alias, produces_state: capsLock, maps_to: "send: Shift_L, shiftLock: click", source: "preset_keys.Shift_L3", note: "同文用 shiftLock 字符串，不是内建状态转移" }
+  - { verb: toggleOption, domain: rime, status: available, params: [option, states], maps_to: "toggle: ascii_mode, states: [中文, 西文]", source: "preset_keys.Mode_switch", note: "Rime 独有动作类别" }
+  - { verb: cycleKeyboard, domain: layout, status: available, maps_to: "select: .next, send: Eisu_toggle", source: "preset_keys.Keyboard_switch" }
+  - { verb: switchKeyboard, domain: layout, status: available, params: [target], maps_to: "select: symbols, send: Eisu_toggle", source: "preset_keys.Keyboard_symbols" }
+  - { verb: showClipboard, domain: trime, status: available, maps_to: "command: clipboard_window, option: 0", source: "preset_keys.clipboard_window" }
+  - { verb: showEmoji, domain: trime, status: available, maps_to: "command: liquid_keyboard, option: emoji", source: "preset_keys.liquid_keyboard_emoji" }
+  - { verb: showLiquidKeyboard, domain: trime, status: available, maps_to: "command: liquid_keyboard, option: 更多", source: "preset_keys.liquid_keyboard_switch" }
+  - { verb: showImePicker, domain: system, status: available, maps_to: "select: .next, send: LANGUAGE_SWITCH", source: "preset_keys.IME_next" }
+  - { verb: showSettings, domain: trime, status: available, maps_to: "send: SETTINGS", source: "preset_keys 中 4 处" }
+  - { verb: hideKeyboard, domain: system, status: missing, maps_to: "", source: "", note: "无对应行为，解析时返回明确诊断" }
+  - { verb: deploy, domain: trime, status: available, maps_to: "command: apply, option: DEPLOY", source: "preset_keys.Deploy" }
+  - { verb: sync, domain: trime, status: available, maps_to: "command: apply, option: SYNC_USER_DATA", source: "preset_keys.Sync" }
+  - { verb: run, domain: trime, status: available, params: [uri], maps_to: "command: run, option: …", source: "preset_keys.TrimeApp / Homepage" }
+  - { verb: webSearch, domain: text, status: available, maps_to: "command: web_search, option: %4$s", source: "preset_keys.WebSearch" }
+  - { verb: share, domain: text, status: available, maps_to: "command: send, option: %s", source: "preset_keys.Share" }
+  - { verb: date, domain: text, status: available, params: [format], maps_to: "command: date, option: yyyy-MM-dd", source: "preset_keys.Date" }
+  - { verb: glideType, domain: text, status: missing, maps_to: "", source: "", note: "无连续轨迹输入" }
+  - { verb: expandPopup, domain: system, status: missing, maps_to: "", source: "", note: "长按 popup 仅字符列表，无滑动选字面板" }
+  - { verb: repeat, domain: system, status: alias, maps_to: "repeatable: true", source: "preset_keys.repeatable", note: "语义上是修饰而非主动词" }
+  - { verb: none, domain: system, status: available, maps_to: "空 PresetKey", source: "KeyActionToken.orAbsent", note: "librime 空标量表示无动作" }

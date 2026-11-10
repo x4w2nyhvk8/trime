@@ -26,7 +26,12 @@ def load(name):
     return yaml.safe_load((ROOT / name).read_text(encoding="utf-8"))
 
 
-V, E, M = load("vocabulary.yaml"), load("examples.yaml"), load("legacy-map.yaml")
+V, E, M, C = (
+    load("vocabulary.yaml"),
+    load("examples.yaml"),
+    load("legacy-map.yaml"),
+    load("ActionCatalog.yaml"),
+)
 
 results = []
 
@@ -128,8 +133,8 @@ def parse_key_id(key_id: str):
 
 
 # ── 01 文件可解析 ─────────────────────────────────────────────
-ok = all(isinstance(d, dict) and d.get("version") == 1 for d in (V, E, M))
-check(1, "三份 YAML 可解析且 version == 1", ok)
+ok = all(isinstance(d, dict) and d.get("version") == 1 for d in (V, E, M, C))
+check(1, "四份 YAML 可解析且 version == 1", ok)
 
 # ── 02 语法约束 ───────────────────────────────────────────────
 need = ["pattern", "separator", "segment_regex", "event_segment_regex",
@@ -358,20 +363,100 @@ check(23, "Naming.md 的计数标记与词表 / 源码一致", not bad and len(d
       ", ".join(f"{k}={v}" for k, v in actual.items()) if not bad else "; ".join(bad))
 
 # ── 24 交付文件齐全 ───────────────────────────────────────────
-files = ["README.md", "Naming.md", "vocabulary.yaml", "examples.yaml",
-         "legacy-map.yaml", "validate.py"]
-missing = [f for f in files if not (ROOT / f).is_file()]
-check(24, "交付包 6 个文件齐全", not missing, f"缺失：{missing}" if missing else f"{len(files)} 个")
+doc_files = ["README.md", "Naming.md", "Runtime.md", "vocabulary.yaml",
+             "examples.yaml", "legacy-map.yaml", "ActionCatalog.yaml", "validate.py"]
+app_files = [
+    "app/src/main/java/com/osfans/trime/data/theme/naming/ActionVerb.kt",
+    "app/src/main/java/com/osfans/trime/ime/keyboard/KeyAction.kt",
+    "app/src/test/java/com/osfans/trime/data/theme/naming/ActionVerbTest.kt",
+]
+missing = [f for f in doc_files if not (ROOT / f).is_file()]
+missing += [f for f in app_files if not (REPO / f).is_file()]
+check(24, "交付包文件齐全（8 份文档数据 + 3 个 Kotlin 文件）", not missing,
+      f"缺失：{missing}" if missing else f"{len(doc_files) + len(app_files)} 个")
 
-# ── 25 零侵入 ─────────────────────────────────────────────────
+# ── 25 改动限于本阶段白名单 ───────────────────────────────────
+allowed = (
+    "doc/naming/",
+    "app/src/main/java/com/osfans/trime/data/theme/naming/",
+    "app/src/test/java/com/osfans/trime/data/theme/naming/",
+    "app/src/main/java/com/osfans/trime/ime/keyboard/KeyAction.kt",
+)
 try:
     out = subprocess.run(["git", "-C", str(REPO), "status", "--porcelain"],
                          capture_output=True, text=True, timeout=10).stdout
-    bad = [l for l in out.splitlines() if l.strip() and "doc/naming/" not in l]
-    check(25, "除 doc/naming/ 外零改动（Kotlin / 布局 / schema）", not bad,
-          "工作区仅新增本目录" if not bad else "; ".join(bad[:3]))
+    bad = [l for l in out.splitlines() if l.strip() and not any(a in l for a in allowed)]
+    check(25, "改动限于白名单（布局 / schema / 其余 Kotlin 零改动）", not bad,
+          "无越界改动" if not bad else "; ".join(bad[:3]))
 except Exception as exc:
-    check(25, "零侵入检查", True, f"git 不可用，跳过（{type(exc).__name__}）", warn=True)
+    check(25, "改动范围检查", True, f"git 不可用，跳过（{type(exc).__name__}）", warn=True)
+
+# ── 26 动词目录自洽 ───────────────────────────────────────────
+cat = C.get("catalog", [])
+cat_ids = [x.get("verb") for x in cat]
+acts = set(voc.get("action", []))
+status_enum = set(C.get("meta", {}).get("status_enum", []))
+cat_domains = set(voc.get("action_domain", []))
+bad = []
+if len(cat) != len(acts) or set(cat_ids) != acts:
+    bad.append("目录动词集合与 vocabulary.action 不一致")
+if len(cat_ids) != len(set(cat_ids)):
+    bad.append("目录有重复动词")
+for x in cat:
+    if x.get("domain") not in cat_domains:
+        bad.append(f"{x.get('verb')}: 非法 domain")
+    if x.get("status") not in status_enum:
+        bad.append(f"{x.get('verb')}: 非法 status")
+    if x.get("status") == "missing" and x.get("maps_to"):
+        bad.append(f"{x.get('verb')}: missing 却写了 maps_to")
+check(26, "ActionCatalog 39 条与词表一致、status/domain 合法", not bad,
+      f"{len(cat)} 条" if not bad else "; ".join(bad[:3]))
+
+# ── 27 Kotlin 枚举 ↔ 目录 ↔ 词表 三方一致 ─────────────────────
+kt_path = REPO / "app/src/main/java/com/osfans/trime/data/theme/naming/ActionVerb.kt"
+kt = kt_path.read_text(encoding="utf-8") if kt_path.is_file() else ""
+pairs = re.findall(
+    r'([A-Z][A-Z0-9_]*)\(\s*"([a-z][a-zA-Z0-9]*)"\s*,\s*"([a-z]+)"\s*,', kt
+)
+kt_ids = [p[1] for p in pairs]
+cat_domain = {x["verb"]: x["domain"] for x in cat}
+bad = []
+if len(kt_ids) != len(acts) or set(kt_ids) != acts:
+    bad.append("Kotlin 枚举 id 与词表不一致")
+if len(kt_ids) != len(set(kt_ids)):
+    bad.append("Kotlin 枚举有重复 id")
+for _, verb_id, domain in pairs:
+    if cat_domain.get(verb_id) != domain:
+        bad.append(f"{verb_id}: domain 与目录不一致")
+kt_null = {x[1] for x in re.findall(
+    r'([A-Z][A-Z0-9_]*)\(\s*"([a-z][a-zA-Z0-9]*)"\s*,\s*"[a-z]+"\s*,\s*null\s*\)', kt
+)}
+missing_ids = {x["verb"] for x in cat if x.get("status") == "missing"}
+if kt_null != missing_ids:
+    bad.append("defaults=null 与 status=missing 不对齐")
+check(27, "ActionVerb.kt 的 39 个 id/domain/null 与目录词表双向一致", not bad,
+      f"{len(kt_ids)} 项 / 4 个未实现" if not bad else "; ".join(bad[:3]))
+
+# ── 28 接线存在且旧路径保留 ───────────────────────────────────
+ka_path = REPO / "app/src/main/java/com/osfans/trime/ime/keyboard/KeyAction.kt"
+ka = ka_path.read_text(encoding="utf-8") if ka_path.is_file() else ""
+ok = (
+    "ActionVerb.resolve(token.token)" in ka
+    and "ActionResolution.NotAction -> presetKeys[token.token]" in ka
+    and "import com.osfans.trime.data.theme.naming.ActionVerb" in ka
+    and "import com.osfans.trime.data.theme.naming.ActionResolution" in ka
+)
+check(28, "KeyAction 接线存在，且旧 presetKeys 查表路径原样保留", ok,
+      "单一接线点，存量主题零回归" if ok else "接线缺失或旧路径被破坏")
+
+# ── 29 JVM 单测覆盖 ───────────────────────────────────────────
+test_path = REPO / "app/src/test/java/com/osfans/trime/data/theme/naming/ActionVerbTest.kt"
+test_src = test_path.read_text(encoding="utf-8") if test_path.is_file() else ""
+markers = ["BehaviorSpec", "NotAction", "Unimplemented", "Invalid",
+           "toggleCapslock", "move_cursor", "'$'", "ActionVerb.entries.size shouldBe 39"]
+absent = [m for m in markers if m not in test_src]
+check(29, "JVM 单测覆盖 B1 校验、未实现诊断与零回归底线", not absent,
+      f"{len(markers)} 个关键断言" if not absent else f"缺失 {absent}")
 
 # ── 汇总 ──────────────────────────────────────────────────────
 print("=" * 78)

@@ -10,6 +10,8 @@ import com.osfans.trime.data.prefs.AppPrefs
 import com.osfans.trime.data.prefs.LazyPreferenceDelegate
 import com.osfans.trime.data.theme.model.KeyActionToken
 import com.osfans.trime.data.theme.model.PresetKey
+import com.osfans.trime.data.theme.naming.ActionResolution
+import com.osfans.trime.data.theme.naming.ActionVerb
 import com.osfans.trime.util.virtualKeyCharacterMap
 import timber.log.Timber
 
@@ -176,8 +178,21 @@ class KeyAction(
         when (token) {
             is KeyActionToken.Plain -> {
                 val label: String
+                // match like: { x: action.edit.backspace } -> 归一化到等价 PresetKey。
+                // 非 action token 仍走原有 presetKeys 查表，存量主题零行为变化。
+                val preset = when (val resolution = ActionVerb.resolve(token.token)) {
+                    is ActionResolution.Ok -> resolution.defaults
+                    ActionResolution.NotAction -> presetKeys[token.token]
+                    is ActionResolution.Unimplemented -> {
+                        Timber.w("action '%s' is declared but not implemented yet", resolution.token)
+                        PresetKey()
+                    }
+                    is ActionResolution.Invalid -> {
+                        Timber.w("invalid action token '%s': %s", resolution.token, resolution.reason)
+                        PresetKey()
+                    }
+                }
                 // match like: { x: BackSpace } -> preset_keys/BackSpace: {..., send: BackSpace }
-                val preset = presetKeys[token.token]
                 if (preset != null) {
                     command = preset.command
                     option = preset.option

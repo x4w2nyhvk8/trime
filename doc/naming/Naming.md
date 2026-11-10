@@ -201,4 +201,4 @@ color.key.surface.space.capsLock:  "0xFFD0D8E8"
 - 不批量重命名存量 `preset_keys` 键名（它们是主题作者的事实 API）
 - 不把颜色定义搬出 YAML（`patch` / `__include` / 注释丢不起；JSON 仅作工具交换格式）
 - 不引入二维 `grid` 布局本身，只约定颜色与几何解耦后**配色表无需改动**
-- 不改任何 Kotlin / 布局 / schema ——**本 RFC 不改变编译产物与运行时行为**
+- **规范本身**不改任何 Kotlin / 布局 / schema。运行时落地放在独立分支 `feat/naming-action-verbs`，只接 `action.*` 动词归一化、保留旧路径，见 `Runtime.md`
