@@ -421,12 +421,8 @@ def emit(d: dict) -> str:
     A('  color: "0xAARRGGBB"')
     A("  image: [.png, .webp, .jpg, .gif]")
     A("")
-    A("# 样本翻译表 v5-map.yaml 与本规范的路径差异（样本产物保持兼容，")
-    A("# V5 解析器接入时统一按 registry 切换；不是两套并存规范）。")
-    A("migration:")
-    for k, v in d["migration"].items():
-        A(f'  {k}: {{ sample_v5: "{v["sample_v5"]}", registry: "{v["registry"]}" }}')
-    A("")
+    # 规范色表只含源码事实；样本翻译表的路径差异另存 migration.yaml，
+    # 避免把某一份主题的信息带进规范、也保证两分支 registry 字节一致。
     return "\n".join(L) + "\n"
 
 
@@ -452,7 +448,19 @@ def main() -> int:
     print("自检通过：覆盖度 / 唯一性 / 回退链 / 无环 / 语法 全部 OK")
     if not args.check:
         REGISTRY.write_text(emit(d), encoding="utf-8")
-        print(f"已写出 {REGISTRY.name}")
+        print(f"已写出 {REGISTRY.name}（纯源码事实，两分支字节一致）")
+        mig = d["migration"]
+        if mig:
+            ml = ["# SPDX-License-Identifier: GPL-3.0-or-later",
+                  "# 样本侧信息：v5-map.yaml 的旧路径与规范色表的差异对照。",
+                  "# 由 build_registry.py 生成；不属于规范色表，V5 解析器接入时按此切换。",
+                  "", "migration:"]
+            for k, v in mig.items():
+                ml.append(f'  {k}: {{ sample_v5: "{v["sample_v5"]}", '
+                          f'registry: "{v["registry"]}" }}')
+            (ROOT / "migration.yaml").write_text("\n".join(ml) + "\n",
+                                                  encoding="utf-8")
+            print(f"已写出 migration.yaml（{len(mig)} 条，样本侧）")
     return 0
 
 

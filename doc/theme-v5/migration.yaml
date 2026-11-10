@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 样本侧信息：v5-map.yaml 的旧路径与规范色表的差异对照。
+# 由 build_registry.py 生成；不属于规范色表，V5 解析器接入时按此切换。
+
+migration:
+  keyboard_background: { sample_v5: "root.background", registry: "keyboard.background" }
+  keyboard_back_color: { sample_v5: "root.background", registry: "keyboard.background" }
+  text_back_color: { sample_v5: "root.background", registry: "preedit.background" }
+  candidate_separator_color: { sample_v5: "candidate.outline", registry: "candidate.separator" }
+  shadow_color: { sample_v5: "key.elevation", registry: "root.elevation" }
+  border_color: { sample_v5: "key.outline", registry: "root.outline" }
+  off_key_back_color: { sample_v5: "key.background.system", registry: "key.background.modifier.inactive" }
+  off_key_text_color: { sample_v5: "key.foreground.system", registry: "key.foreground.modifier.inactive" }
+  hilited_off_key_back_color: { sample_v5: "key.background.system.pressed", registry: "key.background.modifier.inactive.pressed" }
+  hilited_off_key_text_color: { sample_v5: "key.foreground.system.pressed", registry: "key.foreground.modifier.inactive.pressed" }
+  on_key_back_color: { sample_v5: "key.background.modifier.capsLock", registry: "key.background.modifier.active" }
+  on_key_text_color: { sample_v5: "key.foreground.modifier.capsLock", registry: "key.foreground.modifier.active" }
+  on_key_symbol_color: { sample_v5: "key.hint.modifier.capsLock", registry: "key.hint.modifier.active" }
+  hilited_on_key_back_color: { sample_v5: "key.background.modifier.pressed", registry: "key.background.modifier.active.pressed" }
+  hilited_on_key_text_color: { sample_v5: "key.foreground.modifier.pressed", registry: "key.foreground.modifier.active.pressed" }

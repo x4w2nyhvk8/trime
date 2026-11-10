@@ -17,7 +17,8 @@ FILES = ["ss.v3.trime.yaml", "ss.v5.trime.yaml", "v5-map.yaml",
          "vocabulary.yaml", "v5-addendum.yaml", "build_v5.py",
          "gen_preview.py", "preview.html", "V5主题方案.md",
          "build-report.json", "ss.v3.generated.trime.yaml",
-         "parked-schemes.yaml", "color-registry.yaml", "build_registry.py"]
+         "parked-schemes.yaml", "color-registry.yaml", "build_registry.py",
+         "migration.yaml"]
 
 results = []
 
@@ -431,7 +432,7 @@ def main():
           if not sup_bad else f"{sup_bad[:3]}")
 
     # ── 38 迁移对照与样本产物边界 ──
-    mig = reg["migration"]
+    mig = load("migration.yaml")["migration"]
     old_paths = set(mp["color_map"].values())
     new_paths = set(cpaths) | set(sup)
     mig_ok = bool(mig) and all(

@@ -1,4 +1,4 @@
-[PASS]  1 交付包文件齐全  — 14 个
+[PASS]  1 交付包文件齐全  — 15 个
 [PASS]  2 5 份 YAML + 反向产物均可解析
 [PASS]  3 config_version 5.0 / trime_version 5  — 5.0 / 5
 [PASS]  4 颜色值统一 0xAARRGGBB 字符串  — 86 个值
